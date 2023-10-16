@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root{
+    /* PERSONAL COLORS */
+    --clr-primary : 54 76% 57%;
+    --clr-accent : 233 47% 55%;
+    --clr-dark : 0 0% 22%;
+    --clr-light : 0 0% 85%;
+    --clr-gray : 0 0% 60%;
+    --clr-red : 0 100% 67%;
+    --clr-green : 112 93% 62%;
+    --clr-orange : 36 100% 63%;
+
+    /* PERSONAL FONTWEIGHT */
+    --fw-thin : 100;
+    --fw-xlight : 200;
+    --fw-light : 300;
+    --fw-regular : 400;
+    --fw-medium : 500;
+    --fw-smbold : 600;
+    --fw-bold : 700;
+    --fw-xbold : 800;
+    --fw-2xbold : 900;
+
+    /* PERSONAL FONTSIZES */
+    --fs-10 : 0.625rem;
+    --fs-14 : 0.875rem;
+    --fs-16 : 1rem;
+    --fs-18 : 1.125rem;
+    --fs-24 : 1.5rem;
+    --fs-30 : 1.875rem;
+    --fs-36: 2.25rem;
+    --fs-48: 3rem;
+    --fs-60: 3.75rem;
+    --fs-72: 4.5rem;
+    --fs-84: 5.25rem;
+
+    /* PERSONAL FONT */
+    --sans-serif : "'Poppins', sans-serif";
+}
+

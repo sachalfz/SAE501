@@ -1,0 +1,148 @@
+.nav--layout{
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 8rem;
+}
+
+.nav--layout-mobile{
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 2rem;
+}
+
+.nav--logo{
+    height: 60px;
+}
+
+.nav--text{
+    margin-bottom: 0;
+    margin-top: 0;
+    font-weight: var(--fw-bold);
+    color: hsla(var(--clr-light));
+    font-size: var(--fs-18);
+}
+
+.nav--list{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.nav--popup{
+    padding: 0;
+    background: none;
+    border: none;
+    width: var(--fs-24);
+    height: var(--fs-24);
+}
+
+.nav--cat{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.nav--cat-logo{
+    height: var(--fs-36);
+    width: var(--fs-36);
+    padding: 0;
+}
+
+.page{
+    width: 100%;
+    height: 100vh;
+    background-color: hsla(var(--clr-dark));
+}
+
+.popup--menu {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 75%;
+    height: 100%;
+    background-color: #333;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 3rem;
+    gap: 2rem;
+    transition: right 0.3s;
+  }
+  
+.popup--close-button {
+    padding: 0;
+    background: none;
+    border: none;
+    width: var(--fs-36);
+    height: var(--fs-36);
+}
+
+.header{
+    z-index: 0;
+}
+
+.view{
+    padding: 0 2rem;
+}
+
+.solo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+}
+
+.solo-rules{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.rules-bloc{
+    width: 8rem;
+    height: 5rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 4px 0px hsla(var(--clr-dark));
+}
+
+.rules-txt{
+    font-size: var(--fs-14);
+    color: hsla(var(--clr-green));
+    font-weight: var(--fw-medium);
+}
+
+.bloc-txt{
+    margin: 0;
+    max-width: 15ch;
+    text-align: center;
+    font-weight: var(--fw-smbold);
+    font-size: var(--fs-14);
+}
+
+.true{
+    background-color: hsla(var(--clr-green)) ;
+}
+
+.mid{
+    background-color: hsla(var(--clr-orange)) ;
+}
+
+.false{
+    background-color: hsla(var(--clr-red)) ;
+}
