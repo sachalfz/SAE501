@@ -10,6 +10,7 @@ const router = createRouter({
       name: 'solo',
       component: SoloView
     },
+<<<<<<< HEAD
     {
       path: '/solo',
       name: 'solo',
@@ -20,6 +21,8 @@ const router = createRouter({
       name: '3dgame',
       component: TreeDGameView
     },
+=======
+>>>>>>> 0e56db26e0632d8af0392f68df42c317a9e43c62
     // {
     //   path: '/about',
     //   name: 'about',
