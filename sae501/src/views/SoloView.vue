@@ -1,21 +1,18 @@
 <script setup>
+import SearchBar from "../components/SearchBar.vue"; // Assurez-vous d'ajuster le chemin
+import SoloRules from "../components/SoloRules.vue"; // Assurez-vous d'ajuster le chemin
+import LifeCounter from '../components/LifeCounter.vue';
+import SoloGuesses from '../components/SoloGuesses.vue';
+</script>
 
+<script>
 </script>
 
 <template>
     <div class="view solo">
-        <div class="solo-rules">
-            <div class="rules-bloc true">
-                <p class="bloc-txt">True</p>
-            </div>
-            <div class="rules-bloc mid">
-                <p class="bloc-txt">One or more correct</p>
-            </div>
-            <div class="rules-bloc false">
-                <p class="bloc-txt">False</p>
-            </div>
-        </div>
-        
-        <p class="rules-txt">Guess an album by its criteria !</p>
+        <SoloRules />
+        <SearchBar />
+        <LifeCounter :remainingLives="7" :totalLives="10" />
+        <SoloGuesses />
     </div>
 </template>

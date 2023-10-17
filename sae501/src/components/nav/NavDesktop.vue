@@ -1,7 +1,7 @@
 <template>
     <header class="header">
       <nav class="nav--layout">
-        <a class="nav--logo" href="#">
+        <a class="nav--logo" href="/solo">
           <img src="../../assets/logo/full_yellow.svg" alt="Logo" height="60">
         </a>
         <ul class="nav--list">
