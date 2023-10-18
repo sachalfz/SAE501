@@ -148,6 +148,14 @@
     background-color: hsla(var(--clr-red)) ;
 }
 
+.group--searchbar{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
 .searchbar{
     margin: 0;
     width: 28rem;
@@ -166,12 +174,41 @@
 
 .searchbar--txt{
     width: 23rem;
+    font-size: var(--fs-16);
     background: none;
     border: none;
+    margin: 0;
 }
 
 .searchbar--txt:focus{
     outline: none;
+}
+
+.searchbar--autocompletion{
+    position: absolute;
+    top: 2.3rem;
+    left: 0;
+    background-color: hsla(var(--clr-light));
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    width: 28rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.searchbar--autocompletion--self{
+    cursor: pointer;
+    padding: 0 1.1rem;
+}
+
+.searchbar--autocompletion--self--txt{
+    margin: 0;
+    color: hsla(var(--clr-dark)/ 0.75);
+    font-size: var(--fs-16);
 }
 
 .life{
@@ -188,14 +225,48 @@
 .sologuesses{
     width: 28rem;
     height: 35rem;
+    padding: 0.5rem;
+    overflow: auto;
+    gap: 0.5rem;
     background-color: hsla(var(--clr-gray)/ 0.75);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-end;
+    align-items: flex-start;
+    flex-direction: column-reverse;
 }
 
 .sologuesses--txt{
     font-size: var(--fs-14);
     font-weight: var(--fw-regular);
     color: hsla(var(--clr-dark));
+}
+
+.sologuesses--album{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.sologuesses--self{
+    display: flex;
+    height: 100%;
+    width: 8rem;
+    align-items: center;
+    justify-content: center;
+    background-color: hsla(var(--clr-red));
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.sologuesses--self--txt{
+    margin: 0;
+    text-align: center;
+}
+
+@media screen and (min-width:1300px) {
+    .sologuesses{
+        width: 60rem;
+    }
+    
 }
