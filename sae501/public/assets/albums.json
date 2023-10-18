@@ -1,123 +1,318 @@
 [
-    {
-      "nom": "The Chronic",
-      "label": "Death Row Records",
-      "date": "1992",
-      "genre": "West Coast hip hop"
-    },
-    {
-      "nom": "Illmatic",
-      "label": "Columbia",
-      "date": "1994",
-      "genre": "East Coast hip hop"
-    },
-    {
-      "nom": "The Marshall Mathers LP",
-      "label": "Aftermath Entertainment",
-      "date": "2000",
-      "genre": "Rap"
-    },
-    {
-      "nom": "Ready to Die",
-      "label": "Bad Boy Records",
-      "date": "1994",
-      "genre": "East Coast hip hop"
-    },
-    {
-      "nom": "All Eyez on Me",
-      "label": "Death Row Records",
-      "date": "1996",
-      "genre": "West Coast hip hop"
-    },
-    {
-      "nom": "The Slim Shady LP",
-      "label": "Aftermath Entertainment",
-      "date": "1999",
-      "genre": "Rap"
-    },
-    {
-      "nom": "Doggystyle",
-      "label": "Death Row Records",
-      "date": "1993",
-      "genre": "West Coast hip hop"
-    },
-    {
-      "nom": "Straight Outta Compton",
-      "label": "Ruthless Records",
-      "date": "1988",
-      "genre": "West Coast hip hop"
-    },
-    {
-      "nom": "To Pimp a Butterfly",
-      "label": "Top Dawg Entertainment",
-      "date": "2015",
-      "genre": "Hip hop"
-    },
-    {
-      "nom": "The Blueprint",
-      "label": "Roc-A-Fella",
-      "date": "2001",
-      "genre": "East Coast hip hop"
-    },
-    {
-      "nom": "Enter the Wu-Tang (36 Chambers)",
-      "label": "Loud Records",
-      "date": "1993",
-      "genre": "East Coast hip hop"
-    },
-    {
-      "nom": "The College Dropout",
-      "label": "Roc-A-Fella",
-      "date": "2004",
-      "genre": "Hip hop"
-    },
-    {
-      "nom": "Get Rich or Die Tryin'",
-      "label": "Shady Records",
-      "date": "2003",
-      "genre": "Hip hop"
-    },
-    {
-      "nom": "The Low End Theory",
-      "label": "Jive Records",
-      "date": "1991",
-      "genre": "East Coast hip hop"
-    },
-    {
-      "nom": "My Beautiful Dark Twisted Fantasy",
-      "label": "Def Jam",
-      "date": "2010",
-      "genre": "Hip hop"
-    },
-    {
-      "nom": "Me Against the World",
-      "label": "Interscope",
-      "date": "1995",
-      "genre": "Hip hop"
-    },
-    {
-      "nom": "The Notorious B.I.G.",
-      "label": "Bad Boy Records",
-      "date": "1999",
-      "genre": "East Coast hip hop"
-    },
-    {
-      "nom": "The Blueprint 2: The Gift & The Curse",
-      "label": "Roc-A-Fella",
-      "date": "2002",
-      "genre": "East Coast hip hop"
-    },
-    {
-      "nom": "All Eyez on Me",
-      "label": "Death Row Records",
-      "date": "1996",
-      "genre": "West Coast hip hop"
-    },
-    {
-      "nom": "The Slim Shady LP",
-      "label": "Aftermath Entertainment",
-      "date": "1999",
-      "genre": "Rap"
-    }
+  {
+    "nom": "L'École du micro d'argent",
+    "date": "1997-03-18",
+    "label": "Delabel",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Akhenaton", "Shurik'n"],
+    "artiste": "IAM"
+  },
+  {
+    "nom": "Première Classe",
+    "date": "1999-02-22",
+    "label": "IV My People",
+    "genre": "Rap français",
+    "certification": "Platine",
+    "beatmakers": ["Kool Shen", "Sly the Mic Buddah"],
+    "artiste": "Kool Shen"
+  },
+  {
+    "nom": "Le Chant des sirènes",
+    "date": "2011-09-26",
+    "label": "Wati B",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Hologram Lo'"],
+    "artiste": "Orelsan"
+  },
+  {
+    "nom": "Génération Goldman",
+    "date": "2012-11-19",
+    "label": "M6 Interactions",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Various Artists"],
+    "artiste": "Jean-Jacques Goldman"
+  },
+  {
+    "nom": "M.I.L.S",
+    "date": "2016-03-18",
+    "label": "Warner Music France",
+    "genre": "Rap français",
+    "certification": "Platine",
+    "beatmakers": ["Niro"],
+    "artiste": "Niro"
+  },
+  {
+    "nom": "Batterie Faible",
+    "date": "2003-11-03",
+    "label": "Because Music",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Oxmo Puccino"],
+    "artiste": "Oxmo Puccino"
+  },
+  {
+    "nom": "L'Apogée",
+    "date": "2011-03-05",
+    "label": "Wati B",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Sexion d'Assaut"],
+    "artiste": "Sexion d'Assaut"
+  },
+  {
+    "nom": "Lunatic",
+    "date": "2000-11-22",
+    "label": "45 Scientific",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Booba"],
+    "artiste": "Booba"
+  },
+  {
+    "nom": "Fantômes",
+    "date": "2011-02-14",
+    "label": "Tôt ou tard",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Deportivo"],
+    "artiste": "Deportivo"
+  },
+  {
+    "nom": "Deuxième Mandat",
+    "date": "2005-11-21",
+    "label": "Up Music",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Sinik"],
+    "artiste": "Sinik"
+  },
+  {
+    "nom": "Tant qu'on est là",
+    "date": "2007-01-22",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Sefyu"],
+    "artiste": "Sefyu"
+  },
+  {
+    "nom": "Or Noir",
+    "date": "2013-10-21",
+    "label": "Tallac Records",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Kaaris"],
+    "artiste": "Kaaris"
+  },
+  {
+    "nom": "Panama Bende",
+    "date": "2015-04-07",
+    "label": "QLF Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Panama Bende"],
+    "artiste": "Panama Bende"
+  },
+  {
+    "nom": "Chocolat",
+    "date": "2017-11-17",
+    "label": "Universal Music France",
+    "genre": "Rap français",
+    "certification": "Platine",
+    "beatmakers": ["Roméo Elvis"],
+    "artiste": "Roméo Elvis"
+  },
+  {
+    "nom": "Trône",
+    "date": "2017-12-08",
+    "label": "Seine Zoo",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Booba"],
+    "artiste": "Booba"
+  },
+
+  {
+    "nom": "Dans ma bulle",
+    "date": "2005-12-26",
+    "label": "Up Music",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Diam's"],
+    "artiste": "Diam's"
+  },
+  {
+    "nom": "Oyat",
+    "date": "2009-10-05",
+    "label": "Because Music",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Orelsan"],
+    "artiste": "Orelsan"
+  },
+  {
+    "nom": "Le Code de l'horreur",
+    "date": "2008-11-24",
+    "label": "Because Music",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Rohff"],
+    "artiste": "Rohff"
+  },
+  {
+    "nom": "Demain c'est loin",
+    "date": "1997-11-25",
+    "label": "Delabel",
+    "genre": "Rap français",
+    "certification": "Platine",
+    "beatmakers": ["IAM"],
+    "artiste": "IAM"
+  },
+  {
+    "nom": "Dernier MC",
+    "date": "2012-12-03",
+    "label": "Wati B",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Kery James"],
+    "artiste": "Kery James"
+  },
+  {
+    "nom": "Subliminal",
+    "date": "2013-05-03",
+    "label": "Wati B",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Maitre Gims"],
+    "artiste": "Maitre Gims"
+  },
+  {
+    "nom": "Futur",
+    "date": "2012-11-26",
+    "label": "Tallac Records",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Booba"],
+    "artiste": "Booba"
+  },
+  {
+    "nom": "Je suis en vie",
+    "date": "2014-10-13",
+    "label": "Barclay",
+    "genre": "Rap français",
+    "certification": "Platine",
+    "beatmakers": ["Akhenaton"],
+    "artiste": "Akhenaton"
+  },
+  {
+    "nom": "Trône",
+    "date": "2017-12-08",
+    "label": "Seine Zoo",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Booba"],
+    "artiste": "Booba"
+  },
+  {
+    "nom": "Réel",
+    "date": "2004-05-10",
+    "label": "IV My People",
+    "genre": "Rap français",
+    "certification": "Platine",
+    "beatmakers": ["Kool Shen"],
+    "artiste": "Kool Shen"
+  },
+  {
+    "nom": "Le Corbeau",
+    "date": "2009-10-19",
+    "label": "Because Music",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Sefyu"],
+    "artiste": "Sefyu"
+  },
+  {
+    "nom": "Le Frunkp",
+    "date": "2004-03-29",
+    "label": "IV My People",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Kool Shen"],
+    "artiste": "Kool Shen"
+  },
+  {
+    "nom": "Gentleman 2.0",
+    "date": "2017-10-27",
+    "label": "Wati B",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Maître Gims"],
+    "artiste": "Maître Gims"
+  },
+  {
+    "nom": "Crise de conscience",
+    "date": "2005-09-26",
+    "label": "IV My People",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Kool Shen"],
+    "artiste": "Kool Shen"
+  },
+  {
+    "nom": "Le cœur d'un homme",
+    "date": "2005-11-14",
+    "label": "Up Music",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Kery James"],
+    "artiste": "Kery James"
+  },
+  {
+    "nom": "Avec le cœur",
+    "date": "2006-05-29",
+    "label": "Up Music",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Kery James"],
+    "artiste": "Kery James"
+  },
+  {
+    "nom": "Solaar pleure",
+    "date": "1991-09-16",
+    "label": "Polydor",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["MC Solaar"],
+    "artiste": "MC Solaar"
+  },
+  {
+    "nom": "Météore",
+    "date": "1998-11-16",
+    "label": "Cinquième Territoire",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["IAM"],
+    "artiste": "IAM"
+  },
+  {
+    "nom": "La Fierté des nôtres",
+    "date": "2004-04-05",
+    "label": "Tôt ou tard",
+    "genre": "Rap français",
+    "certification": "Platine",
+    "beatmakers": ["Rohff"],
+    "artiste": "Rohff"
+  },
+  {
+    "nom": "La Colombe",
+    "date": "2010-12-03",
+    "label": "AZ",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Soprano"],
+    "artiste": "Soprano"
+  }
 ]
-  

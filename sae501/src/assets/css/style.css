@@ -230,8 +230,16 @@
     gap: 0.5rem;
     background-color: hsla(var(--clr-gray)/ 0.75);
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: flex-start;
+    flex-direction: column;
+}
+
+.sologuesses--results{
+    gap: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;  
     flex-direction: column-reverse;
 }
 
@@ -239,6 +247,29 @@
     font-size: var(--fs-14);
     font-weight: var(--fw-regular);
     color: hsla(var(--clr-dark));
+}
+
+.sologuesses--categories{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.sologuesses--categories--self{
+    display: flex;
+    height: 100%;
+    width: 8rem;
+    align-items: center;
+    justify-content: center;
+    background-color: hsla(var(--clr-light));
+    padding: 1rem;
+    border-radius: 6px;
+}
+
+.sologuesses--categories--self--txt{
+    margin: 0;
+    text-align: center;
 }
 
 .sologuesses--album{
@@ -254,7 +285,7 @@
     width: 8rem;
     align-items: center;
     justify-content: center;
-    background-color: hsla(var(--clr-red));
+    background-color: hsla(var(--clr-green));
     padding: 1rem;
     border-radius: 6px;
 }
