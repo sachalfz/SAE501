@@ -58,6 +58,7 @@
 
 .page{
     width: 100%;
+    min-height: 100vh;
     background-color: hsla(var(--clr-dark));
     padding-bottom: 2rem;
 }
@@ -118,7 +119,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0px 4px 4px 0px hsla(var(--clr-dark));
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
 }
 
 .rules-txt{
@@ -154,6 +155,7 @@
     align-items: center;
     justify-content: flex-start;
     flex-direction: column;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
 }
 
 .searchbar{
@@ -198,6 +200,7 @@
     align-items: flex-start;
     gap: 0.5rem;
     padding-bottom: 0.5rem;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
 }
 
 .searchbar--autocompletion--self{
@@ -229,10 +232,12 @@
     overflow: auto;
     gap: 0.5rem;
     background-color: hsla(var(--clr-gray)/ 0.75);
+    border-radius: 6px;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
 }
 
 .sologuesses--results{
@@ -292,12 +297,17 @@
     background-color: hsla(var(--clr-green));
     padding: 1rem;
     border-radius: 6px;
-    gap: 0;
+    gap: 0.5rem;
 }
 
 .sologuesses--self--txt{
     margin: 0;
     text-align: center;
+}
+
+.sologuesses--arrow--icon{
+    width: var(--fs-16);
+    height: var(--fs-16);
 }
 
 .sologuesses--self--list--txt{
@@ -313,8 +323,73 @@
     background-color: hsla(var(--clr-red));
 }
 
+
+.revealguess--header{
+    margin-bottom: 1rem;
+    padding: 0;
+    font-size: var(--fs-60);
+    font-weight: var(--fw-bold);
+    
+}
+
+.win{
+    color: hsla(var(--clr-green));
+}
+
+.loose{
+    color:hsla(var(--clr-red));
+}
+
+.revealguess{
+    width: 28rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: hsla(var(--clr-gray)/ 0.75);
+    padding: 2rem;
+    border-radius: 6px;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+}
+
+.revealguess--title{
+    margin: 0;
+    color: hsla(var(--clr-dark));
+    font-size: var(--fs-16);
+    font-weight: var(--fw-regular);
+}
+
+.revealguess--txt{
+    margin: 0;
+    color: hsla(var(--clr-dark));
+    font-size: var(--fs-24);
+    font-weight: var(--fw-smbold);
+}
+
+.tryagain{
+    border: none;
+    padding: 0.5rem 3rem;
+    background-color: hsla(var(--clr-primary)/ 0.75);
+    color: hsla(var(--clr-dark));
+    font-size: var(--fs-18);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    border-radius: 6px;
+    transition: all .2s ease-in-out;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+}
+
+.tryagain:hover{
+    background-color: hsla(var(--clr-primary));
+}
+ 
 @media screen and (min-width:1300px) {
     .sologuesses{
+        width: 60rem;
+    }
+    
+    .revealguess{
         width: 60rem;
     }
     

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import SoloView from '../views/SoloView.vue'
-import TestView from '../views/SoloTestView.vue'
 import TreeDGameView from '../views/ThreeDGameView.vue'
 
 const router = createRouter({
@@ -15,11 +14,6 @@ const router = createRouter({
       path: '/3dgame',
       name: '3dgame',
       component: TreeDGameView
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: TestView
     },
     // {
     //   path: '/about',

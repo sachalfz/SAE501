@@ -5,7 +5,7 @@
       <img src="../assets/icons/search_dark.svg" alt="search" class="searchbar--icon"/>
     </div>
     <div v-show="showAutocomplete" class="searchbar--autocompletion">
-      <div class="searchbar--autocompletion--self" v-for="(album, index) in autocompleteAlbums" @click="selectAutocompleteResult(album.nom)" :key="album.nom">
+      <div class="searchbar--autocompletion--self" v-for="(album, index) in autocompleteAlbums" @click="selectAutocompleteResult(album.nom, album.id)" :key="album.nom && album.id">
         <p class="searchbar--autocompletion--self--txt">{{ album.nom }}</p>
       </div>
     </div>
@@ -34,11 +34,11 @@ export default {
         this.showAutocomplete = this.searchQuery.length > 0;
         this.autocompleteAlbums = this.filteredAlbums.slice(0, 5);
       },
-      selectAutocompleteResult(albumName) {
+      selectAutocompleteResult(albumName, albumId) {
         this.searchQuery = albumName;
         this.showAutocomplete = false;
-        this.$emit('album-selected', albumName); // Émettre le nom de l'album
-        this.$emit('life-counter', this.livesRemaining)
+        this.$emit('album-selected', albumId); // Émettre le nom de l'album
+        this.$emit('life-counter', albumId);
       },
       selectAlbum(album) {
         if (this.isMatch(album)) {

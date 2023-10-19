@@ -1,318 +1,502 @@
 [
   {
-    "nom": "L'École du micro d'argent",
-    "date": "1997-03-18",
-    "label": "Delabel",
+    "id": 1,
+    "nom": "Perle rare",
+    "artiste": "Pone",
+    "date": "2007",
+    "label": "Small Budget / Edel Music",
     "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Akhenaton", "Shurik'n"],
-    "artiste": "IAM"
+    "certification": "Or",
+    "beatmakers": ["Pone"]
   },
   {
-    "nom": "Première Classe",
-    "date": "1999-02-22",
-    "label": "IV My People",
+    "id": 2,
+    "nom": "Dernier MC",
+    "artiste": "Kery James",
+    "date": "2013",
+    "label": "Soul Brother / Musicast",
     "genre": "Rap français",
-    "certification": "Platine",
-    "beatmakers": ["Kool Shen", "Sly the Mic Buddah"],
-    "artiste": "Kool Shen"
+    "certification": "Or",
+    "beatmakers": ["Le Rat Luciano"]
   },
   {
-    "nom": "Le Chant des sirènes",
-    "date": "2011-09-26",
-    "label": "Wati B",
+    "id": 3,
+    "nom": "Le Poisson rouge",
+    "artiste": "Swift Guad",
+    "date": "2013",
+    "label": "Musique Large / Because Music",
     "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Hologram Lo'"],
-    "artiste": "Orelsan"
+    "certification": "Or",
+    "beatmakers": ["Mani Deïz"]
   },
   {
-    "nom": "Génération Goldman",
-    "date": "2012-11-19",
-    "label": "M6 Interactions",
+    "id": 4,
+    "nom": "Pejmaxx - Enfant du sud",
+    "artiste": "Pejmaxx",
+    "date": "2007",
+    "label": "X.L Recordings / Sankhara / Small Budget",
     "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Various Artists"],
-    "artiste": "Jean-Jacques Goldman"
+    "certification": "Or",
+    "beatmakers": ["Mani Deïz"]
   },
   {
-    "nom": "M.I.L.S",
-    "date": "2016-03-18",
-    "label": "Warner Music France",
+    "id": 5,
+    "nom": "Pour une poignée de dollars",
+    "artiste": "2 Bal 2 Neg",
+    "date": "1996",
+    "label": "Small / 45 Scientific / Delabel",
     "genre": "Rap français",
-    "certification": "Platine",
-    "beatmakers": ["Niro"],
-    "artiste": "Niro"
+    "certification": "Or",
+    "beatmakers": ["G-Zon", "Koma"]
   },
   {
-    "nom": "Batterie Faible",
-    "date": "2003-11-03",
+    "id": 6,
+    "nom": "Tous les mêmes",
+    "artiste": "Scred Connexion",
+    "date": "1998",
+    "label": "Scred Records / PIAS",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Nikkfurie"]
+  },
+  {
+    "id": 7,
+    "nom": "Le Sud",
+    "artiste": "Keny Arkana",
+    "date": "2012",
     "label": "Because Music",
     "genre": "Rap français",
     "certification": "Or",
-    "beatmakers": ["Oxmo Puccino"],
-    "artiste": "Oxmo Puccino"
+    "beatmakers": ["Mani Deïz"]
   },
   {
-    "nom": "L'Apogée",
-    "date": "2011-03-05",
-    "label": "Wati B",
-    "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Sexion d'Assaut"],
-    "artiste": "Sexion d'Assaut"
-  },
-  {
-    "nom": "Lunatic",
-    "date": "2000-11-22",
-    "label": "45 Scientific",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Booba"],
-    "artiste": "Booba"
-  },
-  {
-    "nom": "Fantômes",
-    "date": "2011-02-14",
-    "label": "Tôt ou tard",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Deportivo"],
-    "artiste": "Deportivo"
-  },
-  {
-    "nom": "Deuxième Mandat",
-    "date": "2005-11-21",
-    "label": "Up Music",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Sinik"],
-    "artiste": "Sinik"
-  },
-  {
-    "nom": "Tant qu'on est là",
-    "date": "2007-01-22",
+    "id": 8,
+    "nom": "Un cri dans le silence",
+    "artiste": "Zoxea",
+    "date": "2006",
     "label": "Hostile Records",
     "genre": "Rap français",
     "certification": "Or",
-    "beatmakers": ["Sefyu"],
-    "artiste": "Sefyu"
+    "beatmakers": ["Zoxea", "Akhenaton"]
   },
   {
-    "nom": "Or Noir",
-    "date": "2013-10-21",
-    "label": "Tallac Records",
-    "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Kaaris"],
-    "artiste": "Kaaris"
-  },
-  {
-    "nom": "Panama Bende",
-    "date": "2015-04-07",
-    "label": "QLF Records",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Panama Bende"],
-    "artiste": "Panama Bende"
-  },
-  {
-    "nom": "Chocolat",
-    "date": "2017-11-17",
-    "label": "Universal Music France",
-    "genre": "Rap français",
-    "certification": "Platine",
-    "beatmakers": ["Roméo Elvis"],
-    "artiste": "Roméo Elvis"
-  },
-  {
-    "nom": "Trône",
-    "date": "2017-12-08",
-    "label": "Seine Zoo",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Booba"],
-    "artiste": "Booba"
-  },
-
-  {
-    "nom": "Dans ma bulle",
-    "date": "2005-12-26",
-    "label": "Up Music",
-    "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Diam's"],
-    "artiste": "Diam's"
-  },
-  {
-    "nom": "Oyat",
-    "date": "2009-10-05",
-    "label": "Because Music",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Orelsan"],
-    "artiste": "Orelsan"
-  },
-  {
+    "id": 9,
     "nom": "Le Code de l'horreur",
-    "date": "2008-11-24",
-    "label": "Because Music",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Rohff"],
-    "artiste": "Rohff"
-  },
-  {
-    "nom": "Demain c'est loin",
-    "date": "1997-11-25",
-    "label": "Delabel",
-    "genre": "Rap français",
-    "certification": "Platine",
-    "beatmakers": ["IAM"],
-    "artiste": "IAM"
-  },
-  {
-    "nom": "Dernier MC",
-    "date": "2012-12-03",
-    "label": "Wati B",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Kery James"],
-    "artiste": "Kery James"
-  },
-  {
-    "nom": "Subliminal",
-    "date": "2013-05-03",
-    "label": "Wati B",
+    "artiste": "Rohff",
+    "date": "2008",
+    "label": "Hostile Records",
     "genre": "Rap français",
     "certification": "Diamant",
-    "beatmakers": ["Maitre Gims"],
-    "artiste": "Maitre Gims"
+    "beatmakers": ["Hichem Gombra", "Ikbal"]
   },
   {
-    "nom": "Futur",
-    "date": "2012-11-26",
-    "label": "Tallac Records",
-    "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Booba"],
-    "artiste": "Booba"
-  },
-  {
-    "nom": "Je suis en vie",
-    "date": "2014-10-13",
-    "label": "Barclay",
-    "genre": "Rap français",
-    "certification": "Platine",
-    "beatmakers": ["Akhenaton"],
-    "artiste": "Akhenaton"
-  },
-  {
-    "nom": "Trône",
-    "date": "2017-12-08",
-    "label": "Seine Zoo",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Booba"],
-    "artiste": "Booba"
-  },
-  {
-    "nom": "Réel",
-    "date": "2004-05-10",
-    "label": "IV My People",
-    "genre": "Rap français",
-    "certification": "Platine",
-    "beatmakers": ["Kool Shen"],
-    "artiste": "Kool Shen"
-  },
-  {
-    "nom": "Le Corbeau",
-    "date": "2009-10-19",
-    "label": "Because Music",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Sefyu"],
-    "artiste": "Sefyu"
-  },
-  {
-    "nom": "Le Frunkp",
-    "date": "2004-03-29",
-    "label": "IV My People",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Kool Shen"],
-    "artiste": "Kool Shen"
-  },
-  {
-    "nom": "Gentleman 2.0",
-    "date": "2017-10-27",
-    "label": "Wati B",
-    "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Maître Gims"],
-    "artiste": "Maître Gims"
-  },
-  {
-    "nom": "Crise de conscience",
-    "date": "2005-09-26",
-    "label": "IV My People",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Kool Shen"],
-    "artiste": "Kool Shen"
-  },
-  {
-    "nom": "Le cœur d'un homme",
-    "date": "2005-11-14",
-    "label": "Up Music",
-    "genre": "Rap français",
-    "certification": "Diamant",
-    "beatmakers": ["Kery James"],
-    "artiste": "Kery James"
-  },
-  {
-    "nom": "Avec le cœur",
-    "date": "2006-05-29",
-    "label": "Up Music",
-    "genre": "Rap français",
-    "certification": "Or",
-    "beatmakers": ["Kery James"],
-    "artiste": "Kery James"
-  },
-  {
-    "nom": "Solaar pleure",
-    "date": "1991-09-16",
+    "id": 10,
+    "nom": "Test micro",
+    "artiste": "Disiz la Peste",
+    "date": "2000",
     "label": "Polydor",
     "genre": "Rap français",
     "certification": "Or",
-    "beatmakers": ["MC Solaar"],
-    "artiste": "MC Solaar"
+    "beatmakers": ["Pone"]
   },
   {
-    "nom": "Météore",
-    "date": "1998-11-16",
-    "label": "Cinquième Territoire",
+    "id": 11,
+    "nom": "Boucle d'or",
+    "artiste": "Ärsenik",
+    "date": "2000",
+    "label": "Hostile Records",
     "genre": "Rap français",
     "certification": "Or",
-    "beatmakers": ["IAM"],
-    "artiste": "IAM"
+    "beatmakers": ["Bombrush", "Melodiq"]
   },
   {
-    "nom": "La Fierté des nôtres",
-    "date": "2004-04-05",
-    "label": "Tôt ou tard",
+    "id": 12,
+    "nom": "Demain c'est loin",
+    "artiste": "IAM",
+    "date": "1997",
+    "label": "Delabel",
     "genre": "Rap français",
-    "certification": "Platine",
-    "beatmakers": ["Rohff"],
-    "artiste": "Rohff"
+    "certification": "Diamant",
+    "beatmakers": ["Imhotep", "Kheops"]
   },
   {
-    "nom": "La Colombe",
-    "date": "2010-12-03",
-    "label": "AZ",
+    "id": 13,
+    "nom": "Block Party",
+    "artiste": "L'Algérino",
+    "date": "2009",
+    "label": "Barclay",
     "genre": "Rap français",
     "certification": "Or",
-    "beatmakers": ["Soprano"],
-    "artiste": "Soprano"
+    "beatmakers": ["Phonographe Corp"]
+  },
+  {
+    "id": 14,
+    "nom": "Le Rap à l'ancienne",
+    "artiste": "Abd Al Malik",
+    "date": "2006",
+    "label": "At(h)ome",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Abd Al Malik"]
+  },
+  {
+    "id": 15,
+    "nom": "Règlement de comptes",
+    "artiste": "LIM",
+    "date": "2010",
+    "label": "Tous Illicites Prod / Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Bestial", "Skread"]
+  },
+  {
+    "id": 16,
+    "nom": "Tout dans la tête",
+    "artiste": "Sefyu",
+    "date": "2006",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Sefyu"]
+  },
+  {
+    "id": 17,
+    "nom": "Soleil levant",
+    "artiste": "Kenyon",
+    "date": "2011",
+    "label": "Believe / Unity Group",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Sly Johnson"]
+  },
+  {
+    "id": 18,
+    "nom": "Marekage Street",
+    "artiste": "Al K-Pote",
+    "date": "2006",
+    "label": "Neochrome / Because Music",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Nasme"]
+  },
+  {
+    "id": 19,
+    "nom": "Tout l'or des hommes",
+    "artiste": "Ärsenik",
+    "date": "2002",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 20,
+    "nom": "Black Album",
+    "artiste": "Dadoo",
+    "date": "2000",
+    "label": "Delabel",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Dadoo"]
+  },
+  {
+    "id": 21,
+    "nom": "La femme de l'ombre",
+    "artiste": "Alonzo",
+    "date": "2009",
+    "label": "Def Jam France",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Holograme"]
+  },
+  {
+    "id": 22,
+    "nom": "P.O.I.S.O.N.",
+    "artiste": "Ärsenik",
+    "date": "1999",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 23,
+    "nom": "Panam All Starz",
+    "artiste": "Ärsenik",
+    "date": "2002",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 24,
+    "nom": "Douce France",
+    "artiste": "Les Sales Blancs",
+    "date": "2017",
+    "label": "Les Sales Blancs",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Lezius"]
+  },
+  {
+    "id": 25,
+    "nom": "Don't panik",
+    "artiste": "Booba",
+    "date": "2011",
+    "label": "Tallac Records",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Oneshot"]
+  },
+  {
+    "id": 26,
+    "nom": "La vie est belle",
+    "artiste": "Keny Arkana",
+    "date": "2007",
+    "label": "Because Music",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Said"]
+  },
+  {
+    "id": 27,
+    "nom": "Premier sur le ghetto",
+    "artiste": "Ärsenik",
+    "date": "1999",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 28,
+    "nom": "Dernier gang",
+    "artiste": "Ärsenik",
+    "date": "2003",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 29,
+    "nom": "Rue 2",
+    "artiste": "Ärsenik",
+    "date": "2005",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 30,
+    "nom": "Crise Cardiaque",
+    "artiste": "Ärsenik",
+    "date": "2000",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 31,
+    "nom": "Au micro d'argent",
+    "artiste": "Ärsenik",
+    "date": "2000",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 32,
+    "nom": "Qualité Street",
+    "artiste": "Ärsenik",
+    "date": "2001",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 33,
+    "nom": "Prose élite",
+    "artiste": "Ärsenik",
+    "date": "2001",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 34,
+    "nom": "Le retour des rois",
+    "artiste": "Ärsenik",
+    "date": "2002",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 35,
+    "nom": "Journées Noires",
+    "artiste": "Nessbeal",
+    "date": "2006",
+    "label": "S-Kal Records / 7th Magnitude",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Holograme"]
+  },
+  {
+    "id": 36,
+    "nom": "Un poing c'est tout",
+    "artiste": "Ärsenik",
+    "date": "2006",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 37,
+    "nom": "Micro d'argent",
+    "artiste": "Ärsenik",
+    "date": "2009",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 38,
+    "nom": "Je suis Dieu",
+    "artiste": "Ärsenik",
+    "date": "2009",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 39,
+    "nom": "La vie de rêve",
+    "artiste": "Ärsenik",
+    "date": "2001",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 40,
+    "nom": "La Rue 2",
+    "artiste": "Ärsenik",
+    "date": "2005",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 41,
+    "nom": "Dis l'heure de Ragga",
+    "artiste": "Ärsenik",
+    "date": "2002",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 42,
+    "nom": "Sombre Poésie",
+    "artiste": "Ärsenik",
+    "date": "2000",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 43,
+    "nom": "Éthique de l'âme",
+    "artiste": "Ärsenik",
+    "date": "2005",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 44,
+    "nom": "Le Bilan",
+    "artiste": "Ärsenik",
+    "date": "2001",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 45,
+    "nom": "Gravé dans la roche",
+    "artiste": "Ärsenik",
+    "date": "2005",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 46,
+    "nom": "Sang d'encre",
+    "artiste": "Ärsenik",
+    "date": "2005",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Diamant",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 47,
+    "nom": "Goodbye Massilia",
+    "artiste": "Tandem",
+    "date": "2002",
+    "label": "East / Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Menace Crew", "Aladoum"]
+  },
+  {
+    "id": 48,
+    "nom": "On reçoit pas les rois",
+    "artiste": "La Cliqua",
+    "date": "2002",
+    "label": "Columbia",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Fabe", "La Cliqua"]
+  },
+  {
+    "id": 49,
+    "nom": "T'as capté?",
+    "artiste": "Ärsenik",
+    "date": "1998",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
+  },
+  {
+    "id": 50,
+    "nom": "La Morale... - Mise à jour",
+    "artiste": "Ärsenik",
+    "date": "2006",
+    "label": "Hostile Records",
+    "genre": "Rap français",
+    "certification": "Or",
+    "beatmakers": ["Ärsenik"]
   }
 ]

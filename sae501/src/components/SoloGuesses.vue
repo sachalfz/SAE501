@@ -1,11 +1,11 @@
 <template>
-    <p class="sologuesses--self--txt" v-if="albumToGuess !== null">{{ albumToGuess.nom }}</p>
+    <p class="sologuesses--self--txt">{{ this.albumToGuess.nom }}</p>
     <div class="sologuesses">
         <div class="sologuesses--categories">
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Nom</p></div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Artiste</p> </div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Année</p></div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Genre</p></div>
+            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Name</p></div>
+            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Artist</p> </div>
+            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Year</p></div>
+            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Type</p></div>
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Label</p></div>
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Certification</p></div>
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Beatmakers</p></div>
@@ -16,27 +16,28 @@
                     <p class="sologuesses--self--txt">{{ album.nom }}</p>
                 </div>
 
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'artiste'), 'false': !isPropertyMatchingString(album, 'nom') }">
+                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'artiste'), 'false': !isPropertyMatchingString(album, 'artiste') }">
                     <p class="sologuesses--self--txt">{{ album.artiste }}</p>
                 </div>
 
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'date'), 'false': !isPropertyMatchingString(album, 'nom') }">
+                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'date'), 'false': !isPropertyMatchingString(album, 'date') }">
                     <p class="sologuesses--self--txt">{{ album.date }}</p>
+                    <img v-if="!isPropertyMatchingString(album, 'date')" :src="getArrowState(album, 'date')" alt="Life" class="sologuesses--arrow--icon">
                 </div>
 
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'genre'), 'false': !isPropertyMatchingString(album, 'nom') }">
+                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'genre'), 'false': !isPropertyMatchingString(album, 'genre') }">
                     <p class="sologuesses--self--txt">{{ album.genre }}</p>
                 </div>
 
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'label'), 'false': !isPropertyMatchingString(album, 'nom') }">
+                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'label'), 'false': !isPropertyMatchingString(album, 'label') }">
                     <p class="sologuesses--self--txt">{{ album.label }}</p>
                 </div>
 
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'certification'), 'false': !isPropertyMatchingString(album, 'nom') }">
+                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'certification'), 'false': !isPropertyMatchingString(album, 'certification') }">
                     <p class="sologuesses--self--txt">{{ album.certification }}</p>
                 </div>
 
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'beatmakers'), 'false': !isPropertyMatchingString(album, 'nom') }">
+                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'beatmakers'), 'false': !isPropertyMatchingString(album, 'beatmakers') }">
                     <p class="sologuesses--self--list--txt" v-for="(beatmakers, index) in album.beatmakers" :key="index">{{ beatmakers }}</p>
                 </div>
             </div>
@@ -52,7 +53,6 @@ export default {
   },
   methods: {
     isPropertyMatchingString(album, property) {
-      // Compare le contenu de la propriété spécifiée entre selectedAlbum et albumToGuess en tant que chaîne de caractères
       const contentSelectedAlbum = album[property];
       const contentAlbumToGuess = this.albumToGuess[property];
       if (contentAlbumToGuess == contentSelectedAlbum) {
@@ -69,6 +69,17 @@ export default {
 
       return Number(contentSelectedAlbum) === Number(contentAlbumToGuess);
     },
+    getArrowState(album, property) {
+      const contentSelectedAlbum = album[property];
+      const contentAlbumToGuess = this.albumToGuess[property];
+      console.log(contentSelectedAlbum, contentAlbumToGuess)
+      if (contentSelectedAlbum < contentAlbumToGuess) {
+          return "../src/assets/icons/arrow_up_dark.svg"; // Remplacez par le chemin de votre image pour une vie active
+      } 
+      else {
+          return "../src/assets/icons/arrow_down_dark.svg"; // Remplacez par le chemin de votre image pour une vie inactive
+      }
+    }
   },
 };
 </script>
