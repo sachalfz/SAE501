@@ -1,12 +1,12 @@
 <template>
     <header class="header">
       <nav class="nav--layout">
-        <a class="nav--logo" href="/solo">
+        <a class="nav--logo" href="/">
           <img src="../../assets/logo/full_yellow.svg" alt="Logo" height="60">
         </a>
         <ul class="nav--list">
           <li class="nav-item">
-            <a class=" nav--cat" href="/solo">
+            <a class=" nav--cat" href="/">
               <img src="../../assets/nav/solo.svg" alt="Logo" height="40">
               <p class="nav--text">SOLO</p>
             </a>

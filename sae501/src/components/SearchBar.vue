@@ -15,7 +15,7 @@
 <script>
 export default {
     props: {
-      albums: Array
+      albums: Array,
     },
     data() {
       return {
@@ -38,6 +38,7 @@ export default {
         this.searchQuery = albumName;
         this.showAutocomplete = false;
         this.$emit('album-selected', albumName); // Émettre le nom de l'album
+        this.$emit('life-counter', this.livesRemaining)
       },
       selectAlbum(album) {
         if (this.isMatch(album)) {

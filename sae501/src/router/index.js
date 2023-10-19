@@ -7,7 +7,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/solo',
+      path: '/',
       name: 'solo',
       component: SoloView
     },

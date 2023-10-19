@@ -1,7 +1,7 @@
 <template>
     <header class="header">
         <nav class="nav--layout-mobile">
-            <a class="nav--logo" href="/solo">
+            <a class="nav--logo" href="/">
                 <img src="../../assets/logo/full_yellow.svg" alt="Logo" height="60">
             </a>
 
@@ -16,7 +16,7 @@
             <img src="../../assets/icons/close_yellow.svg" alt="close">
         </button>
 
-        <a class="nav--cat" href="/solo" style="gap: 0.5rem;">
+        <a class="nav--cat" href="/" style="gap: 0.5rem;">
             <img src="../../assets/nav/solo.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">SOLO</p>
         </a>

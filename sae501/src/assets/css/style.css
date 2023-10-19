@@ -262,7 +262,7 @@
     width: 8rem;
     align-items: center;
     justify-content: center;
-    background-color: hsla(var(--clr-light));
+    background: none;
     padding: 1rem;
     border-radius: 6px;
 }
@@ -270,6 +270,9 @@
 .sologuesses--categories--self--txt{
     margin: 0;
     text-align: center;
+    color: hsla(var(--clr-light));
+    text-decoration: underline;
+    font-weight: var(--fw-medium);
 }
 
 .sologuesses--album{
@@ -283,16 +286,31 @@
     display: flex;
     height: 100%;
     width: 8rem;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: hsla(var(--clr-green));
     padding: 1rem;
     border-radius: 6px;
+    gap: 0;
 }
 
 .sologuesses--self--txt{
     margin: 0;
     text-align: center;
+}
+
+.sologuesses--self--list--txt{
+    margin: 0;
+    text-align: center;
+}
+
+.true{
+    background-color: hsla(var(--clr-green));
+}
+
+.false{
+    background-color: hsla(var(--clr-red));
 }
 
 @media screen and (min-width:1300px) {

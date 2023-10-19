@@ -10,7 +10,10 @@ export default {
   data() {
     return {
       albums: [], // Le tableau d'albums sera stocké ici
-      selectedAlbums: []
+      selectedAlbums: [],
+      numberLives: 10 ,
+      livesRemaining: 10,
+      albumToGuess: null, // Initialize albumToGuess as null
     };
   },
   methods: {
@@ -23,6 +26,9 @@ export default {
           this.selectedAlbums.push(selectedAlbum); // Ajouter l'album au tableau de "réponses"
         }
       }
+    },
+    handleLivesRemaining(){
+      this.livesRemaining = this.livesRemaining - 1
     }
   },
   components: {
@@ -35,6 +41,7 @@ export default {
       .then(response => response.json())
       .then(data => {
         this.albums = data;
+        this.albumToGuess = this.albums[Math.floor(Math.random() * this.albums.length)]; // Pick a random album
       });
   }
 };
@@ -43,8 +50,8 @@ export default {
 <template>
     <div class="view solo">
         <SoloRules />
-        <SearchBar :albums="albums" @album-selected="handleAlbumSelected"/>
-        <LifeCounter :remainingLives="7" :totalLives="10" />
-        <SoloGuesses :selectedAlbums="selectedAlbums"/>
+        <SearchBar :albums="albums" @album-selected="handleAlbumSelected" @life-counter="handleLivesRemaining"/>
+        <LifeCounter :remainingLives="livesRemaining" :totalLives="numberLives" />
+        <SoloGuesses :selectedAlbums="selectedAlbums" :albumToGuess="albumToGuess"/>
     </div>
 </template>
