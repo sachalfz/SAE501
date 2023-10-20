@@ -64,10 +64,6 @@ const STEPS_PER_FRAME = 5;
 // Octree pour les collisions
 const floorOctree = new Octree();
 const platformOctree = new Octree();
-const newPlatformOctree = new Octree();
-
-
-let timeisup = false;
 
 // Création du joueur
 const playerGeometry = new THREE.BoxGeometry(1, 2, 0.5);
@@ -102,6 +98,7 @@ document.addEventListener('keyup', (event) => {
 
 container.addEventListener('mousedown', () => {
   document.body.requestPointerLock();
+  mouseTime = performance.now();
 });
 
 document.body.addEventListener('mousemove', (event) => {
@@ -147,7 +144,6 @@ function updateViewpointCameraPosition() {
 function playerCollisions() {
   const floorCollider = floorOctree.capsuleIntersect(playerCollider);
   const platformCollider = platformOctree.capsuleIntersect(playerCollider);
-  const newPlatformCollider = newPlatformOctree.capsuleIntersect(playerCollider);
   playerOnFloor = false;
 
   if (floorCollider) {
@@ -156,21 +152,12 @@ function playerCollisions() {
       playerVelocity.addScaledVector(floorCollider.normal, -floorCollider.normal.dot(playerVelocity));
     }
     playerCollider.translate(floorCollider.normal.multiplyScalar(floorCollider.depth));
-
-  } 
-  else if (platformCollider && !timeisup) {
+  } else if (platformCollider) {
     playerOnFloor = platformCollider.normal.y > 0;
     if (!playerOnFloor) {
       playerVelocity.addScaledVector(platformCollider.normal, -platformCollider.normal.dot(playerVelocity));
     }
     playerCollider.translate(platformCollider.normal.multiplyScalar(platformCollider.depth));
-  } 
-  else if (newPlatformCollider && timeisup) {
-    playerOnFloor = newPlatformCollider.normal.y > 0;
-    if (!playerOnFloor) {
-      playerVelocity.addScaledVector(newPlatformCollider.normal, -newPlatformCollider.normal.dot(playerVelocity));
-    }
-    playerCollider.translate(newPlatformCollider.normal.multiplyScalar(newPlatformCollider.depth));
   }
 }
 
@@ -223,18 +210,22 @@ function controls(deltaTime) {
 
   if (keyStates['KeyW']) {
     playerVelocity.add(getForwardVector().multiplyScalar(-speedDelta));
+    camera.position.set(player.position.x, player.position.y + 5, player.position.z + 5);
   }
 
   if (keyStates['KeyS']) {
     playerVelocity.add(getForwardVector().multiplyScalar(speedDelta));
+    camera.position.set(player.position.x, player.position.y + 5, player.position.z + 5);
   }
 
   if (keyStates['KeyA']) {
     playerVelocity.add(getSideVector().multiplyScalar(speedDelta));
+    camera.position.set(player.position.x, player.position.y + 5, player.position.z + 5);
   }
 
   if (keyStates['KeyD']) {
     playerVelocity.add(getSideVector().multiplyScalar(-speedDelta));
+    camera.position.set(player.position.x, player.position.y + 5, player.position.z + 5);
   }
 
   if (playerOnFloor && keyStates['Space']) {
@@ -271,29 +262,35 @@ loader.load('collision-world.glb', (gltf) => {
   animate();
 });
 
-const platforms = [];
-
 function createPlatformWithImage(width, height, depth, imagePath, position) {
   // Load the image texture
   const textureLoader = new THREE.TextureLoader();
   const texture = textureLoader.load(imagePath);
 
   // Create the visual part of the platform
-  const platformGeometry = new THREE.BoxGeometry(width, height, depth);
-  const platformMaterial = new THREE.MeshBasicMaterial({ map: texture });
-  const platformMesh = new THREE.Mesh(platformGeometry, platformMaterial);
-  platformMesh.castShadow = true;
-  platformMesh.receiveShadow = true;
-  platformMesh.position.copy(position);
-  platformOctree.fromGraphNode(platformMesh);
+  const platformVisualGeometry = new THREE.BoxGeometry(width, height, depth);
+  const platformVisualMaterial = new THREE.MeshBasicMaterial({ map: texture });
+  const platformVisualMesh = new THREE.Mesh(platformVisualGeometry, platformVisualMaterial);
+  platformVisualMesh.castShadow = true;
+  platformVisualMesh.receiveShadow = true;
+  platformVisualMesh.position.copy(position);
 
-  // Store a reference to the created platform
-  platforms.push(platformMesh);
+  // Create a hitbox that matches the platform's dimensions
+  const platformHitboxGeometry = new THREE.BoxGeometry(width, height, depth);
+  const platformHitboxMaterial = new THREE.MeshBasicMaterial({ visible: false }); // Make the hitbox invisible
+  const platformHitboxMesh = new THREE.Mesh(platformHitboxGeometry, platformHitboxMaterial);
+  platformHitboxMesh.position.copy(position);
+  platformOctree.fromGraphNode(platformHitboxMesh);
+
+  // Create a group to hold both the visual part and the hitbox
+  const platformGroup = new THREE.Group();
+  platformGroup.add(platformVisualMesh);
+  platformGroup.add(platformHitboxMesh);
 
   // Add the platformGroup to the scene
-  scene.add(platformMesh);
-
+  scene.add(platformGroup);
 }
+
 // Usage of the function to create a platform
 const platformWidth = 5;
 const platformHeight = 0.2;
@@ -308,20 +305,6 @@ const position2 = new THREE.Vector3(10, 2, 0); // Specify the position here
 createPlatformWithImage(platformWidth, platformHeight, platformDepth, imagePath1, position1);
 createPlatformWithImage(platformWidth, platformHeight, platformDepth, imagePath2, position2);
 
-function waitFor5Seconds() {
-  setTimeout(function() {
-    console.log("5 seconds have passed.");
-    let supressedPlatform = platforms.pop();
-    platforms.forEach(element => {
-      newPlatformOctree.fromGraphNode(element);
-    });
-    timeisup = true;
-    scene.remove(supressedPlatform);
-  }, 5000); // 30,000 milliseconds is equivalent to 30 seconds
-}
-
-// Call the function to initiate the 30-second delay
-waitFor5Seconds();
 // Fonction pour téléporter le joueur s'il sort de la zone
 function teleportPlayerIfOob() {
   if (player.position.y <= -25) {
