@@ -11,6 +11,7 @@
     "bootstrap": "^5.3.2",
     "jquery": "^3.7.1",
     "popper.js": "^1.16.1",
+    "three": "^0.157.0",
     "vue": "^3.3.4",
     "vue-autosuggest": "^2.2.0",
     "vue-router": "^4.2.4",

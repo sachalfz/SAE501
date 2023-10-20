@@ -95,14 +95,16 @@
 
 .view{
     padding: 0 2rem;
-}
-
-.solo{
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     gap: 24px;
+}
+
+.solo{
+    
 }
 
 .solo-rules{
@@ -382,6 +384,128 @@
 
 .tryagain:hover{
     background-color: hsla(var(--clr-primary));
+}
+
+.redirection--header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 5rem;
+}
+
+.redirection--header--title{
+    margin: 0;
+    font-size: var(--fs-48);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    color: hsla(var(--clr-red));
+}
+
+.redirection--header--description{
+    margin: 0;
+    font-size: var(--fs-18);
+    max-width: 35ch;
+    text-align: center;
+    color: hsla(var(--clr-light));
+    font-weight: var(--fw-light);
+}
+
+.redirection--body{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2rem;
+}
+
+.redirection--body--list{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.redirection--body--txt{
+    margin: 0;
+    font-size: var(--fs-18);
+    font-weight: var(--fw-smbold);
+    color: hsla(var(--clr-light));
+}
+
+.redirection--body--item{
+    text-decoration: none;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.redirection--body--item--txt{
+    margin: 0;
+    color: hsla(var(--clr-light));
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-18);
+}
+
+.redirection--body--item--icon{
+    height: 40px;
+}
+
+.redirection--highlight{
+    font-weight: var(--fw-medium);
+    color: hsla(var(--clr-green));
+}
+
+.threed{
+    width: 100%;
+}
+
+.threed--content{
+    display: flex;
+    padding: 0 6rem;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    flex-direction: column;
+}
+
+.threed--command{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.threed--command--txt{
+    margin: 0;
+    color: hsla(var(--clr-light));
+    font-size: var(--fs-24);
+    font-weight: var(--fw-bold);
+}
+
+.threed--command--icon{
+    width: 2rem;
+}
+
+.threed--rules{
+    margin: 0;
+    color: hsla(var(--clr-light));
+    font-size: var(--fs-24);
+    font-weight: var(--fw-light);    
+}
+
+.threed--highlight{
+    font-weight: var(--fw-bold);
+    color: hsla(var(--clr-primary));
+}
+
+.threedcanvas{
+    width: 100%;
+    aspect-ratio: 16/9;
+    background-color: hsla(var(--clr-gray)/ 0.75);
 }
  
 @media screen and (min-width:1300px) {

@@ -30,6 +30,8 @@ export default {
         if (selectedAlbum.id == this.albumToGuess.id) {
           this.win = true;  
         }
+
+        return this.checkSelected
       }
     },
     handleLivesRemaining(albumId){
@@ -37,7 +39,7 @@ export default {
 
       if (this.livesRemaining == 0) {
         this.selectedAlbums.push(this.albumToGuess);
-      }
+      } 
     },
     handleTryAgain() {
       // Réinitialisez les données
