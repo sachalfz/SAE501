@@ -503,9 +503,15 @@
 }
 
 .threedcanvas{
+    position: relative;
     width: 100%;
     aspect-ratio: 16/9;
     background-color: hsla(var(--clr-gray)/ 0.75);
+}
+
+.threedcanvas canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
  
 @media screen and (min-width:1300px) {
