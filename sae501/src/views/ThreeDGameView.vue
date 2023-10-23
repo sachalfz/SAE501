@@ -17,6 +17,9 @@
             windowWidth: window.innerWidth,
             };
         },
+        props: {
+            randomUser: Object,
+        },
         mounted() {
             window.addEventListener('resize', this.handleResize);
         },

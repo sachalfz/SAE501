@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "username": "Perle rare",
+    "mail": "Pone",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 2,
+    "username": "Utilisateur 2",
+    "mail": "user2@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 3,
+    "username": "Utilisateur 3",
+    "mail": "user3@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 4,
+    "username": "Utilisateur 4",
+    "mail": "user4@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 5,
+    "username": "Utilisateur 5",
+    "mail": "user5@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 6,
+    "username": "Utilisateur 6",
+    "mail": "user6@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 7,
+    "username": "Utilisateur 7",
+    "mail": "user7@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 8,
+    "username": "Utilisateur 8",
+    "mail": "user8@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 9,
+    "username": "Utilisateur 9",
+    "mail": "user9@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  },
+  {
+    "id": 10,
+    "username": "Utilisateur 10",
+    "mail": "user10@example.com",
+    "profilepic": "../src/assets/pics/test_profilepic.png"
+  }
+]

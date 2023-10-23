@@ -1,3 +1,7 @@
+<script setup>
+import { useRouter } from 'vue-router';
+</script>
+
 <template>
     <header class="header">
         <nav class="nav--layout-mobile">
@@ -20,18 +24,16 @@
             <img src="../../assets/nav/solo.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">SOLO</p>
         </a>
-        <!-- <a class="nav--cat" href="/daily" style="gap: 0.5rem;">
-            <img src="../assets/nav/daily.svg" alt="Logo" class="nav--cat-logo">
-            <p class="nav--text">DAILY</p>
-        </a>
-        <a class="nav--cat" href="/multiplayer" style="gap: 0.5rem;">
-            <img src="../assets/nav/multiplayer.svg" alt="Logo" class="nav--cat-logo">
-            <p class="nav--text">MULTIPLAYER</p>
-        </a> -->
+
         <a class="nav--cat" href="/3dgame" style="gap: 0.5rem;">
             <img src="../../assets/nav/3d.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">3D</p>
         </a>
+
+        <router-link :to="'/account/' + randomUser.id" class="nav--cat">
+            <img :src="getUserImage()" alt="Profile pic" height="40" class="nav--img">
+            <p class="nav--text">ACCOUNT</p>
+        </router-link>
     </div>
     
 </template>
@@ -43,9 +45,17 @@
             isMenuOpen: false,
             };
         },
+        props: {
+            randomUser: Object,
+        },
         methods: {
             toggleMenu() {
             this.isMenuOpen = !this.isMenuOpen;
+            },
+            getUserImage() {
+                if (this.randomUser.profilepic != null) {
+                    return this.randomUser.profilepic; // Remplacez par le chemin de votre image pour une vie active
+                }
             }
         },
     };

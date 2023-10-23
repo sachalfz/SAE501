@@ -19,6 +19,11 @@ export default {
       win : false,
     };
   },
+
+  props: {
+    randomUser: Object,
+  },
+
   methods: {
     handleAlbumSelected(albumId) {
       // Recherche de l'album correspondant dans le tableau JSON
