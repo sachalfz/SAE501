@@ -292,11 +292,12 @@
     align-items: flex-start;
     justify-content: flex-start;
     gap: 0.5rem;
+    height: 100%;
 }
 
 .sologuesses--self{
     display: flex;
-    height: 100%;
+    min-height: 100%;
     width: 8rem;
     flex-direction: column;
     align-items: center;
@@ -529,7 +530,7 @@
 }
 
 .account--head--profilepic{
-    height: 10rem;
+    height: 17rem;
     aspect-ratio: 1/1;
     border-radius: 6px;
     box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
@@ -543,11 +544,17 @@
 }
 
 .username--actual{
+    cursor: default;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
 }
 
 .username--surtitle{
     margin: 0;
+    text-decoration: underline;
     color: hsla(var(--clr-light));
     font-weight: var(--fw-light);
     font-size: var(--fs-16);
@@ -558,6 +565,152 @@
     color: hsla(var(--clr-light));
     font-weight: var(--fw-bold);
     font-size: var(--fs-24);
+}
+
+.username--all{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.username--modify{
+    width: 1.5rem;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+}
+
+.stats--all{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    width: 100%;
+}
+
+.stats--head{
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stats--self{
+    background-color: hsla(var(--clr-primary));
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    width: 13rem;
+    height: 100%;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+}
+
+.stats--self--title{
+    margin: 0;
+    color: hsla(var(--clr-dark));
+    font-size: var(--fs-18);
+}
+*
+.stats--self--txt{
+    margin: 0;
+    color: hsla(var(--clr-dark));
+    font-size: var(--fs-24);
+    font-weight: var(--fw-smbold);
+}
+
+.shop--head{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.shop--refresh{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 1.5rem;
+    background-color: hsla(var(--clr-light));
+    border-radius: 6px;
+    width: 100%;
+    padding: 1rem 2rem;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+}
+
+.shop--refresh--txt{
+    margin: 0;
+    color: hsla(var(--clr-dark));
+    font-weight: var(--fw-regular);
+    font-size: var(--fs-18);
+}
+
+.shop--refresh--time{
+    margin: 0;
+    color: hsla(var(--clr-red));
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-24);
+}
+
+.shop--credits{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 1.5rem;
+    background-color: hsla(var(--clr-accent));
+    border-radius: 6px;
+    width: 100%;
+    padding: 1rem 2rem; 
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+}
+
+.shop--credits--txt{
+    margin: 0;
+    color: hsla(var(--clr-light));
+    font-weight: var(--fw-regular);
+    font-size: var(--fs-18);    
+}
+
+.shop--credits--amount{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.credits--amount--number{
+    margin: 0;
+    color: hsla(var(--clr-light));
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-24);
+}
+
+.credits--amount--icon{
+    width: 2rem;
+}
+
+.shop--items{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 0.5rem;
+}
+
+.shop--items--self{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: hsla(var(--clr-accent));
+    border-radius: 6px;
+    padding: 0.5rem;
 }
  
 @media screen and (min-width:1300px) {

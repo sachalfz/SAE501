@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "nom": "pull à capuche",
+        "img": "https://picsum.photos/500",
+        "price": 750
+    },
+    {
+        "id": 2,
+        "nom": "pull à capuche",
+        "img": "https://picsum.photos/500",
+        "price": 750
+    },
+    {
+        "id": 3,
+        "nom": "pull à capuche",
+        "img": "https://picsum.photos/500",
+        "price": 750
+    },
+    {
+        "id": 4,
+        "nom": "pull à capuche",
+        "img": "https://picsum.photos/500",
+        "price": 750
+    }
+]

@@ -30,8 +30,13 @@ import { useRouter } from 'vue-router';
             <p class="nav--text">3D</p>
         </a>
 
+        <a class=" nav--cat" href="/shop">
+            <img src="../../assets/icons/shop_yellow.svg" alt="Logo" class="nav--cat-logo">
+            <p class="nav--text">SHOP</p>
+        </a>
+
         <router-link :to="'/account/' + randomUser.id" class="nav--cat">
-            <img :src="getUserImage()" alt="Profile pic" height="40" class="nav--img">
+            <img :src="getUserImage()" alt="Profile pic" height="36" class="nav--img">
             <p class="nav--text">ACCOUNT</p>
         </router-link>
     </div>

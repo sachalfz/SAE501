@@ -41,18 +41,11 @@ export default {
                 <p class="username--surtitle">Actual Username</p>
                 <div class="username--all">
                     <p class="username--txt">{{ randomUser.username }}</p> 
-                    <img src="../assets/icons/pen_light.svg" alt="modify" class="username--"> 
+                    <img src="../assets/icons/pen_light.svg" alt="modify" class="username--modify" @click="openConfirmationDialog"> 
                 </div>
-                <p class="username--txt">
-                    {{ randomUser.username }}
-                    
-                </p>
             </div>
-            <button @click="openConfirmationDialog" class="username--changebtn">Change username</button>
             <ConfirmationDialog :visible="confirmationDialogVisible" @confirmed="confirmModification" @canceled="cancelModification" />
         </div>
     </div>
-    
-    
 </template>
 

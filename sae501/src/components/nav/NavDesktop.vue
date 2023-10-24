@@ -25,8 +25,15 @@ import { useRouter } from 'vue-router';
           </li>
 
           <li class="nav-item">
+            <a class=" nav--cat" href="/shop">
+              <img src="../../assets/icons/shop_yellow.svg" alt="Logo" height="40">
+              <p class="nav--text">SHOP</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
             <router-link :to="'/account/' + randomUser.id" class="nav--cat">
-              <img :src="getUserImage()" alt="Profile pic" height="40" class="nav--img">
+              <img :src="getUserImage()" alt="Profile pic" height="36" class="nav--img">
               <p class="nav--text">ACCOUNT</p>
             </router-link>
           </li>
