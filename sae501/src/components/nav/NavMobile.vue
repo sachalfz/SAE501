@@ -52,14 +52,15 @@ import { useRouter } from 'vue-router';
         },
         props: {
             randomUser: Object,
+            inventory: Object,
         },
         methods: {
             toggleMenu() {
             this.isMenuOpen = !this.isMenuOpen;
             },
             getUserImage() {
-                if (this.randomUser.profilepic != null) {
-                    return this.randomUser.profilepic; // Remplacez par le chemin de votre image pour une vie active
+                if (this.inventory.profile_picture != null) {
+                    return this.inventory.profile_picture; // Remplacez par le chemin de votre image pour une vie active
                 }
             }
         },

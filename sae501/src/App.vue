@@ -1,40 +1,51 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import MainNav from './components/MainNav.vue'
+import axios from 'axios';
 </script>
 
 <script>
 export default {
   data() {
     return {
-        users:[],
-        randomUser: null,
+      randomUser: null,
+      users: [],
+      inventory: null,
     };
   },
-  
   mounted() {
-  // Charger le tableau d'utilisateurs à partir du fichier JSON
-  fetch('./assets/users.json')
-    .then(response => response.json())
-    .then(data => {
-      this.users = data;
-      this.$nextTick().then(() => {
-        this.randomUser = this.users[Math.floor(Math.random() * this.users.length)]; // Pick a random utilisateur
-      });
-    })
-    .catch(error => {
-      console.error('Une erreur s\'est produite lors du chargement du fichier JSON :', error);
-    });
-}
+    fetch('http://127.0.0.1:8001/api/users')
+      .then(response => response.json())
+      .then(data => {
+        this.users = data['hydra:member'];
+        this.randomUser = this.users[Math.floor(Math.random() * this.users.length)];
+        console.log(this.randomUser)
 
+        // Une fois que randomUser est disponible, effectuer le deuxième fetch
+        fetch(`http://127.0.0.1:8002/api/inventories/${this.randomUser.id_inventory}`)
+          .then(response => response.json())
+          .then(data => {
+            this.inventory = data;
+            console.log(this.inventory)
+          })
+          .catch(error => {
+            console.error(error);
+          }
+        );
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  },
 };
 </script>
 
 <template>
   <div class="page">
-    <MainNav :randomUser="randomUser" v-if="randomUser"/>
+    <MainNav :randomUser="randomUser" :inventory="inventory" v-if="randomUser && inventory"/>
   
-    <RouterView :randomUser="randomUser" v-if="randomUser"/>
+    <RouterView :randomUser="randomUser" :inventory="inventory" v-if="randomUser && inventory"/>
   </div>
 </template>
 

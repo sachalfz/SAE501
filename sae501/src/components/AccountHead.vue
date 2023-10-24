@@ -12,6 +12,7 @@ export default {
     },
     props: {
         randomUser: Object,
+        inventory: Object,
     },
     methods: {
         openConfirmationDialog() {
@@ -35,12 +36,12 @@ export default {
 
 <template>
     <div class="account--head">
-        <img :src="randomUser.profilepic" alt="profile pic" class="account--head--profilepic">
+        <img :src="this.inventory.profile_picture" alt="profile pic" class="account--head--profilepic">
         <div class="account--head--username">
             <div class="username--actual">
                 <p class="username--surtitle">Actual Username</p>
                 <div class="username--all">
-                    <p class="username--txt">{{ randomUser.username }}</p> 
+                    <p class="username--txt">{{ this.inventory.username }}</p> 
                     <img src="../assets/icons/pen_light.svg" alt="modify" class="username--modify" @click="openConfirmationDialog"> 
                 </div>
             </div>

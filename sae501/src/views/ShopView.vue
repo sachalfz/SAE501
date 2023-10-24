@@ -12,6 +12,7 @@ export default {
     },
     props: {
         randomUser: Object,
+        inventory: Object,
     },
     mounted() {
         // Charger le tableau d'albums à partir du fichier JSON
@@ -26,7 +27,7 @@ export default {
 
 <template>
     <div class="view shop">
-        <ShopHead :randomUser="randomUser" />
+        <ShopHead :randomUser="randomUser" :inventory="inventory"/>
         <ShopItems :randomUser="randomUser" :items="items" />
     </div>
     

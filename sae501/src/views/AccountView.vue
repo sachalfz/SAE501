@@ -7,14 +7,15 @@ import AccountStats from '../components/AccountStats.vue';
 export default {
     props: {
         randomUser: Object,
+        inventory: Object,
     },
 };
 </script>
 
 <template>
     <div class="view account">
-        <AccountHead :randomUser="randomUser" />
-        <AccountStats :randomUser="randomUser" />
+        <AccountHead :randomUser="randomUser" :inventory="inventory"/>
+        <AccountStats :randomUser="randomUser" :inventory="inventory"/>
     </div>
     
 </template>

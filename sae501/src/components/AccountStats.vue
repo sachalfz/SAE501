@@ -3,12 +3,12 @@
         <div class="stats--head">
             <div class="stats--self">
                 <p class="stats--self--title">Games Played</p>
-                <p class="stats--self--txt">{{ randomUser.stats.gamesplayed }}</p>
+                <p class="stats--self--txt">{{ this.inventory.games_played }}</p>
             </div>
 
             <div class="stats--self">
-                <p class="stats--self--title">Rounds Won</p>
-                <p class="stats--self--txt">{{ randomUser.stats.roundswon }}</p>
+                <p class="stats--self--title">Games Won</p>
+                <p class="stats--self--txt">{{ this.inventory.games_won }}</p>
             </div>
         </div>
     </div>
@@ -22,6 +22,7 @@
     export default {
         props:{
             randomUser: Object,
+            inventory: Object,
         }
     }
 </script>

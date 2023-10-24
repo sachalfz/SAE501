@@ -8,7 +8,7 @@
         <div class="shop--credits">
             <p class="shop--credits--txt">Your Streamz :</p>
             <div class="shop--credits--amount">
-                <p class="credits--amount--number">554</p>
+                <p class="credits--amount--number">{{this.inventory.streamz}}</p>
                 <img src="../assets/icons/streamz_yellow.svg" class="credits--amount--icon" alt="credits"/>
             </div>    
         </div>
@@ -28,6 +28,7 @@ export default {
     },
     props:{
         randomUser: Object,
+        inventory: Object,
     },
     mounted() {
         this.updateCountdown();

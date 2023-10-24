@@ -1,8 +1,8 @@
 <template>
   <div v-if="randomUser">
-    <NavDesktop v-if="windowWidth > 1300 && randomUser" :randomUser="randomUser"/>
+    <NavDesktop v-if="windowWidth > 1300 && randomUser" :randomUser="randomUser" :inventory="inventory"/>
 
-    <NavMobile v-else :randomUser="randomUser" />
+    <NavMobile v-else :randomUser="randomUser" :inventory="inventory" />
   </div>
 
 </template>
@@ -21,6 +21,7 @@ export default {
   },
   props: {
     randomUser: Object,
+    inventory: Object,
   },
   mounted() {
     window.addEventListener('resize', this.handleResize);
