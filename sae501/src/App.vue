@@ -14,7 +14,7 @@ export default {
     };
   },
   mounted() {
-    fetch('http://127.0.0.1:8001/api/users')
+    fetch('http://127.0.0.1:8000/api/users')
       .then(response => response.json())
       .then(data => {
         this.users = data['hydra:member'];
@@ -22,7 +22,7 @@ export default {
         console.log(this.randomUser)
 
         // Une fois que randomUser est disponible, effectuer le deuxième fetch
-        fetch(`http://127.0.0.1:8002/api/inventories/${this.randomUser.id_inventory}`)
+        fetch(`http://127.0.0.1:8001/api/inventories/${this.randomUser.id_inventory}`)
           .then(response => response.json())
           .then(data => {
             this.inventory = data;
