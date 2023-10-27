@@ -19,13 +19,21 @@ export default {
             this.confirmationDialogVisible = true;
         },
         confirmModification(newUsername) {
-            const updatedUser = { username: newUsername }; // Créez un objet avec la nouvelle valeur du username
+            const updatedUser = {                
+                "streamz": this.inventory.streamz,
+                "items": this.inventory.items,
+                "username": newUsername,
+                "profilePicture": this.inventory.profile_picture,
+                "gamesWon": this.inventory.games_won,
+                "gamesPlayed": this.inventory.games_played,
+                "idUser": this.inventory.id_user
+            }; // Créez un objet avec la nouvelle valeur du username
 
             // Utilisez fetch pour effectuer la mise à jour
             fetch(`http://127.0.0.1:8001/api/inventories/${this.inventory.id}`, {
-                method: 'PATCH',
+                method: 'PUT', // Utilisez la méthode PUT
                 headers: {
-                'Content-Type': 'application/merge-patch+json', // Spécifiez le type de contenu Hydra
+                    'Content-Type': 'application/ld+json', // Spécifiez le type de contenu JSON
                 },
                 body: JSON.stringify(updatedUser),
             })
@@ -43,32 +51,6 @@ export default {
         },
         cancelModification(){
             this.confirmationDialogVisible = false;
-        },
-        updateUsername(newUsername) {
-            const updatedUser = { username: newUsername }; // Créez un objet avec la nouvelle valeur du username
-
-            // Utilisez la méthode fetch pour effectuer la mise à jour
-            fetch(`http://127.0.0.1:8001/api/inventories/${this.inventory.id}`, {
-            method: 'PATCH', // Utilisez 'PATCH' pour une mise à jour partielle
-            headers: {
-                'Content-Type': 'application/json', // Indiquez que vous envoyez des données JSON
-            },
-            body: JSON.stringify(updatedUser), // Convertissez l'objet en JSON
-            })
-            .then(response => {
-                if (!response.ok) {
-                throw new Error('Échec de la mise à jour');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Mettez à jour l'objet local si nécessaire
-                this.inventory.username = data.username;
-                console.log('Mise à jour réussie :', data);
-            })
-            .catch(error => {
-                console.error('Erreur de mise à jour :', error);
-            });
         },
     },
 };
