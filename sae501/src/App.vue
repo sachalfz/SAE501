@@ -18,7 +18,7 @@ export default {
       .then(response => response.json())
       .then(data => {
         this.users = data['hydra:member'];
-        this.randomUser = this.users[Math.floor(Math.random() * this.users.length)];
+        this.randomUser = this.users[1];
         console.log(this.randomUser)
 
         // Une fois que randomUser est disponible, effectuer le deuxième fetch

@@ -27,14 +27,14 @@ export default {
   },
 
   methods: {
-    addWinToCounter() {
+    addToStats(gamePlayed, gameWon) {
       const updatedUser = {
         "streamz": this.inventory.streamz,
         "items": this.inventory.items,
         "username": this.inventory.username,
         "profilePicture": this.inventory.profile_picture,
-        "gamesWon": this.inventory.games_won + 1,
-        "gamesPlayed": this.inventory.games_played,
+        "gamesWon": this.inventory.games_won + gameWon,
+        "gamesPlayed": this.inventory.games_played + gamePlayed,
         "idUser": this.inventory.id_user
       }; // Créez un objet avec la nouvelle valeur du username
 
@@ -49,32 +49,10 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.inventory.games_won = data.games_won;
-          })
-    },
-    addGameToCounter() {
-      const updatedUser = {
-        "streamz": this.inventory.streamz,
-        "items": this.inventory.items,
-        "username": this.inventory.username,
-        "profilePicture": this.inventory.profile_picture,
-        "gamesWon": this.inventory.games_won,
-        "gamesPlayed": this.inventory.games_played + 1,
-        "idUser": this.inventory.id_user
-      }; // Créez un objet avec la nouvelle valeur du username
-
-      // Utilisez fetch pour effectuer la mise à jour
-      fetch(`http://127.0.0.1:8001/api/inventories/${this.inventory.id}`, {
-          method: 'PUT', // Utilisez la méthode PUT
-          headers: {
-              'Content-Type': 'application/ld+json', // Spécifiez le type de contenu JSON
-          },
-          body: JSON.stringify(updatedUser),
-      })
-          .then(response => response.json())
-          .then(data => {
             this.inventory.games_played = data.games_played;
           })
     },
+
     handleAlbumSelected(albumId) {
       // Recherche de l'album correspondant dans le tableau JSON
       const selectedAlbum = this.albums.find(album => album.id === albumId);
@@ -84,8 +62,7 @@ export default {
 
         if (selectedAlbum.id == this.albumToGuess.id) {
           this.win = true; 
-          this.addGameToCounter();
-          this.addWinToCounter(); 
+          this.addToStats(1, 1);
         }
 
         return this.checkSelected
@@ -96,7 +73,7 @@ export default {
 
       if (this.livesRemaining == 0) {
         this.selectedAlbums.push(this.albumToGuess);
-        this.addGameToCounter();
+        this.addToStats(1, 0);
       } 
     },
     handleTryAgain() {
@@ -107,7 +84,7 @@ export default {
       this.win = false;
 
       if (this.livesRemaining >=1 && this.win == false) {
-        this.addGameToCounter();
+        this.addToStats(1, 0);
       }
     },
   },
