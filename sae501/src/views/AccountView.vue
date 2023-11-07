@@ -8,6 +8,7 @@ export default {
     props: {
         randomUser: Object,
         inventory: Object,
+        basePath: String,
     },
 };
 </script>

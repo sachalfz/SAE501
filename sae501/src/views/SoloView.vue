@@ -24,6 +24,7 @@ export default {
   props: {
     randomUser: Object,
     inventory: Object,
+    basePath: String,
   },
 
   methods: {
@@ -94,7 +95,7 @@ export default {
   },
   mounted() {
     // Charger le tableau d'albums à partir du fichier JSON
-    fetch('./assets/albums.json')
+    fetch('../assets/albums.json')
       .then(response => response.json())
       .then(data => {
         this.albums = data;

@@ -11,6 +11,7 @@ export default {
       randomUser: null,
       users: [],
       inventory: null,
+      basePath: this.$router.options.base
     };
   },
   mounted() {
@@ -43,9 +44,9 @@ export default {
 
 <template>
   <div class="page">
-    <MainNav :randomUser="randomUser" :inventory="inventory" v-if="randomUser && inventory"/>
+    <MainNav :randomUser="randomUser" :inventory="inventory" :basePath="basePath" v-if="randomUser && inventory"/>
   
-    <RouterView :randomUser="randomUser" :inventory="inventory" v-if="randomUser && inventory"/>
+    <RouterView :randomUser="randomUser" :inventory="inventory" :basePath="basePath" v-if="randomUser && inventory"/>
   </div>
 </template>
 

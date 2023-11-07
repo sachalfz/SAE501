@@ -19,6 +19,7 @@
         },
         props: {
             randomUser: Object,
+            basePath: String,
         },
         mounted() {
             window.addEventListener('resize', this.handleResize);

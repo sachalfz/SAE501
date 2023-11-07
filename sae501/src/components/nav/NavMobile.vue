@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 <template>
     <header class="header">
         <nav class="nav--layout-mobile">
-            <a class="nav--logo" href="/">
+            <a class="nav--logo" :href="basePath">
                 <img src="../../assets/logo/full_yellow.svg" alt="Logo" height="60">
             </a>
 
@@ -20,22 +20,22 @@ import { useRouter } from 'vue-router';
             <img src="../../assets/icons/close_yellow.svg" alt="close">
         </button>
 
-        <a class="nav--cat" href="/" style="gap: 0.5rem;">
+        <a class="nav--cat" :href="basePath" style="gap: 0.5rem;">
             <img src="../../assets/nav/solo.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">SOLO</p>
         </a>
 
-        <a class="nav--cat" href="/3dgame" style="gap: 0.5rem;">
+        <a class="nav--cat" :href="basePath + '3dgame'" style="gap: 0.5rem;">
             <img src="../../assets/nav/3d.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">3D</p>
         </a>
 
-        <a class=" nav--cat" href="/shop">
+        <a class=" nav--cat" :href="basePath + 'shop'">
             <img src="../../assets/icons/shop_yellow.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">SHOP</p>
         </a>
 
-        <router-link :to="'/account/' + randomUser.id" class="nav--cat">
+        <router-link :to="basePath + 'account/' + randomUser.id" class="nav--cat">
             <img :src="getUserImage()" alt="Profile pic" height="36" class="nav--img">
             <p class="nav--text">ACCOUNT</p>
         </router-link>
@@ -53,6 +53,7 @@ import { useRouter } from 'vue-router';
         props: {
             randomUser: Object,
             inventory: Object,
+            basePath: String,
         },
         methods: {
             toggleMenu() {

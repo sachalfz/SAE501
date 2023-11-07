@@ -13,6 +13,7 @@ export default {
     props: {
         randomUser: Object,
         inventory: Object,
+        basePath: String,
     },
     mounted() {
         // Fetch initial items

@@ -6,10 +6,18 @@
     <div class="redirection--body">
         <p class="redirection--body--txt">Check out our other gamemodes !</p>
         <div class="redirection--body--list">
-            <a href="/" class="redirection--body--item">
+            <a :href="basePath" class="redirection--body--item">
                 <img src="../assets/nav/solo.svg" alt="solo" class="redirection--body--item--icon">
                 <p class="redirection--body--item--txt">SOLO</p>
             </a>
         </div>
     </div>
 </template>
+
+<script>
+    export default {
+        props:{
+            basePath: String,
+        }
+    }
+</script>
