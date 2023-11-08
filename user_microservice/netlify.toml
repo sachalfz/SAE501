@@ -3,7 +3,7 @@
   publish = "public"
 
 [build.environment]
-  PHP_VERSION = "8.3"
+  PHP_VERSION = "8.2"
 
 [[redirects]]
   from = "/*"
