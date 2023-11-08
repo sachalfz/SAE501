@@ -1,6 +1,9 @@
 [build]
-  command = "composer install && php bin/console cache:clear && php bin/console assets:install"
+  command = "composer install && npm install && npm build && php bin/console cache:clear && php bin/console assets:install"
   publish = "public"
+
+[build.environment]
+  PHP_VERSION = "8.3"
 
 [[redirects]]
   from = "/*"
