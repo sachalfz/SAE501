@@ -1,0 +1,8 @@
+[build]
+  command = "composer install && php bin/console cache:clear && php bin/console assets:install"
+  publish = "public"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.php"
+  status = 200
