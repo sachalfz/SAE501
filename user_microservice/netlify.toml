@@ -2,9 +2,6 @@
   command = "composer install && npm install && npm build && php bin/console cache:clear && php bin/console assets:install"
   publish = "public"
 
-[build.environment]
-  PHP_VERSION = "8.2"
-
 [[redirects]]
   from = "/*"
   to = "/index.php"
