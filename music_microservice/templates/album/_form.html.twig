@@ -1,0 +1,104 @@
+{{ form_start(form) }}
+
+    {# <div class="form-group">
+        <label for="{{ form.vars.id }}" class="col-form-label">{{ form.vars.label }}</label>
+        <div class="album-row">
+            <div class="form-group">
+                {{ form_row(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Name'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.artist, {'attr': {'class': 'form-control', 'placeholder': 'Artist'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.date, {'attr': {'class': 'form-control', 'placeholder': 'Date'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.certification, {'attr': {'class': 'form-control', 'placeholder': 'Certification'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.label, {'attr': {'class': 'form-control', 'placeholder': 'Label'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.cover, {'attr': {'class': 'form-control', 'placeholder': 'Cover'}}) }}
+            </div>
+            
+            <div class="form-group" id="beatmakers-container">
+                {% for beatmakerForm in form.beatmakers %}
+                    <div class="beatmaker-form">
+                        {{ form_row(beatmakerForm) }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div> 
+    
+    <button type="submit" class="btn btn-primary">
+        {{ button_label|default('Save') }}
+    </button>#}
+
+
+    <div class="form-group flex-col">
+        {{ form_row(form.name) }}
+    </div>
+
+    <div class="form-group flex-col">
+        {{ form_row(form.artist) }}
+    </div>
+
+    <div class="form-group flex-col">
+        {{ form_row(form.date) }}
+    </div>
+
+    <div class="form-group flex-col">
+        {{ form_row(form.certification) }}
+    </div>
+
+    <div class="form-group flex-col">
+        {{ form_row(form.label) }}
+    </div>
+
+    <div class="form-group flex-col">
+        {{ form_row(form.cover) }}
+    </div>
+
+    <div class="form-group">
+        <div id="beatmakers-container" data-prototype="{{ form_widget(form.beatmakers.vars.prototype)|e('html_attr') }}">
+            <label class="col-form-label">Beatmakers</label>
+            {% for beatmakerForm in form.beatmakers %}
+                <div class="form-group beatmaker-form" style="border: 1px solid #ddd; padding: 5px; margin-bottom: 5px;">
+                    {{ form_row(beatmakerForm) }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-secondary" id="add_beatmaker">Add Beatmaker</button>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        {{ button_label|default('Save') }}
+    </button>
+
+
+{{ form_end(form) }}
+
+<script>
+    document.getElementById('add_beatmaker').addEventListener('click', function() {
+        var prototype = document.getElementById('beatmakers-container').getAttribute('data-prototype');
+        var index = document.querySelectorAll('.beatmaker-form').length;
+
+        var newForm = prototype.replace(/__name__/g, index);
+        var wrapper = document.createElement('div');
+        wrapper.className = 'form-group beatmaker-form';
+        wrapper.style.border = '1px solid #ddd';
+        wrapper.style.padding = '5px';
+        wrapper.style.marginBottom = '5px';
+        wrapper.innerHTML = newForm;
+
+        document.getElementById('beatmakers-container').appendChild(wrapper);
+    });
+</script>

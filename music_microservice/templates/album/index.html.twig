@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Album index{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Album index</h1>
+
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Artist</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Label</th>
+                    <th scope="col">Beatmakers</th>
+                    <th scope="col">Cover</th>
+                    <th scope="col">Certification</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for album in albums %}
+                    <tr>
+                        <td>{{ album.id }}</td>
+                        <td>{{ album.name }}</td>
+                        <td>{{ album.artist }}</td>
+                        <td>{{ album.date }}</td>
+                        <td>{{ album.label }}</td>
+                        <td>{{ album.beatmakers ? album.beatmakers|join(', ') : '' }}</td>
+                        <td>{{ album.cover }}</td>
+                        <td>{{ album.certification }}</td>
+                        <td>
+                            <a href="{{ path('app_album_show', {'id': album.id}) }}" class="btn btn-info btn-sm">Show</a>
+                            <a href="{{ path('app_album_edit', {'id': album.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="9">No records found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_album_new') }}" class="btn btn-success">Create new</a>
+    </div>
+{% endblock %}

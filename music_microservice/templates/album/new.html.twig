@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Album{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Create new Album</h1>
+
+        {{ form_start(form) }}
+
+        <div class="form-group">
+            {{ form_row(form.name) }}
+        </div>
+
+        <div class="form-group flex-col">
+            {{ form_row(form.artist) }}
+        </div>
+
+        <div class="form-group flex-col">
+            {{ form_row(form.date) }}
+        </div>
+
+        <div class="form-group flex-col">
+            {{ form_row(form.certification) }}
+        </div>
+
+        <div class="form-group flex-col">
+            {{ form_row(form.label) }}
+        </div>
+
+        <div class="form-group flex-col">
+            {{ form_row(form.cover) }}
+        </div>
+
+        <!-- Repeat for other fields... -->
+
+        <div class="form-group">
+            <label for="{{ form.beatmakers.vars.id }}" class="col-form-label">{{ form.beatmakers.vars.label }}</label>
+
+            <div id="beatmakers-container" data-prototype="{{ form_widget(form.beatmakers.vars.prototype)|e('html_attr') }}">
+                {% for beatmakerForm in form.beatmakers %}
+                    <div class="form-group beatmaker-form">
+                        {{ form_row(beatmakerForm) }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="button" class="btn btn-secondary" id="add_beatmaker">Add Beatmaker</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            {{ button_label|default('Save') }}
+        </button>
+
+        {{ form_end(form) }}
+
+        <a href="{{ path('app_album_index') }}" class="btn btn-secondary mt-3">Back to list</a>
+    </div>
+
+    <script>
+        document.getElementById('add_beatmaker').addEventListener('click', function() {
+            var prototype = document.getElementById('beatmakers-container').getAttribute('data-prototype');
+            var index = document.querySelectorAll('.beatmaker-form').length;
+
+            var newForm = prototype.replace(/__name__/g, index);
+            var wrapper = document.createElement('div');
+            wrapper.className = 'form-group beatmaker-form';
+            wrapper.innerHTML = newForm;
+
+            document.getElementById('beatmakers-container').appendChild(wrapper);
+        });
+    </script>
+{% endblock %}
