@@ -13,13 +13,22 @@
             "./src/ApiResource/.gitignore"
         ]
     },
+    "doctrine/annotations": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.10",
+            "ref": "64d8583af5ea57b7afa4aba4b159907f3a148b05"
+        }
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.10",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.10",
-            "ref": "e025a6cb69b195970543820b2f18ad21724473fa"
+            "ref": "0db4b12b5df45f5122213b4ecd18733ab7fa7d53"
         },
         "files": [
             "./config/packages/doctrine.yaml",
@@ -40,18 +49,6 @@
             "./migrations/.gitignore"
         ]
     },
-    "friendsofsymfony/rest-bundle": {
-        "version": "3.6",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "3.0",
-            "ref": "3762cc4e4f2d6faabeca5a151b41c8c791bd96e5"
-        },
-        "files": [
-            "./config/packages/fos_rest.yaml"
-        ]
-    },
     "nelmio/cors-bundle": {
         "version": "2.3",
         "recipe": {
@@ -62,6 +59,18 @@
         },
         "files": [
             "./config/packages/nelmio_cors.yaml"
+        ]
+    },
+    "sensio/framework-extra-bundle": {
+        "version": "6.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.2",
+            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
+        },
+        "files": [
+            "./config/packages/sensio_framework_extra.yaml"
         ]
     },
     "symfony/console": {
@@ -77,7 +86,7 @@
         ]
     },
     "symfony/flex": {
-        "version": "2.3",
+        "version": "2.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -165,5 +174,8 @@
         "files": [
             "./config/packages/validator.yaml"
         ]
+    },
+    "twig/extra-bundle": {
+        "version": "v3.7.1"
     }
 }

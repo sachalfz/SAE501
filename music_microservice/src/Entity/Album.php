@@ -17,78 +17,63 @@ class Album
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $artiste = null;
-
-    #[ORM\Column]
-    private ?float $year = null;
-
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private ?array $certifications = null;
-
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $beatmakers = [];
+    private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $label = null;
+    private ?string $artist = null;
 
     #[ORM\Column]
-    private ?float $nb_titres = null;
+    private ?int $date = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $enabled_at = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $label = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $deleted_at = null;
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private ?array $beatmakers = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $cover = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $certification = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getArtiste(): ?string
+    public function getName(): ?string
     {
-        return $this->artiste;
+        return $this->name;
     }
 
-    public function setArtiste(string $artiste): static
+    public function setName(string $name): static
     {
-        $this->artiste = $artiste;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getYear(): ?float
+    public function getArtist(): ?string
     {
-        return $this->year;
+        return $this->artist;
     }
 
-    public function setYear(float $year): static
+    public function setArtist(string $artist): static
     {
-        $this->year = $year;
+        $this->artist = $artist;
 
         return $this;
     }
 
-    public function getCertifications(): ?array
+    public function getDate(): ?int
     {
-        return $this->certifications;
+        return $this->date;
     }
 
-    public function setCertifications(?array $certifications): static
+    public function setDate(int $date): static
     {
-        $this->certifications = $certifications;
-
-        return $this;
-    }
-
-    public function getBeatmakers(): array
-    {
-        return $this->beatmakers;
-    }
-
-    public function setBeatmakers(array $beatmakers): static
-    {
-        $this->beatmakers = $beatmakers;
+        $this->date = $date;
 
         return $this;
     }
@@ -98,45 +83,45 @@ class Album
         return $this->label;
     }
 
-    public function setLabel(string $label): static
+    public function setLabel(?string $label): static
     {
         $this->label = $label;
 
         return $this;
     }
 
-    public function getNbTitres(): ?float
+    public function getBeatmakers(): ?array
     {
-        return $this->nb_titres;
+        return $this->beatmakers;
     }
 
-    public function setNbTitres(float $nb_titres): static
+    public function setBeatmakers(?array $beatmakers): static
     {
-        $this->nb_titres = $nb_titres;
+        $this->beatmakers = $beatmakers;
 
         return $this;
     }
 
-    public function getEnabledAt(): ?\DateTimeImmutable
+    public function getCover(): ?string
     {
-        return $this->enabled_at;
+        return $this->cover;
     }
 
-    public function setEnabledAt(?\DateTimeImmutable $enabled_at): static
+    public function setCover(string $cover): static
     {
-        $this->enabled_at = $enabled_at;
+        $this->cover = $cover;
 
         return $this;
     }
 
-    public function getDeletedAt(): ?\DateTimeImmutable
+    public function getCertification(): ?string
     {
-        return $this->deleted_at;
+        return $this->certification;
     }
 
-    public function setDeletedAt(?\DateTimeImmutable $deleted_at): static
+    public function setCertification(?string $certification): static
     {
-        $this->deleted_at = $deleted_at;
+        $this->certification = $certification;
 
         return $this;
     }
