@@ -1,47 +1,5 @@
 {{ form_start(form) }}
 
-    {# <div class="form-group">
-        <label for="{{ form.vars.id }}" class="col-form-label">{{ form.vars.label }}</label>
-        <div class="album-row">
-            <div class="form-group">
-                {{ form_row(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Name'}}) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_row(form.artist, {'attr': {'class': 'form-control', 'placeholder': 'Artist'}}) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_row(form.date, {'attr': {'class': 'form-control', 'placeholder': 'Date'}}) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_row(form.certification, {'attr': {'class': 'form-control', 'placeholder': 'Certification'}}) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_row(form.label, {'attr': {'class': 'form-control', 'placeholder': 'Label'}}) }}
-            </div>
-
-            <div class="form-group">
-                {{ form_row(form.cover, {'attr': {'class': 'form-control', 'placeholder': 'Cover'}}) }}
-            </div>
-            
-            <div class="form-group" id="beatmakers-container">
-                {% for beatmakerForm in form.beatmakers %}
-                    <div class="beatmaker-form">
-                        {{ form_row(beatmakerForm) }}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div> 
-    
-    <button type="submit" class="btn btn-primary">
-        {{ button_label|default('Save') }}
-    </button>#}
-
-
     <div class="form-group flex-col">
         {{ form_row(form.name) }}
     </div>
@@ -82,7 +40,6 @@
     <button type="submit" class="btn btn-primary">
         {{ button_label|default('Save') }}
     </button>
-
 
 {{ form_end(form) }}
 
