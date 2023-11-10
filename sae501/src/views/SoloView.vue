@@ -18,6 +18,9 @@ export default {
       livesRemaining: 10,
       albumToGuess: null, // Initialize albumToGuess as null
       win : false,
+      streamzWin : 10,
+      streamzLoss : 1,
+      streamzAbandon : 0,
     };
   },
 
@@ -28,9 +31,9 @@ export default {
   },
 
   methods: {
-    addToStats(gamePlayed, gameWon) {
+    addToStats(gamePlayed, gameWon, streamz) {
       const updatedUser = {
-        "streamz": this.inventory.streamz,
+        "streamz": this.inventory.streamz + streamz,
         "items": this.inventory.items,
         "username": this.inventory.username,
         "profilePicture": this.inventory.profile_picture,
@@ -63,7 +66,7 @@ export default {
 
         if (selectedAlbum.id == this.albumToGuess.id) {
           this.win = true; 
-          this.addToStats(1, 1);
+          this.addToStats(1, 1, this.streamzWin);
         }
 
         return this.checkSelected
@@ -74,7 +77,7 @@ export default {
 
       if (this.livesRemaining == 0) {
         this.selectedAlbums.push(this.albumToGuess);
-        this.addToStats(1, 0);
+        this.addToStats(1, 0, this.streamzLoss);
       } 
     },
     handleTryAgain() {
@@ -85,7 +88,7 @@ export default {
       this.win = false;
 
       if (this.livesRemaining >=1 && this.win == false) {
-        this.addToStats(1, 0);
+        this.addToStats(1, 0, this.streamzAbandon);
       }
     },
   },

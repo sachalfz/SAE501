@@ -1,6 +1,7 @@
 <script setup>
 import AccountHead from '../components/AccountHead.vue';
 import AccountStats from '../components/AccountStats.vue';
+import AccountInventory from '../components/AccountInventory.vue';
 </script>
 
 <script>
@@ -17,6 +18,7 @@ export default {
     <div class="view account">
         <AccountHead :randomUser="randomUser" :inventory="inventory"/>
         <AccountStats :randomUser="randomUser" :inventory="inventory"/>
+        <AccountInventory :randomUser="randomUser" :inventory="inventory"/>
     </div>
     
 </template>

@@ -108,8 +108,7 @@
     gap: 2rem;
 }
 
-.solo{
-    
+.account{
 }
 
 .solo-rules{
@@ -623,6 +622,14 @@
     font-weight: var(--fw-smbold);
 }
 
+.played{
+    background-color: hsla(var(--clr-gray));
+}
+
+.won{
+    background-color: hsla(var(--clr-green));
+}
+
 .shop--head{
     display: flex;
     width: 28rem;
@@ -730,7 +737,7 @@
     justify-content: center;
     gap: .5rem;
     background-color: hsla(var(--clr-dark)/ .75);
-    padding: 0.2rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 6px;
     transition: all .2s ease-in-out;
     
@@ -747,8 +754,69 @@
     font-weight: var(--fw-bold);
 }
 
+.item--equip--txt{
+    margin: 0;
+    color: hsla(var(--clr-light));
+    font-size: var(--fs-18);
+    font-weight: var(--fw-bold);    
+}
+
 .item--price--img{
     height: 2rem;
+}
+
+.item--already {
+    margin: 0;
+    color: hsla(var(--clr-green));
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-18);
+}
+
+.inventory--all{
+    gap: 2rem;
+    width: 28rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.inventory--header{
+    width: 100%;
+    background-color: hsla(var(--clr-accent));
+    color: hsla(var(--clr-light));
+    border-radius: 6px;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inventory--header--txt{
+    margin: 0;
+    padding: 1rem;
+    font-size: var(--fs-24);
+    font-weight: var(--fw-bold);
+}
+
+.inventory--items{
+    display: grid;
+    width: 28rem;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1rem;   
+}
+
+.inventory--items--self{
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: hsla(var(--clr-accent));
+    border-radius: 6px;
+    padding: 1rem;
+    gap: 1rem;
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);   
 }
  
 @media screen and (min-width:1300px) {
