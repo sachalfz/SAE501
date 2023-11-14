@@ -5,9 +5,9 @@ import { useRouter } from 'vue-router';
 <template>
     <header class="header">
         <nav class="nav--layout-mobile">
-            <a class="nav--logo" :href="basePath">
+            <router-link :to="'/'" class="nav--logo">
                 <img src="../../assets/logo/full_yellow.svg" alt="Logo" height="60">
-            </a>
+            </router-link>
 
             <button @click="toggleMenu" class="nav--popup">
                 <img src="../../assets/icons/nav_yellow.svg" alt="open">
@@ -20,22 +20,22 @@ import { useRouter } from 'vue-router';
             <img src="../../assets/icons/close_yellow.svg" alt="close">
         </button>
 
-        <a class="nav--cat" :href="basePath" style="gap: 0.5rem;">
+        <router-link :to="'/'" class="nav--cat" style="gap: 0.5rem;">
             <img src="../../assets/nav/solo.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">SOLO</p>
-        </a>
+        </router-link>
 
-        <a class="nav--cat" :href="basePath + '3dgame'" style="gap: 0.5rem;">
+        <router-link :to="'3dgame'" class="nav--cat" style="gap: 0.5rem;">
             <img src="../../assets/nav/3d.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">3D</p>
-        </a>
+        </router-link>
 
-        <a class=" nav--cat" :href="basePath + 'shop'">
+        <router-link :to="'shop'" class=" nav--cat">
             <img src="../../assets/icons/shop_yellow.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">SHOP</p>
-        </a>
+        </router-link>
 
-        <router-link :to="basePath + 'account/' + randomUser.id" class="nav--cat">
+        <router-link :to="'account/' + randomUser.id" class="nav--cat">
             <img :src="getUserImage()" alt="Profile pic" height="36" class="nav--img">
             <p class="nav--text">ACCOUNT</p>
         </router-link>
