@@ -1,5 +1,5 @@
 <template>
-    <p class="sologuesses--self--txt">{{ this.albumToGuess.nom }}</p>
+    <p class="sologuesses--self--txt">{{ this.albumToGuess.name }}</p>
     <div class="sologuesses">
         <div class="sologuesses--categories">
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Name</p></div>

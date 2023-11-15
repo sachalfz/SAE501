@@ -6,7 +6,7 @@
     </div>
     <div v-show="showAutocomplete" class="searchbar--autocompletion">
       <div class="searchbar--autocompletion--self" v-for="(album, index) in autocompleteAlbums" @click="selectAutocompleteResult(album.nom, album.id)" :key="album.nom && album.id">
-        <p class="searchbar--autocompletion--self--txt">{{ album.nom }}</p>
+        <p class="searchbar--autocompletion--self--txt">{{ album.name }}</p>
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@ export default {
     },
     computed: {
       filteredAlbums() {
-        return this.albums.filter(album => album.nom.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        return this.albums.filter(album => album.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
       }
     },
     methods: {

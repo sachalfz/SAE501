@@ -18,21 +18,21 @@ import { RouterLink, useRouter } from 'vue-router';
           </li>
           
           <li class="nav-item">
-            <router-link :to="'3dgame'" class=" nav--cat">
+            <router-link :to="'/3dgame'" class=" nav--cat">
               <img src="../../assets/nav/3d.svg" alt="Logo" height="40">
               <p class="nav--text">3D GAME</p>
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link :to="'shop'" class=" nav--cat" :href="basePath + 'shop'">
+            <router-link :to="'/shop'" class=" nav--cat" :href="basePath + 'shop'">
               <img src="../../assets/icons/shop_yellow.svg" alt="Logo" height="40">
               <p class="nav--text">SHOP</p>
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link :to="'account/' + randomUser.id" class="nav--cat">
+            <router-link :to="`/account/${randomUser.id}`" class="nav--cat">
               <img :src="getUserImage()" alt="Profile pic" height="36" class="nav--img">
               <p class="nav--text">ACCOUNT</p>
             </router-link>

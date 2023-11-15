@@ -25,17 +25,17 @@ import { useRouter } from 'vue-router';
             <p class="nav--text">SOLO</p>
         </router-link>
 
-        <router-link :to="'3dgame'" class="nav--cat" style="gap: 0.5rem;">
+        <router-link :to="'/3dgame'" class="nav--cat" style="gap: 0.5rem;">
             <img src="../../assets/nav/3d.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">3D</p>
         </router-link>
 
-        <router-link :to="'shop'" class=" nav--cat">
+        <router-link :to="'/shop'" class=" nav--cat">
             <img src="../../assets/icons/shop_yellow.svg" alt="Logo" class="nav--cat-logo">
             <p class="nav--text">SHOP</p>
         </router-link>
 
-        <router-link :to="'account/' + randomUser.id" class="nav--cat">
+        <router-link :to="`/account/${randomUser.id}`" class="nav--cat">
             <img :src="getUserImage()" alt="Profile pic" height="36" class="nav--img">
             <p class="nav--text">ACCOUNT</p>
         </router-link>

@@ -98,7 +98,7 @@ export default {
   },
   mounted() {
     // Charger le tableau d'albums à partir du fichier JSON
-    fetch('../assets/albums.json')
+    fetch('http://127.0.0.1:8002/api/alba')
       .then(response => response.json())
       .then(data => {
         this.albums = data;
@@ -113,10 +113,10 @@ export default {
 <template>
     <div class="view solo">
         <SoloRules />
-        <SearchBar :albums="albums" @album-selected="handleAlbumSelected" @life-counter="handleLivesRemaining" v-if="livesRemaining >= 1 && !win"/>
-        <LifeCounter :remainingLives="livesRemaining" :totalLives="numberLives" />
-        <SoloRevealGuess :albumToGuess="albumToGuess" :win="win" v-if="(livesRemaining < 1 && albumToGuess) || (win === true && albumToGuess)"/>
-        <SoloGuesses :selectedAlbums="selectedAlbums" :albumToGuess="albumToGuess" v-if="albumToGuess"/>
+        <SearchBar :albums="albums" @album-selected="handleAlbumSelected" @life-counter="handleLivesRemaining" v-if="livesRemaining >= 1 && !win && albums && albumToGuess"/>
+        <LifeCounter :remainingLives="livesRemaining" :totalLives="numberLives" v-if="albums && albumToGuess" />
+        <SoloRevealGuess :albumToGuess="albumToGuess" :win="win" v-if="(livesRemaining < 1 && albums && albumToGuess) || (win === true && albums && albumToGuess)"/>
+        <SoloGuesses :selectedAlbums="selectedAlbums" :albumToGuess="albumToGuess" v-if="albums && albumToGuess"/>
         <SoloTryAgain @try-again="handleTryAgain"/>
     </div>
 </template>
