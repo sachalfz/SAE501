@@ -1,8 +1,9 @@
 <template>
   <div v-if="randomUser">
-    <NavDesktop v-if="windowWidth > 1300 && randomUser" :randomUser="randomUser" :inventory="inventory" :basePath="basePath"/>
+    <!-- <NavDesktop v-if="windowWidth > 1300 && randomUser" :randomUser="randomUser" :inventory="inventory" :basePath="basePath"/>
 
-    <NavMobile v-else :randomUser="randomUser" :inventory="inventory" :basePath="basePath"/>
+    <NavMobile v-else :randomUser="randomUser" :inventory="inventory" :basePath="basePath"/> -->
+    <NavMobile :randomUser="randomUser" :inventory="inventory" :basePath="basePath"/>
   </div>
 
 </template>

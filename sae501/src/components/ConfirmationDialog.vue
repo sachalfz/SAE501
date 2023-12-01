@@ -2,11 +2,11 @@
     <div v-if="visible" class="confirmation-dialog">
       <div class="confirmation-dialog-content">
         <p>{{ message }}</p>
-        <input type="text" v-model="textInput" />
+        <input type="text" placeholder="Exemple: Guest" v-model="textInput" class="confirmation-dialog-content-form"/>
       </div>
       <div class="confirmation-dialog-actions">
-        <button @click="confirm">Valider</button>
-        <button @click="cancel">Annuler</button>
+        <button @click="confirm" class="confirmation--btn true">Valider</button>
+        <button @click="cancel" class="confirmation--btn false">Annuler</button>
       </div>
     </div>
   </template>
@@ -24,7 +24,7 @@
     },
     computed: {
       message() {
-        return `Confirmez-vous la modification suivante ?`;
+        return `Veuillez choisir un nouveau nom d'utilisateur`;
       },
     },
     methods: {
@@ -55,12 +55,21 @@
   }
   
   .confirmation-dialog-content {
-    background: #fff;
     padding: 20px;
-    border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     max-width: 300px;
     text-align: center;
+    border-radius: 5px;
+    background-color: hsla(var(--clr-light));
+    color: hsla(var(--clr-dark));
+  }
+
+  .confirmation-dialog-content-form{
+    border: none;
+    border-radius: 5px;
+    font-size: var(--fs-14);
+    width: 100%;
+    padding: 0.2rem 0.5rem;
   }
   
   .confirmation-dialog-actions {

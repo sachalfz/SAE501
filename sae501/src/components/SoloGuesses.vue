@@ -1,23 +1,22 @@
 <template>
-    <p class="sologuesses--self--txt">{{ this.albumToGuess.name }}</p>
+    <!-- <p class="sologuesses--self--txt">{{ this.albumToGuess.name }}</p> -->
     <div class="sologuesses">
         <div class="sologuesses--categories">
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Name</p></div>
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Artist</p> </div>
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Year</p></div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Type</p></div>
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Label</p></div>
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Certification</p></div>
             <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Beatmakers</p></div>
         </div>
         <div class="sologuesses--results">
             <div v-for="(album, index) in selectedAlbums" :key="index" class="sologuesses--album">
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'nom'), 'false': !isPropertyMatchingString(album, 'nom') }">
-                    <p class="sologuesses--self--txt">{{ album.nom }}</p>
+                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'name'), 'false': !isPropertyMatchingString(album, 'name') }">
+                    <p class="sologuesses--self--txt">{{ album.name }}</p>
                 </div>
 
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'artiste'), 'false': !isPropertyMatchingString(album, 'artiste') }">
-                    <p class="sologuesses--self--txt">{{ album.artiste }}</p>
+                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'artist'), 'false': !isPropertyMatchingString(album, 'artist') }">
+                    <p class="sologuesses--self--txt">{{ album.artist }}</p>
                 </div>
 
                 <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'date'), 'false': !isPropertyMatchingString(album, 'date') }">
@@ -25,20 +24,26 @@
                     <img v-if="!isPropertyMatchingString(album, 'date')" :src="getArrowState(album, 'date')" alt="Life" class="sologuesses--arrow--icon">
                 </div>
 
-                <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'genre'), 'false': !isPropertyMatchingString(album, 'genre') }">
-                    <p class="sologuesses--self--txt">{{ album.genre }}</p>
-                </div>
-
                 <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'label'), 'false': !isPropertyMatchingString(album, 'label') }">
                     <p class="sologuesses--self--txt">{{ album.label }}</p>
                 </div>
 
                 <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'certification'), 'false': !isPropertyMatchingString(album, 'certification') }">
-                    <p class="sologuesses--self--txt">{{ album.certification }}</p>
+                    <template v-if="album.certification">
+                      <p class="sologuesses--self--txt">{{ album.certification}}</p>
+                    </template>
+                    <template v-else>
+                      <p class="sologuesses--self--list--txt">No data</p>
+                    </template>
                 </div>
 
                 <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'beatmakers'), 'false': !isPropertyMatchingString(album, 'beatmakers') }">
-                    <p class="sologuesses--self--list--txt" v-for="(beatmakers, index) in album.beatmakers" :key="index">{{ beatmakers }}</p>
+                    <template v-if="album.beatmakers && album.beatmakers.length">
+                        <p class="sologuesses--self--list--txt" v-for="(beatmaker, index) in album.beatmakers" :key="index">{{ beatmaker }}</p>
+                    </template>
+                    <template v-else>
+                        <p class="sologuesses--self--list--txt">No data</p>
+                    </template>
                 </div>
             </div>
         </div>

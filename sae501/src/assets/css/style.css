@@ -233,21 +233,37 @@
 
 .sologuesses{
     width: 28rem;
-    height: 35rem;
-    padding: 0.5rem;
     overflow: auto;
     gap: 0.5rem;
-    background-color: hsla(var(--clr-gray)/ 0.75);
+    /* background-color: hsla(var(--clr-gray)/ 0.75); */
     border-radius: 6px;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
-    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+    /* box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3); */
+}
+
+/* Styles pour la barre de défilement */
+.sologuesses::-webkit-scrollbar {
+    width: 10px; /* Largeur de la barre de défilement */
+}
+
+/* Style de la poignée de la barre de défilement */
+.sologuesses::-webkit-scrollbar-thumb {
+    background-color: #888; /* Couleur de la poignée */
+    border-radius: 5px; /* Bord arrondi */
+}
+
+/* Style de la piste de la barre de défilement */
+.sologuesses::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Couleur de la piste */
+    border-radius: 5px; /* Bord arrondi */
 }
 
 .sologuesses--results{
     gap: 0.5rem;
+    padding-bottom: 0.5rem;
     display: flex;
     justify-content: flex-end;
     align-items: flex-start;  
@@ -258,6 +274,8 @@
     font-size: var(--fs-14);
     font-weight: var(--fw-regular);
     color: hsla(var(--clr-dark));
+    word-wrap: break-word; /* Forcer la division des mots longs sur plusieurs lignes */
+    overflow-wrap: break-word;
 }
 
 .sologuesses--categories{
@@ -274,7 +292,7 @@
     align-items: center;
     justify-content: center;
     background: none;
-    padding: 1rem;
+    padding-bottom: 1rem;
     border-radius: 6px;
 }
 
@@ -287,16 +305,17 @@
 }
 
 .sologuesses--album{
+    position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     gap: 0.5rem;
-    height: 100%;
+    min-height: 100%;
 }
 
 .sologuesses--self{
     display: flex;
-    min-height: 100%;
+    min-height: 10rem;
     width: 8rem;
     flex-direction: column;
     align-items: center;
@@ -310,6 +329,8 @@
 .sologuesses--self--txt{
     margin: 0;
     text-align: center;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .sologuesses--arrow--icon{
@@ -354,22 +375,20 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: hsla(var(--clr-gray)/ 0.75);
     padding: 2rem;
     border-radius: 6px;
-    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
 }
 
 .revealguess--title{
     margin: 0;
-    color: hsla(var(--clr-dark));
+    color: hsla(var(--clr-light));
     font-size: var(--fs-16);
     font-weight: var(--fw-regular);
 }
 
 .revealguess--txt{
     margin: 0;
-    color: hsla(var(--clr-dark));
+    color: hsla(var(--clr-light));
     font-size: var(--fs-24);
     font-weight: var(--fw-smbold);
 }
@@ -623,7 +642,7 @@
 }
 
 .played{
-    background-color: hsla(var(--clr-gray));
+    background-color: hsla(var(--clr-light));
 }
 
 .won{
@@ -818,10 +837,28 @@
     gap: 1rem;
     box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);   
 }
+
+.confirmation-dialog{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.confirmation--btn{
+    border: none;
+    border-radius: 5px;
+    width: 6rem;
+    padding: 0.5rem 1rem;
+    font-size: var(--fs-14);
+    box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+    color: hsla(var(--clr-dark));
+    font-weight: var(--fw-medium);
+}
  
 @media screen and (min-width:1300px) {
     .sologuesses{
         width: 60rem;
+        align-items: center;
     }
     
     .revealguess{

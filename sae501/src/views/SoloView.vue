@@ -115,7 +115,7 @@ export default {
         <SoloRules />
         <SearchBar :albums="albums" @album-selected="handleAlbumSelected" @life-counter="handleLivesRemaining" v-if="livesRemaining >= 1 && !win && albums && albumToGuess"/>
         <LifeCounter :remainingLives="livesRemaining" :totalLives="numberLives" v-if="albums && albumToGuess" />
-        <SoloRevealGuess :albumToGuess="albumToGuess" :win="win" v-if="(livesRemaining < 1 && albums && albumToGuess) || (win === true && albums && albumToGuess)"/>
+        <!-- <SoloRevealGuess :albumToGuess="albumToGuess" :win="win" v-if="(livesRemaining < 1 && albums && albumToGuess) || (win === true && albums && albumToGuess)"/> -->
         <SoloGuesses :selectedAlbums="selectedAlbums" :albumToGuess="albumToGuess" v-if="albums && albumToGuess"/>
         <SoloTryAgain @try-again="handleTryAgain"/>
     </div>
