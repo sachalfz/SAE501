@@ -37,8 +37,6 @@ Si vous souhaitez contribuer à ce projet, nous vous encourageons à créer une 
 
 ## Auteur
 
-Ce projet a été développé par [Votre Nom]. Pour toute question ou commentaire, veuillez me contacter à [votre@email.com].
+Ce projet a été développé par Sacha LEFETZ & Louis MAURY. Pour toute question ou commentaire, veuillez nous contacter à cette adresse : sacha.lefetz@gmail.com.
 
 Merci de contribuer à ce projet et de profiter de ces jeux multijoueurs passionnants !
-
-N'oubliez pas de personnaliser le nom de l'auteur, l'adresse e-mail et d'autres détails pertinents pour votre projet.
