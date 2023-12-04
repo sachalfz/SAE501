@@ -8,6 +8,8 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 use App\Entity\User;
 use App\Entity\Inventory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UserCreationListener implements EventSubscriber
 {
@@ -29,7 +31,7 @@ class UserCreationListener implements EventSubscriber
     {
         $entity = $args->getObject();
 
-        if ($entity instanceof User) {
+        if ($entity instanceof User && $entity->getEmail() && $entity->getPassword()) {
             $this->handleUser($entity);
         }
         // Ajoutez d'autres vérifications pour d'autres entités si nécessaire
