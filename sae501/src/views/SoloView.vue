@@ -43,7 +43,7 @@ export default {
       }; // Créez un objet avec la nouvelle valeur du username
 
       // Utilisez fetch pour effectuer la mise à jour
-      fetch(`http://127.0.0.1:8001/api/inventories/${this.inventory.id}`, {
+      fetch(`http://127.0.0.1:8000/api/inventories/${this.inventory.id}`, {
           method: 'PUT', // Utilisez la méthode PUT
           headers: {
               'Content-Type': 'application/ld+json', // Spécifiez le type de contenu JSON

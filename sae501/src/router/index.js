@@ -3,6 +3,9 @@ import SoloView from '../views/SoloView.vue'
 import TreeDGameView from '../views/ThreeDGameView.vue'
 import AccountView from '../views/AccountView.vue'
 import ShopView from '../views/ShopView.vue'
+import LoginView from '../views/LoginView.vue'
+import LogoutView from '../views/LogoutView.vue'
+import RegisterView from '../views/RegisterView.vue'
 
 const devServerURL = 'http://localhost:5173/';
 const isProduction = import.meta.env.MODE === 'production';
@@ -29,7 +32,22 @@ const routes = [
     path: '/shop',
     name: 'shop',
     component: ShopView
-  }
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginView,
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: RegisterView,
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: LogoutView,
+  },
 ];
 
 const router = createRouter({

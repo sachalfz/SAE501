@@ -56,7 +56,7 @@ export default {
         fetchItems() {
             // Return a Promise
             return new Promise((resolve, reject) => {
-                fetch('http://127.0.0.1:8003/api/items')
+                fetch('http://127.0.0.1:8001/api/items')
                     .then(response => response.json())
                     .then(data => {
                         this.items = data['hydra:member'];
