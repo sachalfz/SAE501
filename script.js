@@ -10,9 +10,10 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 const scene = initScene();
 const container = document.getElementById('container');
 const renderer = initRenderer();
-const fillLight1 = initFillLight();
-const directionalLight = initDirLight();
+initFillLight();
+initDirLight();
 const floorOctree = new Octree();
+const playerOctree = new Octree();
 const playerVelocity = new THREE.Vector3();
 const stats = initStats();
 const clock = new THREE.Clock();
@@ -46,19 +47,16 @@ const cameraRotation = {
     y: 0,
 };
 
-// Paramètres de la map
-const mapPath = 'collision-world.glb';
-const mapScale = 1;
-
-// Paramètres de joueur
+// Paramètres de camera-joueur
 const cameraDistanceFromPlayer = 6;
-// const playerWidth = 0.5;
-// const playerHeight = 1;
-// const playerDepth = 0.25;
+
+// Paramètres de la map
+var mapPath = 'collision-world.glb';
+const mapScale = 1;
 
 // Paramètre de platformes
 const platformWidth = 5;
-const platformHeight = 0.2;
+const platformHeight = 0;
 const platformDepth = 5;
 
 const positions = [
@@ -85,28 +83,25 @@ const images = [
     'iam.jpg',
 ];
 
-// // Create playerGeometry based on the variables
-// const playerGeometry = new THREE.BoxGeometry(playerWidth, playerHeight, playerDepth);
-// const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-// const player = new THREE.Mesh(playerGeometry, playerMaterial);
-// player.castShadow = true
-// player.receiveShadow = true
-// scene.add(player);
-// player.position.set(0, playerHeight / 2, 0); // Set the position at the player's center
+const player = new THREE.Group();
 
-// // Calculate the half-height of the player
+const playerWidth = 0.6;
+const playerHeight = 1.51;
+const playerDepth = 1;
 
+const playerGeometry = new THREE.BoxGeometry(playerWidth, playerHeight, playerDepth);
+const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+const playerHitbox = new THREE.Mesh(playerGeometry, playerMaterial);
 
-// // Use halfPlayerHeight for the capsule's start and end positions
-// const playerCollider = new Capsule(
-//   new THREE.Vector3(0, playerHeight, 0),
-//   new THREE.Vector3(0, -playerHeight, 0),
-//   playerWidth / 2 // Use playerWidth / 2 for the radius
-// );
+const playerCollider = new Capsule(
+  new THREE.Vector3(0, playerHeight, 0), // Start position
+  new THREE.Vector3(0, 0, 0), // End position
+  playerWidth / 2 // Use half of player's width for the radius
+);
 
-let myLoad = async function(){
-  let promise = new Promise((resolve, reject) => {
-    fbxLoader.load('ajRun.fbx', function (object) {
+async function myLoad(pathToSkin) {
+  return new Promise((resolve, reject) => {
+    fbxLoader.load(pathToSkin, function (object) {
       mixer = new THREE.AnimationMixer(object);
 
       const action = mixer.clipAction(object.animations[0]);
@@ -121,44 +116,36 @@ let myLoad = async function(){
 
       object.scale.set(0.01, 0.01, -0.01);
 
-
-      scene.add(object);
-
       resolve(object); // Resolve the promise when the model is loaded
     });
   });
-  return promise;
 }
-// window.alpha = myLoad; // rends la fonction myLoad disponible dans tout le document (y compris la console)
-const player = await myLoad(); 
-console.log(player)
-// player = object; // Assign the loaded object to the player variable
 
-// Calculate the dimensions of the player's bounding box
-const playerBoundingBox = new THREE.Box3().setFromObject(player);
-const playerSize = new THREE.Vector3();
-playerBoundingBox.getSize(playerSize);
+async function setupPlayer() {
+  const playerSkin = await myLoad('ajRun.fbx');
+  if (playerSkin) {
+    playerSkin.castShadow = true;
+    playerSkin.receiveShadow = true;
+  }
 
-const playerHeight = playerSize.y; // Set playerHeight based on bounding box
-const playerWidth = playerSize.x; // Set playerWidth based on bounding box
-const playerDepth = playerSize.z; // Set playerDepth based on bounding box
+  playerHitbox.position.copy(playerCollider.start);
 
-if (player) {
-  player.castShadow = true;
-  player.receiveShadow = true;
-  player.position.set(0,0,0)
-  // Now, you can use playerCollider in other functions.
+  if (playerSkin) {
+    playerSkin.position.copy(playerHitbox.position); // Set playerSkin position to match playerHitbox
+    playerSkin.position.y -= 0.9; // Adjust the y position to align with the top of the hitbox
+  }
+
+  player.add(playerSkin);
+  playerHitbox.visible = false;
+  player.add(playerHitbox);
+  scene.add(player);
+
+  console.log('Player Hitbox Position:', playerHitbox.position);
+  console.log('Player Skin Position:', playerSkin.position);
+  console.log('Player Group Position:', player.position);
 }
-console.log(player.position)
-// Update playerCollider here when the model is loaded
-const playerCollider = new Capsule(
-  new THREE.Vector3(0, -1, 0), // Start position
-  new THREE.Vector3(0, playerHeight+0.6, 0), // End position
-  playerWidth / 2 // Use half of player's width for the radius
-);
 
-console.log(playerCollider)
-
+setupPlayer();
 
 // Fonctions d'initialisation
 function initScene(){
@@ -284,98 +271,8 @@ function updateViewpointCameraPosition() {
   viewpointCamera.lookAt(player.position);
 }
 
-function playerCollisions() {
-  const floorCollider = floorOctree.capsuleIntersect(playerCollider);
-  playerOnFloor = false;
-
-  if (floorCollider) {
-    playerOnFloor = floorCollider.normal.y > 0;
-    if (!playerOnFloor) {
-      playerVelocity.addScaledVector(floorCollider.normal, -floorCollider.normal.dot(playerVelocity));
-    }
-    playerCollider.translate(floorCollider.normal.multiplyScalar(floorCollider.depth));
-
-  } 
-}
-
-function checkPlatformsCollisions(platforms){
-    platforms.forEach(platform => {
-
-        const playerBox = new THREE.Box3().setFromObject(player);
-        const boxBox = new THREE.Box3().setFromObject(platform);
-
-        // Check if the player's bounding box intersects with the box's bounding box
-        const collision = playerBox.intersectsBox(boxBox);
-
-        if (collision) {
-            // If there is a collision, check if the player is above the box's top face
-            const playerPosition = player.position;
-            const boxPosition = platform.position;
-
-            if (playerPosition.y >= boxPosition.y + platform.geometry.parameters.height / 2) {
-            // The player is on top of the box
-            playerVelocity.y = 0;
-            const boxPosition = platform.position;
-            const yCoordinates = boxPosition.y + platform.geometry.parameters.height / 2 + player.geometry.parameters.height / 2;
-            player.position.set(player.position.x, yCoordinates, player.position.z );
-            playerOnFloor = true;
-            } else if (playerPosition.y <= boxPosition.y + platform.geometry.parameters.height / 2){
-            
-            const boxPosition = platform.position;
-            const yCoordinates = boxPosition.y - platform.geometry.parameters.height / 2 - player.geometry.parameters.height / 2;
-            player.position.set(player.position.x, yCoordinates, player.position.z );
-            playerVelocity.y = -1;
-
-            }
-        }
-    });
-}
-
-// Met à jour la position du joueur
-function updatePlayer(deltaTime) {
-  let damping = Math.exp(-4 * deltaTime) - 1;
-  if (!playerOnFloor) {
-    playerVelocity.y -= GRAVITY * deltaTime;
-    damping *= 0.1;
-  }
-  playerVelocity.addScaledVector(playerVelocity, damping);
-  const deltaPosition = playerVelocity.clone().multiplyScalar(deltaTime);
-  playerCollider.translate(deltaPosition);
-  playerCollisions();
-  checkPlatformsCollisions(platformsOnScene)
-  player.position.copy(playerCollider.start);
-}
-
-function updatePlayerRotation() { 
-    // Calculate the rotation angle based on the camera's rotation
-    const playerAngle = Math.atan2(
-      viewpointCamera.position.x - player.position.x,
-      viewpointCamera.position.z - player.position.z
-    );
-  
-    // Apply the rotation to the player mesh
-    player.rotation.set(0, playerAngle, 0);
-}
-
-// Obtient le vecteur de direction vers l'avant
-function getForwardVector() {
-  const cameraPosition = viewpointCamera.position;
-  const playerPosition = player.position;
-  const playerToCamera = new THREE.Vector3().subVectors(cameraPosition, playerPosition);
-  playerToCamera.y = 0;
-  playerToCamera.normalize();
-  return playerToCamera;
-}
-
-// Obtient le vecteur de direction vers le côté
-function getSideVector() {
-  const forward = getForwardVector();
-  const side = new THREE.Vector3(-forward.z, 0, forward.x);
-  return side;
-}
-
 // Contrôles du joueur
-function controls(deltaTime) {
+async function controls(deltaTime) {
   const speedDelta = deltaTime * (playerOnFloor ? 20 : 4);
 
   if (keyStates['KeyW']) {
@@ -406,13 +303,60 @@ function controls(deltaTime) {
   }
   
   if (keyStates['KeyJ']) {
-    generateAllPlatforms(platformWidth, platformHeight, platformDepth, images, positions);
-
+    if (platformsOnScene.length<9) {
+      generateAllPlatforms(platformWidth, platformHeight, platformDepth, images, positions);
+    }
   }
+
+  if (keyStates['KeyP']) {
+    playerSkin = await myLoad('jamesRun.fbx')  }
 
   if (playerOnFloor && keyStates['Space']) {
     playerVelocity.y = 15;
   }
+}
+
+// Obtient le vecteur de direction vers l'avant
+function getForwardVector() {
+  const cameraPosition = viewpointCamera.position;
+  const playerPosition = player.position;
+  const playerToCamera = new THREE.Vector3().subVectors(cameraPosition, playerPosition);
+  playerToCamera.y = 0;
+  playerToCamera.normalize();
+  return playerToCamera;
+}
+
+// Obtient le vecteur de direction vers le côté
+function getSideVector() {
+  const forward = getForwardVector();
+  const side = new THREE.Vector3(-forward.z, 0, forward.x);
+  return side;
+}
+
+// Met à jour la position du joueur
+function updatePlayer(deltaTime) {
+  let damping = Math.exp(-4 * deltaTime) - 1;
+  if (!playerOnFloor) {
+    playerVelocity.y -= GRAVITY * deltaTime;
+    damping *= 0.1;
+  }
+  playerVelocity.addScaledVector(playerVelocity, damping);
+  const deltaPosition = playerVelocity.clone().multiplyScalar(deltaTime);
+  playerCollider.translate(deltaPosition);
+  playerCollisions();
+  checkPlatformsCollisions(platformsOnScene);
+  player.position.copy(playerCollider.end);
+}
+
+function updatePlayerRotation() { 
+    // Calculate the rotation angle based on the camera's rotation
+    const playerAngle = Math.atan2(
+      viewpointCamera.position.x - player.position.x,
+      viewpointCamera.position.z - player.position.z
+    );
+  
+    // Apply the rotation to the player mesh
+    player.rotation.set(0, playerAngle, 0);
 }
 
 function createPlatformWithImage(width, height, depth, imagePath, position) {
@@ -432,69 +376,102 @@ function createPlatformWithImage(width, height, depth, imagePath, position) {
 }
   
 function generateAllPlatforms (platformWidth, platformHeight, platformDepth, images, positions){
-    const shuffledPositions = positions.sort((a, b) => 0.5 - Math.random());
+  const shuffledPositions = positions.sort((a, b) => 0.5 - Math.random());
 
-    truePlatform = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[0], shuffledPositions[0]);
-    platformsOnScene.push(truePlatform);
-    scene.add(truePlatform);
+  truePlatform = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[0], shuffledPositions[0]);
+  platformsOnScene.push(truePlatform);
+  scene.add(truePlatform);
 
-    fakePlatform1 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[1], shuffledPositions[1]);
-    platformsOnScene.push(fakePlatform1);
-    scene.add(fakePlatform1);
+  fakePlatform1 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[1], shuffledPositions[1]);
+  platformsOnScene.push(fakePlatform1);
+  scene.add(fakePlatform1);
 
-    fakePlatform2 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[2], shuffledPositions[2]);
-    platformsOnScene.push(fakePlatform2);
-    scene.add(fakePlatform2);
+  fakePlatform2 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[2], shuffledPositions[2]);
+  platformsOnScene.push(fakePlatform2);
+  scene.add(fakePlatform2);
 
-    fakePlatform3 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[3], shuffledPositions[3]);
-    platformsOnScene.push(fakePlatform3);
-    scene.add(fakePlatform3);
+  fakePlatform3 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[3], shuffledPositions[3]);
+  platformsOnScene.push(fakePlatform3);
+  scene.add(fakePlatform3);
 
-    fakePlatform4 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[4], shuffledPositions[4]);
-    platformsOnScene.push(fakePlatform4);
-    scene.add(fakePlatform4);
+  fakePlatform4 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[4], shuffledPositions[4]);
+  platformsOnScene.push(fakePlatform4);
+  scene.add(fakePlatform4);
 
-    fakePlatform5 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[5], shuffledPositions[5]);
-    platformsOnScene.push(fakePlatform5);
-    scene.add(fakePlatform5);
+  fakePlatform5 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[5], shuffledPositions[5]);
+  platformsOnScene.push(fakePlatform5);
+  scene.add(fakePlatform5);
 
-    fakePlatform6 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[6], shuffledPositions[6]);
-    platformsOnScene.push(fakePlatform6);
-    scene.add(fakePlatform6);
+  fakePlatform6 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[6], shuffledPositions[6]);
+  platformsOnScene.push(fakePlatform6);
+  scene.add(fakePlatform6);
 
-    fakePlatform7 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[7], shuffledPositions[7]);
-    platformsOnScene.push(fakePlatform7);
-    scene.add(fakePlatform7);
+  fakePlatform7 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[7], shuffledPositions[7]);
+  platformsOnScene.push(fakePlatform7);
+  scene.add(fakePlatform7);
 
-    fakePlatform8 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[8], shuffledPositions[8]);
-    platformsOnScene.push(fakePlatform8);
-    scene.add(fakePlatform8);
+  fakePlatform8 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[8], shuffledPositions[8]);
+  platformsOnScene.push(fakePlatform8);
+  scene.add(fakePlatform8);
 
-    timeisup = false;
+  timeisup = false;
 }
   
 function keepOnePlatform(platformToKeep) {
 
-    if (platformsOnScene.includes(platformToKeep)) {
+  if (platformsOnScene.includes(platformToKeep)) {
 
-    const platformsToRemove = platformsOnScene.filter(platform => platform !== platformToKeep);
-    platformsToRemove.forEach(platformToRemove => {
-        const platformIndex = platformsOnScene.indexOf(platformToRemove);
-        if (platformIndex !== -1) {
-            platformsOnScene.splice(platformIndex, 1); // remove 1 element at index "platformIndex"
-            scene.remove(platformsOnScene[platformIndex])
-            console.log("A platform was removed from the scene");
-        }
-        console.log(platformsOnScene)
-    });
-    const platformIndex = platformsOnScene.indexOf(platformToKeep);
-    scene.add(platformsOnScene[platformIndex])
-    timeisup = true;
+  const platformsToRemove = platformsOnScene.filter(platform => platform !== platformToKeep);
+  platformsToRemove.forEach(platformToRemove => {
+      const platformIndex = platformsOnScene.indexOf(platformToRemove);
+      if (platformIndex !== -1) {
+          platformsOnScene.splice(platformIndex, 1); // remove 1 element at index "platformIndex"
+          scene.remove(platformsOnScene[platformIndex])
+          console.log("A platform was removed from the scene");
+      }
+  });
+  const platformIndex = platformsOnScene.indexOf(platformToKeep);
+  scene.add(platformsOnScene[platformIndex])
+  timeisup = true;
 
-    } else {
-        console.log("Platform not found in the array.");
-    }
+  } else {
+      console.log("Platform not found in the array.");
+  }
+  console.log(platformsOnScene);
 }
+
+function checkPlatformsCollisions(platforms){
+  platforms.forEach(platform => {
+    const playerBox = new THREE.Box3().setFromObject(player);
+    const boxBox = new THREE.Box3().setFromObject(platform);
+
+    // Check if the player's bounding box intersects with the box's bounding box
+    const collision = playerBox.intersectsBox(boxBox);
+
+    if (collision) {
+        // If there is a collision, check if the player is above the box's top face
+        const playerPosition = player.position;
+        const boxPosition = platform.position;
+
+        if (playerPosition.y >= boxPosition.y + platform.geometry.parameters.height / 2) {
+        // The player is on top of the box
+        playerVelocity.y = 0;
+        const boxPosition = platform.position;
+        const yCoordinates = boxPosition.y + platform.geometry.parameters.height / 2 + playerHitbox.geometry.parameters.height / 2;
+        player.position.set(player.position.x, yCoordinates, player.position.z );
+        playerOnFloor = true;
+        } else if (playerPosition.y <= boxPosition.y + platform.geometry.parameters.height / 2){
+        
+        const boxPosition = platform.position;
+        const yCoordinates = boxPosition.y - platform.geometry.parameters.height / 2 - playerHitbox.geometry.parameters.height / 2;
+        player.position.set(player.position.x, yCoordinates, player.position.z );
+        playerVelocity.y = -1;
+
+        }
+    }
+  });
+};
+
 // Chargement du modèle 3D
 glbLoader.load(mapPath, (gltf) => {
     gltf.scene.scale.set(mapScale, mapScale, mapScale); // Scale the model by a factor of 2 in all directions
@@ -525,6 +502,20 @@ glbLoader.load(mapPath, (gltf) => {
     animate();
 });
 
+function playerCollisions() {
+  const floorCollider = floorOctree.capsuleIntersect(playerCollider);
+  playerOnFloor = false;
+
+  if (floorCollider) {
+    playerOnFloor = floorCollider.normal.y > 0;
+    if (!playerOnFloor) {
+      playerVelocity.addScaledVector(floorCollider.normal, -floorCollider.normal.dot(playerVelocity));
+    }
+    playerCollider.translate(floorCollider.normal.multiplyScalar(floorCollider.depth));
+
+  }
+}   
+
 // Boucle d'animation
 function animate() {
   const deltaTime = Math.min(0.5, clock.getDelta()) / STEPS_PER_FRAME;
@@ -533,20 +524,16 @@ function animate() {
     controls(deltaTime);
     updatePlayer(deltaTime);
     teleportPlayerIfOob();
-  }
+  };
   if (mixer && isWalking) {
     mixer.update(deltaTime*4);
-  }
+  };
   isWalking = false;
-  checkPlatformsCollisions(platformsOnScene)
-  // updatePlayerPosition();
   updateViewpointCameraPosition();
   updatePlayerRotation();
-
   renderer.render(scene, viewpointCamera);
   camera.lookAt(player.position.x, player.position.y, player.position.z);
   stats.update();
   requestAnimationFrame(animate);
 }
-
 
