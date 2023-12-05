@@ -32,7 +32,7 @@
       </router-link>
 
       <router-link v-if="user && user.isAuthenticated" :to="`/account/${user.id}`" class="nav--cat">
-        <img :src="inventory.profilepicture" alt="Profile pic" height="36" class="nav--img">
+        <img :src="this.user.inventory.profilepicture" alt="Profile pic" height="36" class="nav--img">
         <p class="nav--text">ACCOUNT</p>
       </router-link>
 
@@ -42,39 +42,31 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
-const store = useStore()
-
-// Obtenez l'utilisateur depuis le store Vuex
-const user = computed(() => store.state.user) // Assurez-vous d'adapter cette logique à votre structure Vuex
-const inventory = computed(() => store.state.inventory) // Assurez-vous que votre store Vuex a une propriété state.inventory pour stocker l'inventaire
-</script>
-
-<script>
 export default {
   data() {
     return {
-    isMenuOpen: false,
+      isMenuOpen: false,
     };
   },
   computed: {
     // Utilisation de la valeur calculée user provenant du script setup
     user() {
-      return user.value
-    }
+      const store = useStore();
+      return computed(() => store.state.user).value;
+    },
+    inventory() {
+      const store = useStore();
+      return computed(() => store.state.inventory).value;
+    },
   },
   methods: {
     toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
+      this.isMenuOpen = !this.isMenuOpen;
     },
-    getUserImage() {
-        if (this.inventory.profile_picture != null) {
-            return this.inventory.profile_picture; // Remplacez par le chemin de votre image pour une vie active
-        }
-    }
   },
 };
 </script>

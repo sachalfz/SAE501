@@ -33,7 +33,7 @@ methods: {
         console.log('User logged in:', user);
 
         // Rediriger l'utilisateur vers une autre page après la connexion réussie
-        this.$router.push('/');
+        //this.$router.push('/');
     } catch (error) {
         // En cas d'échec de l'authentification, gérez l'erreur ici
         console.error('Login failed:', error);
