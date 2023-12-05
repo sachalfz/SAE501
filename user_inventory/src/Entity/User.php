@@ -86,9 +86,4 @@ class User implements PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function __toString(): string
-    {
-        return (string) $this->getId(); // Ou tout autre champ que vous voulez afficher
-    }
 }

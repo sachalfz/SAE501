@@ -8,16 +8,20 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 use App\Entity\User;
 use App\Entity\Inventory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\EntityManagerInterface;
 
 class UserCreationListener implements EventSubscriber
 {
     private UserPasswordHasherInterface $passwordHasher;
+    private EntityManagerInterface $entityManager; // Déclarez la propriété $entityManager
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    public function __construct(UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager)
     {
         $this->passwordHasher = $passwordHasher;
+        $this->entityManager = $entityManager; // Initialisez la propriété $entityManager
     }
 
     public function getSubscribedEvents()
@@ -32,9 +36,21 @@ class UserCreationListener implements EventSubscriber
         $entity = $args->getObject();
 
         if ($entity instanceof User && $entity->getEmail() && $entity->getPassword()) {
+            if ($this->isEmailTaken($entity->getEmail())) {
+                throw new BadRequestHttpException('Cet email est déjà utilisé. Veuillez en choisir un autre.');
+            }
+
             $this->handleUser($entity);
         }
         // Ajoutez d'autres vérifications pour d'autres entités si nécessaire
+    }
+
+    private function isEmailTaken(string $email): bool
+    {
+        $userRepository = $this->entityManager->getRepository(User::class);
+        $existingUser = $userRepository->findOneBy(['email' => $email]);
+
+        return $existingUser !== null;
     }
 
     private function handleUser(User $user)

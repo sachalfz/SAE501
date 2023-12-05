@@ -2,48 +2,56 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\AuthenticationService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 class AuthController extends AbstractController
 {
-    /**
-     * @Route("/api/login", name="api_login", methods={"POST"})
-     */
-    public function login(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $requestData = json_decode($request->getContent(), true);
+    private $authenticationService;
 
-        // Récupération des données d'authentification depuis la requête
-        $email = $requestData['email'] ?? null;
-        $password = $requestData['password'] ?? null;
+    public function __construct(AuthenticationService $authenticationService)
+    {
+        $this->authenticationService = $authenticationService;
+    }
+
+    /**
+     * @Route("/login", name="login", methods={"POST"})
+     */
+    public function login(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
 
         if (!$email || !$password) {
-            return new JsonResponse(['message' => 'Veuillez fournir un email et un mot de passe'], JsonResponse::HTTP_BAD_REQUEST);
+            return $this->json(['message' => 'Missing email or password'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Récupération de l'utilisateur depuis la base de données
-        $userRepository = $entityManager->getRepository(User::class);
-        $user = $userRepository->findOneBy(['email' => $email]);
+        $authenticatedUser = $this->authenticationService->authenticateUser($email, $password);
 
-        if (!$user) {
-            return new JsonResponse(['message' => 'Utilisateur non trouvé'], JsonResponse::HTTP_UNAUTHORIZED);
+        if (!$authenticatedUser) {
+            return $this->json(['message' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Vérification du mot de passe
-        if ($passwordHasher->isPasswordValid($user, $password)) {
-            // Le mot de passe est correct, authentification réussie
-            // Gérer l'authentification ou renvoyer les données de l'utilisateur
-            return new JsonResponse(['user' => $user]);
-        } else {
-            // Le mot de passe ne correspond pas, retourner une réponse d'erreur
-            return new JsonResponse(['message' => 'Mot de passe incorrect'], JsonResponse::HTTP_UNAUTHORIZED);
-        }
+        // $token = $this->generateToken($authenticatedUser); // Utilisez une méthode pour générer le token
+
+        return $this->json(['message' => 'Login successful', 'user' => $authenticatedUser], Response::HTTP_OK);
     }
+
+    // private function generateToken(UserInterface $user): string
+    // {
+    //     // Utilisez LexikJWTAuthenticationBundle ou une autre bibliothèque pour générer le token JWT
+    //     // Par exemple, avec LexikJWTAuthenticationBundle :
+    //     $token = $this->get('lexik_jwt_authentication.encoder')->encode([
+    //         'username' => $user->getUsername(),
+    //         'exp' => time() + 3600, // Exemple : expiration dans 1 heure (3600 secondes)
+    //     ]);
+
+    //     return $token;
+    // }
 }

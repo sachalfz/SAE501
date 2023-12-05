@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Inventory;
+use App\Entity\User;
 use App\Form\InventoryType;
 use App\Repository\InventoryRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,4 +80,35 @@ class InventoryController extends AbstractController
 
         return $this->redirectToRoute('app_inventory_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route("/api/inventory/{userId}", name: "get_user_inventory", methods: ["GET"])]
+    public function getUserInventory(int $userId, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $userRepository = $entityManager->getRepository(User::class);
+        $user = $userRepository->find($userId);
+
+        if (!$user) {
+            return new JsonResponse(['message' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $inventory = $user->getIdInventory();
+
+        if (!$inventory) {
+            return new JsonResponse(['message' => 'Inventory not found for this user'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        // Formatage de l'inventaire pour la réponse JSON, ajustez selon vos besoins
+        $inventoryData = [
+            'id' => $inventory->getId(),
+            'items' => $inventory->getItems(),
+            'username' => $inventory->getUsername(),
+            'profilepicture' => $inventory->getProfilepicture(),
+            'streamz' => $inventory->getStreamz(),
+            'gameswon' => $inventory->getGameswon(),
+            'gamesplayed' => $inventory->getGamesplayed(),
+        ];
+
+        return new JsonResponse(['inventory' => $inventoryData]);
+    }
+
 }
