@@ -22,9 +22,8 @@ const stats = initStats();
 const clock = new THREE.Clock();
 
 const glbLoader = new GLTFLoader().setPath('./worlds/');
-const FBXcharacterLoader = new FBXLoader().setPath('./characters/');
+// const FBXcharacterLoader = new FBXLoader().setPath('./characters/');
 const GLBcharacterLoader = new GLTFLoader().setPath('./characters/');
-const animationLoader = new FBXLoader().setPath('./animations/');
 const textLoader = new FontLoader();
 // const fbxClientLoader = new FBXLoader().setPath('./public/characters/');
 
@@ -98,7 +97,6 @@ const images = [
 ];
 
 function fadeToAction(name, duration) {
-  console.log("Fading to", name);
 
   // Check if the action is not already active
   if (activeAction !== actions[name]) {
@@ -220,9 +218,15 @@ const socket = io({
 })
 
 const rmPlayer = new remotePlayer(player, socket);
+
 socket.on('setId', function(data){
   rmPlayer.id = data.id;
-  console.log('remotePlayer id has been set')
+  socket.emit('joinRoom');
+});
+
+socket.on('roomJoined', function(data){
+  player.group.room = data.roomId;
+  console.log(player.group.room);
   rmPlayer.initSocket();
 });
 
@@ -249,8 +253,6 @@ async function createRemotePlayer(id, skin) {
 // Function to update a remote player's position
 function updateRemotePlayer(id, position, rotation) {
   const toUpdatePlayer = remotePlayers.find((player) => player.id === id);
-  console.log('array remote:', remotePlayers);
-
   if (toUpdatePlayer) {
     toUpdatePlayer.group.position.set(position.x, position.y, position.z);
     toUpdatePlayer.group.rotation.y = rotation;
@@ -661,7 +663,9 @@ function animate() {
     controls(deltaTime);
     updatePlayer(deltaTime);
     teleportPlayerIfOob();
-    rmPlayer.updateSocket(player);
+    if (player.group.room) {
+      rmPlayer.updateSocket(player);
+    }
   };
 
   if (mixer) {
@@ -669,7 +673,6 @@ function animate() {
 
     if (isWalking) {
       fadeToAction("Human Armature|Run", 0.2);
-      console.log("player on floor:",playerOnFloor)
       isIdle = false;
     }else if (isWalking === false && isIdle === false) {
       fadeToAction("Human Armature|Idle", 0.5);

@@ -19,6 +19,7 @@ export class remotePlayer{
 			h: this.playerGroup.rotation.y,
 			model: this.skinName,
 			id: this.id,
+			room: this.playerGroup.room,
 			// pb: this.object.rotation.x
 		});
 		console.log('rmPlayer data initialised')
@@ -33,6 +34,7 @@ export class remotePlayer{
 				y: playerGroup.position.y,
 				z: playerGroup.position.z,
 				h: playerGroup.rotation.y,
+				room: playerGroup.room,
 				model: this.skinName,
 				id: this.id,
 				// pb: this.object.rotation.x,

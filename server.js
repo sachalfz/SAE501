@@ -17,40 +17,80 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve static files from the 'characters' directory
-// app.use('/characters', express.static(path.join(__dirname, 'public', 'characters')));
+const MAX_PLAYERS_PER_ROOM = 2;
+const rooms = [];
+const usedCodes = new Set();
 
-// app.use('/characters', express.static(path.join(__dirname, 'characters')));
+function createRoom() {
+	const room = {
+	  id: generateUniqueRoomCode(usedCodes),
+	  players: [],
+	};
+	rooms.push(room);
+	return room;
+}
 
-const connectedPlayers = []
+function generateUniqueRoomCode(usedCodes) {
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
+	let code;
+  
+	do {
+	  code = '';
+	  for (let i = 0; i < 6; i++) {
+		const randomIndex = Math.floor(Math.random() * characters.length);
+		code += characters[randomIndex];
+	  }
+	} while (usedCodes.has(code));
+  
+	usedCodes.add(code);
+	return code;
+}
+  
+function findRoomByCode(code) {
+	return rooms.find(room => room.id === code);
+}
+
+function joinRoom(socket, room) {
+	socket.join(room.id);
+	socket.room = room.id;
+	room.players.push(socket.id);
+	console.log(`${socket.id} joined room ${room.id}`);
+}
+let room = undefined;
+
 io.sockets.on('connection', function(socket){
-	console.log(`${socket.id} connected`);
 
     socket.userData = { x: 0, y: 0, z: 0, heading: 0, model: '' }; // Set a default value for the model
-	// socket.onAny((eventName, ...args) => {
-	// 	console.log(eventName); // 'hello'
-	// 	console.log(args); // [ 1, '2', { 3: '4', 5: ArrayBuffer (1) [ 6 ] } ] 
-	// });
+
 	socket.emit('setId', { id:socket.id });
-	
-    socket.on('disconnect', function(){
-
-		// Find the index of the disconnected player in the connectedPlayers array
-		const index = connectedPlayers.findIndex(player => player.id === socket.id);
-
-		// If the player is found, remove it using splice
-		if (index !== -1) {
-			connectedPlayers.splice(index, 1);
-			console.log(connectedPlayers);
-
-			// Emit an event or perform any other necessary actions
-			io.emit('deletePlayer', { id: socket.id });
-
-			console.log('Player disconnected:', socket.id);
+	socket.on('joinRoom', function (data) {
+		
+		if (data) {
+			const roomCode = data.roomCode;
+			room = findRoomByCode(roomCode);
+			return;
+		} else if (rooms.length > 0) {
+			rooms.forEach(availableRoom => {
+				if (availableRoom.players.length > MAX_PLAYERS_PER_ROOM) {
+					room = availableRoom
+					console.log(availableRoom.id, 'is available')
+				}
+			});
+			return;
+		} else{
+			room = createRoom();
 		}
-
-    });	
 	
+		if (room.players.length < MAX_PLAYERS_PER_ROOM) {
+		  joinRoom(socket, room);
+		  socket.emit('roomJoined', { roomId: room.id});
+		  io.to(room.id).emit('playerJoined', { id: socket.id });
+		} else {
+		  // Inform the client that the room is full
+		  socket.emit('roomFull');
+		}
+	});
+
 	socket.on('init', function(data){
         socket.userData.model = data.model
 		socket.userData.x = data.x;
@@ -58,29 +98,52 @@ io.sockets.on('connection', function(socket){
 		socket.userData.z = data.z;
 		socket.userData.heading = data.h;
 		socket.userData.id = socket.id
-		console.log(socket.userData);
+		socket.userData.room = data.room
 		// socket.userData.pb = data.pb,
 		// socket.userData.action = "Idle";
-		connectedPlayers.push(socket.userData)
+		// const room = findRoomByCode(data.room);
+		const room = findRoomByCode(data.room);
+		room.players.push(socket.userData)
 	});
-	
+		
 	socket.on('update', function(data){
-		const foundPlayer = connectedPlayers.find(item => item.id === data.id);
-
-		if (foundPlayer) {
-			// Update the values of the found player with the new data
-			foundPlayer.x = data.x;
-			foundPlayer.y = data.y;
-			foundPlayer.z = data.z;
-			foundPlayer.heading = data.h;
-			foundPlayer.model = data.model;
+		const room = findRoomByCode(data.room);
+		if (room) {
+			const foundPlayer = room.players.find(item => item.id === data.id);
 			
-			// console.log('Player with ID:', data.id, 'updated');
-			// console.log(connectedPlayers)
-		} else {
-			// console.log('Player not found for ID:', data.id);
+			if (foundPlayer) {
+				// Update the values of the found player with the new data
+				foundPlayer.x = data.x;
+				foundPlayer.y = data.y;
+				foundPlayer.z = data.z;
+				foundPlayer.heading = data.h;
+				foundPlayer.model = data.model;
+				
+				// console.log('Player with ID:', data.id, 'updated');
+			} else {
+				console.log('Player not found for ID:', data.id);
+			}
 		}
 	});
+
+	socket.on('disconnect', function(){
+
+		const room = findRoomByCode(socket.userData.room);
+
+		if (room) {
+		  const index = room.players.indexOf(socket.id);
+		  if (index !== -1) {
+			room.players.splice(index, 1);
+			io.to(socket.room).emit('deletePlayer', { id: socket.id });
+			console.log(`${socket.id} disconnected from room ${socket.room}`);	
+			if (room.players.length === 0) {
+			  // Remove the empty room
+			  const roomIndex = rooms.indexOf(room);
+			  rooms.splice(roomIndex, 1);
+			}
+		  }
+		}
+    });
 });
 
 server.listen(3000, () => {
@@ -89,18 +152,25 @@ server.listen(3000, () => {
 
 setInterval(function(){
     let pack = [];
-    
-    for (const player of connectedPlayers) {
-        pack.push({
-            id: player.id,
-            x: player.x,
-            y: player.y,
-            z: player.z,
-			model: player.model,
-            heading: player.heading,
-        });
-    }
+	if (room) {
+		for (const player of room.players) {
+			pack.push({
+				id: player.id,
+				x: player.x,
+				y: player.y,
+				z: player.z,
+				model: player.model,
+				heading: player.heading,
+			});
+		}
+	}
+
 
     if (pack.length > 0) io.emit('remoteData', pack);
 
 }, 40);
+
+// socket.onAny((eventName, ...args) => {
+// 	console.log(eventName); // 'hello'
+// 	console.log(args); // [ 1, '2', { 3: '4', 5: ArrayBuffer (1) [ 6 ] } ] 
+// });
