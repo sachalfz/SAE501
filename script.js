@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { Octree } from 'three/addons/math/Octree.js';
 import { OctreeHelper } from 'three/addons/helpers/OctreeHelper.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
@@ -12,27 +11,6 @@ const container = document.getElementById('container');
 const renderer = initRenderer();
 const fillLight1 = initFillLight();
 const directionalLight = initDirLight();
-const floorOctree = new Octree();
-const playerVelocity = new THREE.Vector3();
-const stats = initStats();
-const clock = new THREE.Clock();
-
-const glbLoader = new GLTFLoader().setPath('./worlds/');
-const textureLoader = new THREE.TextureLoader().setPath('./covers/');
-const fbxLoader = new FBXLoader().setPath('./characters/')
-
-
-const keyStates = {};
-let truePlatform, fakePlatform1, fakePlatform2, fakePlatform3, fakePlatform4, fakePlatform5, fakePlatform6, fakePlatform7, fakePlatform8;
-let platformsOnScene = [];
-let playerOnFloor = false;
-let isWalking = false;
-let timeisup = false;
-let mixer;
-
-// Gravité et pas de simulation
-const GRAVITY = 30;
-const STEPS_PER_FRAME = 5;
 
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0, 5, 5);
@@ -40,72 +18,22 @@ camera.position.set(0, 5, 5);
 const viewpointCamera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
 viewpointCamera.position.set(0, 5, 5);
 
-// Rotation de la caméra
-const cameraRotation = {
-    x: 0,
-    y: 0,
-};
+const stats = initStats();
+const clock = new THREE.Clock();
 
-// Paramètres de la map
-const mapPath = 'collision-world.glb';
-const mapScale = 1;
+// Gravité et pas de simulation
+const GRAVITY = 30;
+const STEPS_PER_FRAME = 5;
 
-// Paramètres de joueur
-const cameraDistanceFromPlayer = 6;
-const playerWidth = 0.5;
-const playerHeight = 1;
-const playerDepth = 0.25;
-
-// Paramètre de platformes
-const platformWidth = 5;
-const platformHeight = 0.2;
-const platformDepth = 5;
-
-const positions = [
-    new THREE.Vector3(0, 2, 0),
-    new THREE.Vector3(7, 2, 0),
-    new THREE.Vector3(-7, 2, 0),
-    new THREE.Vector3(0, 2, 7),
-    new THREE.Vector3(7, 2, 7),
-    new THREE.Vector3(-7, 2, 7),
-    new THREE.Vector3(0, 2, -7),
-    new THREE.Vector3(7, 2, -7),
-    new THREE.Vector3(-7, 2, -7),
-];
-
-const images = [
-    'sexion.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-];
-
-// Create playerGeometry based on the variables
-const playerGeometry = new THREE.BoxGeometry(playerWidth, playerHeight, playerDepth);
-const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-const player = new THREE.Mesh(playerGeometry, playerMaterial);
-player.castShadow = true
-player.receiveShadow = true
-scene.add(player);
-player.position.set(0, playerHeight / 2, 0); // Set the position at the player's center
-
-// Calculate the half-height of the player
+// Octree pour les collisions
+const floorOctree = new Octree();
+const platformOctree = new Octree();
+var newPlatformOctree = new Octree();
+const emptyOctree = new Octree();
+let timeisup = false;
 
 
-// Use halfPlayerHeight for the capsule's start and end positions
-const playerCollider = new Capsule(
-  new THREE.Vector3(0, -1, 0),
-  new THREE.Vector3(0, playerHeight+1, 0),
-  playerWidth / 2 // Use playerWidth / 2 for the radius
-);
 
-
-// Fonctions d'initialisation
 function initScene(){
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x88ccee);
@@ -164,73 +92,122 @@ function initStats(){
   return stats
 }
 
+
+// Création du joueur
+const playerGeometry = new THREE.BoxGeometry(1, 2, 0.5);
+const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+const player = new THREE.Mesh(playerGeometry, playerMaterial);
+player.castShadow = true;
+player.receiveShadow = true;
+scene.add(player);
+player.position.set(0, 1, 0);
+
+// HITBOX du joueur
+const playerCollider = new Capsule(
+  new THREE.Vector3(0, 1.5, -0.25),
+  new THREE.Vector3(0, 2, 0.25),
+  0.5
+);
+
+// Vitesse du joueur et direction
+const playerVelocity = new THREE.Vector3();
+
+// État du joueur et gestion de la souris
+let playerOnFloor = false;
+const keyStates = {};
+
 function initEventListeners(){
-    document.addEventListener('keydown', function(event) {
-      keyStates[event.code] = true;
-    });
-    
-    document.addEventListener('keyup', (event) => {
-      keyStates[event.code] = false;
-    });
-    
-    container.addEventListener('mousedown', () => {
-      document.body.requestPointerLock();
-    });
-    
-    document.body.addEventListener('mousemove', (event) => {
-      if (document.pointerLockElement === document.body) {
-        const rotationSpeed = 0.003;
-        const deltaX = event.movementX * rotationSpeed;
-        const deltaY = event.movementY * rotationSpeed;
-        updateCameraRotation(deltaX, deltaY);
-      }
-    });
-    
-    // Gestion du redimensionnement de la fenêtre
-    window.addEventListener('resize', onWindowResize);  
+  document.addEventListener('keydown', function(event) {
+    keyStates[event.code] = true;
+  });
+  
+  document.addEventListener('keyup', (event) => {
+    keyStates[event.code] = false;
+  });
+  
+  container.addEventListener('mousedown', () => {
+    document.body.requestPointerLock();
+  });
+  
+  document.body.addEventListener('mousemove', (event) => {
+    if (document.pointerLockElement === document.body) {
+      const rotationSpeed = 0.003;
+      const deltaX = event.movementX * rotationSpeed;
+      const deltaY = event.movementY * rotationSpeed;
+      updateCameraPosition(deltaX, deltaY);
+    }
+  });
+  
+  // Gestion du redimensionnement de la fenêtre
+  window.addEventListener('resize', onWindowResize);  
 }
 
-// Fonction pour téléporter le joueur s'il sort de la zone
-function teleportPlayerIfOob() {
-  if (player.position.y <= -25) {
-    playerCollider.start.set(0, 0.35, 0);
-    playerCollider.end.set(0, 1, 0);
-    playerCollider.radius = 0.35;
-    player.position.copy(playerCollider.end);
-    player.rotation.set(0, 0, 0);
-  }
-}
 
-function onWindowResize() {
-  viewpointCamera.aspect = window.innerWidth / window.innerHeight;
-  viewpointCamera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
+// Rotation de la caméra
+const cameraRotation = {
+  x: 0,
+  y: 0,
+};
 
 // Met à jour la position de la caméra en fonction de la rotation
-function updateCameraRotation(deltaX, deltaY) {
-    const rotationSpeed = 0.5;
-    cameraRotation.x -= deltaX * rotationSpeed;
-    cameraRotation.y -= -deltaY * rotationSpeed;
-    cameraRotation.y = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.y));
-    const spherical = new THREE.Spherical(cameraDistanceFromPlayer, cameraRotation.y, cameraRotation.x);
-    const position = new THREE.Vector3().setFromSpherical(spherical);
-    viewpointCamera.position.copy(position);
-    viewpointCamera.lookAt(player.position);
+function updateCameraPosition(deltaX, deltaY) {
+  const rotationSpeed = 0.5;
+  cameraRotation.x -= deltaX * rotationSpeed;
+  cameraRotation.y -= -deltaY * rotationSpeed;
+  cameraRotation.y = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.y));
+  const distanceFromPlayer = 10;
+  const spherical = new THREE.Spherical(distanceFromPlayer, cameraRotation.y, cameraRotation.x);
+  const position = new THREE.Vector3().setFromSpherical(spherical);
+  viewpointCamera.position.copy(position);
+  viewpointCamera.lookAt(player.position);
 }
 
 // Met à jour la position de la caméra relative au joueur
 function updateViewpointCameraPosition() {
-  const offsetX = cameraDistanceFromPlayer * Math.sin(cameraRotation.x) * Math.cos(cameraRotation.y);
-  const offsetY = cameraDistanceFromPlayer * Math.sin(cameraRotation.y);
-  const offsetZ = cameraDistanceFromPlayer * Math.cos(cameraRotation.x) * Math.cos(cameraRotation.y);
+  const distanceFromPlayer = 10;
+  const offsetX = distanceFromPlayer * Math.sin(cameraRotation.x) * Math.cos(cameraRotation.y);
+  const offsetY = distanceFromPlayer * Math.sin(cameraRotation.y);
+  const offsetZ = distanceFromPlayer * Math.cos(cameraRotation.x) * Math.cos(cameraRotation.y);
   const position = new THREE.Vector3().set(player.position.x + offsetX, player.position.y + offsetY, player.position.z + offsetZ);
   viewpointCamera.position.copy(position);
   viewpointCamera.lookAt(player.position);
 }
 
+// Fonction pour gérer les collisions du joueur
+// function playerCollisions() {
+//   const floorCollider = floorOctree.capsuleIntersect(playerCollider);
+//   const platformCollider = platformOctree.capsuleIntersect(playerCollider);
+//   const newPlatformCollider = newPlatformOctree.capsuleIntersect(playerCollider);
+//   playerOnFloor = false;
+
+//   if (floorCollider) {
+//     playerOnFloor = floorCollider.normal.y > 0;
+//     if (!playerOnFloor) {
+//       playerVelocity.addScaledVector(floorCollider.normal, -floorCollider.normal.dot(playerVelocity));
+//     }
+//     playerCollider.translate(floorCollider.normal.multiplyScalar(floorCollider.depth));
+
+//   } 
+//   else if (platformCollider && !timeisup) {
+//     playerOnFloor = platformCollider.normal.y > 0;
+//     if (!playerOnFloor) {
+//       playerVelocity.addScaledVector(platformCollider.normal, -platformCollider.normal.dot(playerVelocity));
+//     }
+//     playerCollider.translate(platformCollider.normal.multiplyScalar(platformCollider.depth));
+//   } 
+//   else if (newPlatformCollider && timeisup) {
+//     playerOnFloor = newPlatformCollider.normal.y > 0;
+//     if (!playerOnFloor) {
+//       playerVelocity.addScaledVector(newPlatformCollider.normal, -newPlatformCollider.normal.dot(playerVelocity));
+//     }
+//     playerCollider.translate(newPlatformCollider.normal.multiplyScalar(newPlatformCollider.depth));
+//   }
+// }
+
 function playerCollisions() {
   const floorCollider = floorOctree.capsuleIntersect(playerCollider);
+  const platformCollider = platformOctree.capsuleIntersect(playerCollider);
+  const newPlatformCollider = newPlatformOctree.capsuleIntersect(playerCollider);
   playerOnFloor = false;
 
   if (floorCollider) {
@@ -241,39 +218,20 @@ function playerCollisions() {
     playerCollider.translate(floorCollider.normal.multiplyScalar(floorCollider.depth));
 
   } 
-}
-
-function checkPlatformsCollisions(platforms){
-    platforms.forEach(platform => {
-
-        const playerBox = new THREE.Box3().setFromObject(player);
-        const boxBox = new THREE.Box3().setFromObject(platform);
-
-        // Check if the player's bounding box intersects with the box's bounding box
-        const collision = playerBox.intersectsBox(boxBox);
-
-        if (collision) {
-            // If there is a collision, check if the player is above the box's top face
-            const playerPosition = player.position;
-            const boxPosition = platform.position;
-
-            if (playerPosition.y >= boxPosition.y + platform.geometry.parameters.height / 2) {
-            // The player is on top of the box
-            playerVelocity.y = 0;
-            const boxPosition = platform.position;
-            const yCoordinates = boxPosition.y + platform.geometry.parameters.height / 2 + player.geometry.parameters.height / 2;
-            player.position.set(player.position.x, yCoordinates, player.position.z );
-            playerOnFloor = true;
-            } else if (playerPosition.y <= boxPosition.y + platform.geometry.parameters.height / 2){
-            
-            const boxPosition = platform.position;
-            const yCoordinates = boxPosition.y - platform.geometry.parameters.height / 2 - player.geometry.parameters.height / 2;
-            player.position.set(player.position.x, yCoordinates, player.position.z );
-            playerVelocity.y = -1;
-
-            }
-        }
-    });
+  else if (platformCollider && !timeisup) {
+    playerOnFloor = platformCollider.normal.y > 0;
+    if (!playerOnFloor) {
+      playerVelocity.addScaledVector(platformCollider.normal, -platformCollider.normal.dot(playerVelocity));
+    }
+    playerCollider.translate(platformCollider.normal.multiplyScalar(platformCollider.depth));
+  } 
+  else if (newPlatformCollider && timeisup) {
+    playerOnFloor = newPlatformCollider.normal.y > 0;
+    if (!playerOnFloor) {
+      playerVelocity.addScaledVector(newPlatformCollider.normal, -newPlatformCollider.normal.dot(playerVelocity));
+    }
+    playerCollider.translate(newPlatformCollider.normal.multiplyScalar(newPlatformCollider.depth));
+  }
 }
 
 // Met à jour la position du joueur
@@ -287,19 +245,19 @@ function updatePlayer(deltaTime) {
   const deltaPosition = playerVelocity.clone().multiplyScalar(deltaTime);
   playerCollider.translate(deltaPosition);
   playerCollisions();
-  checkPlatformsCollisions(platformsOnScene)
-  player.position.copy(playerCollider.start);
+  player.position.copy(playerCollider.end);
+  player.position.copy(playerCollider.end);
 }
 
 function updatePlayerRotation() { 
-    // Calculate the rotation angle based on the camera's rotation
-    const playerAngle = Math.atan2(
-      viewpointCamera.position.x - player.position.x,
-      viewpointCamera.position.z - player.position.z
-    );
-  
-    // Apply the rotation to the player mesh
-    player.rotation.set(0, playerAngle, 0);
+  // Calculate the rotation angle based on the camera's rotation
+  const playerAngle = Math.atan2(
+    viewpointCamera.position.x - player.position.x,
+    viewpointCamera.position.z - player.position.z
+  );
+
+  // Apply the rotation to the player mesh
+  player.rotation.set(0, playerAngle, 0);
 }
 
 // Obtient le vecteur de direction vers l'avant
@@ -325,25 +283,18 @@ function controls(deltaTime) {
 
   if (keyStates['KeyW']) {
     playerVelocity.add(getForwardVector().multiplyScalar(-speedDelta));
-    isWalking = true;
-
   }
 
   if (keyStates['KeyS']) {
     playerVelocity.add(getForwardVector().multiplyScalar(speedDelta));
-    isWalking = true;
-
   }
 
   if (keyStates['KeyA']) {
     playerVelocity.add(getSideVector().multiplyScalar(speedDelta));
-    isWalking = true;
-
   }
 
   if (keyStates['KeyD']) {
     playerVelocity.add(getSideVector().multiplyScalar(-speedDelta));
-    isWalking = true;
   }
 
   if (keyStates['KeyY']) {
@@ -360,115 +311,184 @@ function controls(deltaTime) {
   }
 }
 
+// Chargement du modèle 3D
+const glbLoader = new GLTFLoader().setPath('./');
+
+glbLoader.load('collision-world.glb', (gltf) => {
+  scene.add(gltf.scene);
+  floorOctree.fromGraphNode(gltf.scene);
+
+  gltf.scene.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+      if (child.material.map) {
+        child.material.map.anisotropy = 4;
+      }
+    }
+  });
+
+  const helper = new OctreeHelper(floorOctree);
+  helper.visible = false;
+  scene.add(helper);
+
+  const gui = new GUI({ width: 200 });
+  gui.add({ debug: false }, 'debug').onChange(function (value) {
+    helper.visible = value;
+  });
+
+  generateAllPlatforms(platformWidth, platformHeight, platformDepth, images, positions);
+  initEventListeners();
+  animate();
+});
+
 function createPlatformWithImage(width, height, depth, imagePath, position) {
-    // Load the image texture
-    const texture = textureLoader.load(imagePath);
-  
-    // Create the visual part of the platform
-    const platformGeometry = new THREE.BoxGeometry(width, height, depth);
-    const platformMaterial = new THREE.MeshBasicMaterial({ map: texture });
-    const platformMesh = new THREE.Mesh(platformGeometry, platformMaterial);
-    platformMesh.castShadow = true;
-    platformMesh.receiveShadow = true;
-    platformMesh.position.copy(position);
-    platformsOnScene.push(platformMesh)
-  
-    return platformMesh;
+  // Load the image texture
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load(imagePath);
+
+  // Create the visual part of the platform
+  const platformGeometry = new THREE.BoxGeometry(width, height, depth);
+  const platformMaterial = new THREE.MeshBasicMaterial({ map: texture });
+  const platformMesh = new THREE.Mesh(platformGeometry, platformMaterial);
+  platformMesh.castShadow = true;
+  platformMesh.receiveShadow = true;
+  platformMesh.position.copy(position);
+  platformOctree.fromGraphNode(platformMesh);
+
+  return platformMesh;
 }
-  
+const platforms = [];
+// Usage of the function to create a platform
+const platformWidth = 5;
+const platformHeight = 0.2;
+const platformDepth = 5;
+
+const positions = [
+  new THREE.Vector3(0, 2, 0),
+  new THREE.Vector3(7, 2, 0),
+  new THREE.Vector3(-7, 2, 0),
+  new THREE.Vector3(0, 2, 7),
+  new THREE.Vector3(7, 2, 7),
+  new THREE.Vector3(-7, 2, 7),
+  new THREE.Vector3(0, 2, -7),
+  new THREE.Vector3(7, 2, -7),
+  new THREE.Vector3(-7, 2, -7),
+];
+const images = [
+  'covers/sexion.jpg',
+  'covers/iam.jpg',
+  'covers/iam.jpg',
+  'covers/iam.jpg',
+  'covers/iam.jpg',
+  'covers/iam.jpg',
+  'covers/iam.jpg',
+  'covers/iam.jpg',
+  'covers/iam.jpg',
+]
+
+
+
+let truePlatform, fakePlatform1, fakePlatform2, fakePlatform3, fakePlatform4, fakePlatform5, fakePlatform6, fakePlatform7, fakePlatform8;
+
 function generateAllPlatforms (platformWidth, platformHeight, platformDepth, images, positions){
-    const shuffledPositions = positions.sort((a, b) => 0.5 - Math.random());
+  const shuffledPositions = positions.sort((a, b) => 0.5 - Math.random());
 
-    truePlatform = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[0], shuffledPositions[0]);
-    platformsOnScene.push(truePlatform);
-    scene.add(truePlatform);
-
-    fakePlatform1 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[1], shuffledPositions[1]);
-    platformsOnScene.push(fakePlatform1);
-    scene.add(fakePlatform1);
-
-    fakePlatform2 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[2], shuffledPositions[2]);
-    platformsOnScene.push(fakePlatform2);
-    scene.add(fakePlatform2);
-
-    fakePlatform3 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[3], shuffledPositions[3]);
-    platformsOnScene.push(fakePlatform3);
-    scene.add(fakePlatform3);
-
-    fakePlatform4 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[4], shuffledPositions[4]);
-    platformsOnScene.push(fakePlatform4);
-    scene.add(fakePlatform4);
-
-    fakePlatform5 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[5], shuffledPositions[5]);
-    platformsOnScene.push(fakePlatform5);
-    scene.add(fakePlatform5);
-
-    fakePlatform6 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[6], shuffledPositions[6]);
-    platformsOnScene.push(fakePlatform6);
-    scene.add(fakePlatform6);
-
-    fakePlatform7 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[7], shuffledPositions[7]);
-    platformsOnScene.push(fakePlatform7);
-    scene.add(fakePlatform7);
-
-    fakePlatform8 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[8], shuffledPositions[8]);
-    platformsOnScene.push(fakePlatform8);
-    scene.add(fakePlatform8);
-
-    timeisup = false;
-}
+  truePlatform = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[0], shuffledPositions[0]);
+  platforms.push(truePlatform);
+  scene.add(truePlatform);
   
+  fakePlatform1 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[1], shuffledPositions[1]);
+  platforms.push(fakePlatform1);
+  scene.add(fakePlatform1);
+  
+  fakePlatform2 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[2], shuffledPositions[2]);
+  platforms.push(fakePlatform2);
+  scene.add(fakePlatform2);
+  
+  fakePlatform3 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[3], shuffledPositions[3]);
+  platforms.push(fakePlatform3);
+  scene.add(fakePlatform3);
+  
+  fakePlatform4 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[4], shuffledPositions[4]);
+  platforms.push(fakePlatform4);
+  scene.add(fakePlatform4);
+  
+  fakePlatform5 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[5], shuffledPositions[5]);
+  platforms.push(fakePlatform5);
+  scene.add(fakePlatform5);
+  
+  fakePlatform6 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[6], shuffledPositions[6]);
+  platforms.push(fakePlatform6);
+  scene.add(fakePlatform6);
+  
+  fakePlatform7 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[7], shuffledPositions[7]);
+  platforms.push(fakePlatform7);
+  scene.add(fakePlatform7);
+  
+  fakePlatform8 = createPlatformWithImage(platformWidth, platformHeight, platformDepth, images[8], shuffledPositions[8]);
+  platforms.push(fakePlatform8);
+  scene.add(fakePlatform8);
+
+  timeisup = false;
+}
+
+console.log(platforms);
+function removePlatform(platformToRemove) {
+  const platformIndex = platforms.indexOf(platformToRemove);
+  if (platformIndex !== -1) {
+      console.log("A platform was removed");
+      platforms.splice(platformIndex, 1); // Retirer la plateforme du tableau
+      platforms.forEach(element => {
+        newPlatformOctree.fromGraphNode(element);
+      });
+      timeisup = true;
+      scene.remove(platformToRemove); // Supprimer la plateforme de la scène
+  } else {
+      console.log("Platform not found in the array.");
+  }
+}
+
+
 function keepOnePlatform(platformToKeep) {
 
-    if (platformsOnScene.includes(platformToKeep)) {
+  if (platforms.includes(platformToKeep)) {
 
-    const platformsToRemove = platformsOnScene.filter(platform => platform !== platformToKeep);
+    const platformsToRemove = platforms.filter(platform => platform !== platformToKeep);
     platformsToRemove.forEach(platformToRemove => {
-        const platformIndex = platformsOnScene.indexOf(platformToRemove);
+        const platformIndex = platforms.indexOf(platformToRemove);
         if (platformIndex !== -1) {
-            platformsOnScene.splice(platformIndex, 1); // remove 1 element at index "platformIndex"
-            scene.remove(platformsOnScene[platformIndex])
+            scene.remove(platformToRemove); // Supprimer la plateforme de la scène
             console.log("A platform was removed from the scene");
         }
-        console.log(platformsOnScene)
+        console.log(platformsToRemove)
     });
-    const platformIndex = platformsOnScene.indexOf(platformToKeep);
-    scene.add(platformsOnScene[platformIndex])
+
+    const platformIndex = platforms.indexOf(platformToKeep);
+    newPlatformOctree.fromGraphNode(platforms[platformIndex]);
     timeisup = true;
 
-    } else {
-        console.log("Platform not found in the array.");
-    }
+  } else {
+      console.log("Platform not found in the array.");
+  }
 }
-// Chargement du modèle 3D
-glbLoader.load(mapPath, (gltf) => {
-    gltf.scene.scale.set(mapScale, mapScale, mapScale); // Scale the model by a factor of 2 in all directions
-    scene.add(gltf.scene);
-    floorOctree.fromGraphNode(gltf.scene);
-  
-    gltf.scene.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        if (child.material.map) {
-          child.material.map.anisotropy = 4;
-        }
-      }
-    });
-  
-    const helper = new OctreeHelper(floorOctree);
-    helper.visible = false;
-    scene.add(helper);
-  
-    const gui = new GUI({ width: 200 });
-    gui.add({ debug: false }, 'debug').onChange(function (value) {
-      helper.visible = value;
-    });
-  
-    initEventListeners();
-    generateAllPlatforms(platformWidth, platformHeight, platformDepth, images, positions);
-    animate();
-});
+
+// Fonction pour téléporter le joueur s'il sort de la zone
+function teleportPlayerIfOob() {
+  if (player.position.y <= -25) {
+    playerCollider.start.set(0, 0.35, 0);
+    playerCollider.end.set(0, 1, 0);
+    playerCollider.radius = 0.35;
+    player.position.copy(playerCollider.end);
+    player.rotation.set(0, 0, 0);
+  }
+}
+
+function onWindowResize() {
+  viewpointCamera.aspect = window.innerWidth / window.innerHeight;
+  viewpointCamera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
 // Boucle d'animation
 function animate() {
@@ -479,12 +499,6 @@ function animate() {
     updatePlayer(deltaTime);
     teleportPlayerIfOob();
   }
-  if (mixer && isWalking) {
-    mixer.update(deltaTime*4);
-  }
-  isWalking = false;
-  checkPlatformsCollisions(platformsOnScene)
-  // updatePlayerPosition();
   updateViewpointCameraPosition();
   updatePlayerRotation();
 
@@ -493,5 +507,3 @@ function animate() {
   stats.update();
   requestAnimationFrame(animate);
 }
-
-
