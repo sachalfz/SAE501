@@ -1,16 +1,18 @@
 import * as THREE from 'three';
 import { Capsule } from 'three/addons/math/Capsule.js';
 
+
 export class Player {
-    constructor(width, height, depth, skin) {
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
+    constructor(skin, skinName) {
+        this.width = 0.6;
+        this.height = 1.51;
+        this.depth = 1;
         this.velocity = new THREE.Vector3();
         this.hitbox = this.createHitbox();
         this.collider = this.createCollider();
         this.skin = skin; // You can set this when loading the player's skin
         this.group = this.createPlayerGroup();
+        this.skinName = skinName
     }
   
     createHitbox() {
