@@ -222,12 +222,16 @@ const rmPlayer = new remotePlayer(player, socket);
 socket.on('setId', function(data){
   rmPlayer.id = data.id;
   socket.emit('joinRoom');
-});
+  console.log('id set:', rmPlayer.id);
 
+});
+let room = null;
 socket.on('roomJoined', function(data){
   player.group.room = data.roomId;
   console.log(player.group.room);
-  rmPlayer.initSocket();
+  room = player.group.room;
+  rmPlayer.initSocket(room);
+  console.log('room joined:', player.group.room);
 });
 
 // Map of remote players
