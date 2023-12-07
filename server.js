@@ -17,10 +17,30 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/room', express.static(path.join(__dirname, 'public')));
 
 const MAX_PLAYERS_PER_ROOM = 2;
 const rooms = [];
 const usedCodes = new Set();
+
+// Lobby route
+app.get('/', (req, res) => {
+	res.sendFile(path.join(__dirname, 'public', 'lobby.html')); // Replace 'lobby.html' with your lobby file
+});
+  
+app.get('/room/:roomCode', (req, res) => {
+	const room = findRoomByCode(req.params.roomCode);
+	if (room) {
+		res.sendFile(path.join(__dirname, 'public', 'game.html')); // Replace 'game.html' with your game file
+	} else {
+		res.status(404).send('Room not found');
+	}
+});
+
+app.get('/getRandomRoom', (req, res) => {
+	const availableRoom = findAvailableRoom();
+	res.json(availableRoom);
+});
 
 
 io.sockets.on('connection', function(socket){
@@ -184,6 +204,12 @@ function joinRoom(socket, room) {
 	console.log(`${socket.id} joined room ${room.id}`);
 }
 
+function findAvailableRoom() {
+	// Find the first room with available space
+	const availableRoom = rooms.find((room) => room.players.length < MAX_PLAYERS_PER_ROOM);
+  
+	return availableRoom;
+}
 // socket.onAny((eventName, ...args) => {
 // 	console.log(eventName); // 'hello'
 // 	console.log(args); // [ 1, '2', { 3: '4', 5: ArrayBuffer (1) [ 6 ] } ] 

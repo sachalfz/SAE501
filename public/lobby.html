@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Lobby</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+
+    input {
+      padding: 8px;
+      margin: 5px;
+    }
+
+    button {
+      padding: 10px;
+      margin: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Game Lobby</h1>
+
+  <label for="roomCode">Enter Game Code:</label>
+  <input type="text" id="roomCode" placeholder="Enter room code">
+  <button onclick="joinRoom()">Join Game</button>
+
+  <button onclick="joinRandomRoom()">Join Random Game</button>
+
+  <script>
+    function joinRoom() {
+      const roomCode = document.getElementById('roomCode').value;
+      if (roomCode.trim() !== '') {
+        window.location.href = '/room/' + roomCode;
+      }
+    }
+
+    function joinRandomRoom() {
+        // Check if there's an available room
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+              const availableRoom = JSON.parse(xhr.responseText);
+              if (availableRoom) {
+                window.location.href = '/room/' + availableRoom.id;
+              } else {
+                alert("No available rooms. Creating a new one.");
+                createNewRoomAndJoin();
+              }
+            } else {
+              console.error(xhr.statusText);
+            }
+          }
+        };
+        xhr.open('GET', '/getRandomRoom', true);
+        xhr.send();
+      }
+  </script>
+</body>
+</html>
