@@ -24,31 +24,43 @@ const usedCodes = new Set();
 
 
 io.sockets.on('connection', function(socket){
-
+	console.log('a user connected w/ id:', socket.id);
     socket.userData = { x: 0, y: 0, z: 0, heading: 0, model: '' }; // Set a default value for the model
 
 	socket.emit('setId', { id:socket.id });
 	socket.on('joinRoom', function (data) {
+		console.log('trying to join a room', data);
 		let room;
-
-		if (data) {
-			const roomCode = data.roomCode;
-			room = findRoomByCode(roomCode);
-			return; // Exit the if block without ending the entire function
+	
+		if (data && data.roomCode) {
+			room = findRoomByCode(data.roomCode);
+			console.log('Room found w/ code:', data.roomCode);
 		} else if (rooms.length > 0) {
+			console.log('Rooms available:', rooms);
+			// Use a flag to track if a room is found
+			let roomFound = false;
+	
 			rooms.forEach(availableRoom => {
-				if (availableRoom.players.length > MAX_PLAYERS_PER_ROOM) {
-					room = availableRoom
-					console.log(availableRoom.id, 'is available')
-					return; // Exit the forEach block without ending the entire function
+				console.log('Checking room:', availableRoom.id);
+	
+				if (availableRoom.players.length < MAX_PLAYERS_PER_ROOM && !roomFound) {
+					room = availableRoom;
+					console.log(availableRoom.id, 'is available');
+					roomFound = true; // Set the flag to true to avoid overwriting 'room'
+				} else {
+					console.log(availableRoom.id, 'is full');
 				}
 			});
-			return; // Exit the if block without ending the entire function
+	
+			if (!roomFound) {
+				room = createRoom();
+				console.log('Created room:', room.id);
+			}
 		} else {
 			room = createRoom();
+			console.log('Created room:', room.id);
 		}
-
-		console.log(room.players);
+	
 		if (room.players.length < MAX_PLAYERS_PER_ROOM) {
 			joinRoom(socket, room);
 			io.to(room.id).emit('roomJoined', { roomId: room.id });
@@ -167,7 +179,7 @@ function findRoomByCode(code) {
 
 function joinRoom(socket, room) {
 	socket.join(room.id);
-	socket.room = room.id;
+	// socket.room = room.id;
 	// room.players.push(socket.id);
 	console.log(`${socket.id} joined room ${room.id}`);
 }

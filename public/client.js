@@ -221,12 +221,13 @@ const rmPlayer = new remotePlayer(player, socket);
 
 socket.on('setId', function(data){
   rmPlayer.id = data.id;
-  socket.emit('joinRoom');
+  socket.emit('joinRoom', { roomId: '5QCYMH' });
   console.log('id set:', rmPlayer.id);
 
 });
 let room = null;
 socket.on('roomJoined', function(data){
+  console.log('room joined:', data.roomId);
   player.group.room = data.roomId;
   console.log(player.group.room);
   room = player.group.room;
