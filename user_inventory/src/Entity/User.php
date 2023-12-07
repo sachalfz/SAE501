@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,7 +37,7 @@ class User implements PasswordAuthenticatedUserInterface
 
     public function getEmail(): ?string
     {
-        return $this->email;
+        return (string) $this->email;
     }
 
     public function setEmail(string $email): static
@@ -86,4 +87,31 @@ class User implements PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    // public function eraseCredentials(): void
+    // {
+    //     // Si vous avez besoin de supprimer des informations sensibles stockées sur l'utilisateur,
+    //     // cette méthode peut être utilisée pour effacer ces données.
+    //     // Cependant, cela n'est pas souvent nécessaire pour un utilisateur standard.
+    //     // Vous pouvez laisser cette méthode vide pour la plupart des cas.
+    // }
+
+    // public function getUserIdentifier(): string
+    // {
+    //     // Cette méthode doit retourner l'identifiant unique de l'utilisateur.
+    //     // Dans votre cas, retournez l'adresse e-mail de l'utilisateur.
+    //     return (string) $this->email;
+    // }
+
+    // public function getSalt(): ?string
+    // {
+    //     // Retournez le sel utilisé pour le hachage du mot de passe, si nécessaire
+    //     return null;
+    // }
+
+    // public function getUsername(): string
+    // {
+    //     // Retournez l'identifiant de l'utilisateur (par exemple, l'adresse e-mail)
+    //     return (string) $this->email;
+    // }
 }
