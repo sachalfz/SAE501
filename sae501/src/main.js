@@ -17,6 +17,7 @@ import 'jquery'
 const app = createApp(App)
 
 app.use(router)
+store.dispatch('initializeApp')
 app.use(store)
 
 app.mount('#app')

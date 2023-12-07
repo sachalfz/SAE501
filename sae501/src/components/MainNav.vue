@@ -32,12 +32,20 @@
       </router-link>
 
       <router-link v-if="user && user.isAuthenticated" :to="`/account/${user.id}`" class="nav--cat">
-        <img :src="this.user.inventory.profilepicture" alt="Profile pic" height="36" class="nav--img">
+        <img :src="user.inventory.profilepicture" alt="Profile pic" height="36" class="nav--img">
         <p class="nav--text">ACCOUNT</p>
       </router-link>
 
-      <router-link v-else to="/login" class="nav--cat">
+      <router-link v-else-if="!(user && user.isAuthenticated)" to="/login" class="nav--cat">
         <p class="nav--text">LOGIN</p>
+      </router-link>
+
+      <router-link v-if="user && user.isAuthenticated" to="/logout" class="nav--cat">
+        <p class="nav--text">LOGOUT</p>
+      </router-link>
+
+      <router-link v-if="!(user && user.isAuthenticated)" to="/register" class="nav--cat">
+        <p class="nav--text">REGISTER</p>
       </router-link>
   </div>
 </template>

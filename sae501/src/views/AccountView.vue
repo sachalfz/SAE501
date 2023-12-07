@@ -4,21 +4,11 @@ import AccountStats from '../components/AccountStats.vue';
 import AccountInventory from '../components/AccountInventory.vue';
 </script>
 
-<script>
-export default {
-    props: {
-        randomUser: Object,
-        inventory: Object,
-        basePath: String,
-    },
-};
-</script>
-
 <template>
     <div class="view account">
-        <AccountHead :randomUser="randomUser" :inventory="inventory"/>
-        <AccountStats :randomUser="randomUser" :inventory="inventory"/>
-        <AccountInventory :randomUser="randomUser" :inventory="inventory"/>
+        <AccountHead/>
+        <AccountStats/>
+        <AccountInventory/>
     </div>
     
 </template>

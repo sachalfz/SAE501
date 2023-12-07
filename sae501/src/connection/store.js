@@ -12,7 +12,13 @@ const store = createStore({
   mutations: {
     setUser(state, user) {
       state.user = user;
-      state.isAuthenticated = true;
+      state.isAuthenticated = !!user; // Mettre à jour l'état d'authentification en fonction de la présence de l'utilisateur
+  
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user)); // Stocker les informations de l'utilisateur dans LocalStorage
+      } else {
+        localStorage.removeItem('user'); // Supprimer les informations de l'utilisateur si l'utilisateur est déconnecté
+      }
     },
     logout(state) {
       state.user = null;
@@ -20,6 +26,13 @@ const store = createStore({
     },
   },
   actions: {
+
+    initializeApp({ commit }) {
+      const user = localStorage.getItem('user');
+      if (user) {
+        commit('setUser', JSON.parse(user));
+      }
+    },
 
     async login({ commit }, { email, password }) {
       try {
