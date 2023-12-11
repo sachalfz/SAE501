@@ -40,27 +40,34 @@
       }
     }
 
-    function joinRandomRoom() {
-        // Check if there's an available room
-        const xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-              const availableRoom = JSON.parse(xhr.responseText);
-              if (availableRoom) {
-                window.location.href = '/room/' + availableRoom.id;
-              } else {
-                alert("No available rooms. Creating a new one.");
-                createNewRoomAndJoin();
-              }
+    async function joinRandomRoom() {
+      try {
+        const response = await fetch('/getRandomRoom');
+        
+        if (response.ok) {
+          const responseBody = await response.text();
+    
+          if (responseBody.trim() !== "") {
+            const availableRoom = JSON.parse(responseBody);
+    
+            if (availableRoom) {
+              console.log("Redirecting to room:", availableRoom);
+              window.location.href = '/room/' + availableRoom;
             } else {
-              console.error(xhr.statusText);
+              alert("No available rooms.");
             }
+          } else {
+            console.error("Response body is empty.");
           }
-        };
-        xhr.open('GET', '/getRandomRoom', true);
-        xhr.send();
+        } else {
+          console.error("Failed to get a random room. Status: " + response.status);
+        }
+      } catch (error) {
+        console.error("Error during the fetch operation:", error);
       }
+    }
+    
+    
   </script>
 </body>
 </html>

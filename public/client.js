@@ -520,6 +520,7 @@ function updatePlayerRotation() {
     // Apply the rotation to the player mesh
     player.group.rotation.set(0, playerAngle, 0); // Update player's group rotation}
 }
+
 function generateAllPlatforms (platformWidth, platformHeight, platformDepth, images, positions){
   const shuffledPositions = positions.sort((a, b) => 0.5 - Math.random());
 

@@ -38,8 +38,8 @@ app.get('/room/:roomCode', (req, res) => {
 });
 
 app.get('/getRandomRoom', (req, res) => {
-	const availableRoom = findAvailableRoom();
-	res.json(availableRoom);
+	const availableRoomID = findAvailableRoom();
+	res.json(availableRoomID);
 });
 
 
@@ -205,10 +205,17 @@ function joinRoom(socket, room) {
 }
 
 function findAvailableRoom() {
+	let roomID;
 	// Find the first room with available space
 	const availableRoom = rooms.find((room) => room.players.length < MAX_PLAYERS_PER_ROOM);
+	if (availableRoom) {
+		roomID = availableRoom.id;
+	} else {
+		const room = createRoom();
+		roomID = room.id;
+	}
   
-	return availableRoom;
+	return roomID;
 }
 // socket.onAny((eventName, ...args) => {
 // 	console.log(eventName); // 'hello'
