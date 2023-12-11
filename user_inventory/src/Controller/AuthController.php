@@ -9,17 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 class AuthController extends AbstractController
 {
     private $authenticationService;
-    private $jwtManager;
 
-    public function __construct(AuthenticationService $authenticationService, JWTTokenManagerInterface $jwtManager)
+    public function __construct(AuthenticationService $authenticationService)
     {
         $this->authenticationService = $authenticationService;
-        $this->jwtManager = $jwtManager;
     }
 
     /**
@@ -42,15 +39,6 @@ public function login(Request $request): Response
         return $this->json(['message' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
     }
 
-    // $token = $this->generateToken($authenticatedUser); // Utilisez une méthode pour générer le token
-
     return $this->json(['message' => 'Login successful', 'user' => $authenticatedUser], Response::HTTP_OK);
 }
-
-    // private function generateToken(UserInterface $user): string
-    // {
-    //     $token = $this->jwtManager->create($user);
-
-    //     return $token;
-    // }
 }
