@@ -113,6 +113,16 @@ const store = createStore({
       }
     }
   },
+
+  getters: {
+    getUser(state) {
+      return state.user;
+    },
+    getInventory(state) {
+      return state.inventory;
+    },
+    // Autres getters
+  },
 });
 
 export default store;

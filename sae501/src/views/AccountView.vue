@@ -9,7 +9,6 @@ import AccountInventory from '../components/AccountInventory.vue';
         <AccountHead/>
         <AccountStats/>
         <AccountInventory/>
-    </div>
-    
+    </div> 
 </template>
 

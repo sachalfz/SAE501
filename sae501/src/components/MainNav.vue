@@ -33,7 +33,7 @@
 
       <router-link v-if="user && user.isAuthenticated" :to="`/account/${user.id}`" class="nav--cat">
         <img :src="user.inventory.profilepicture" alt="Profile pic" height="36" class="nav--img">
-        <p class="nav--text">ACCOUNT</p>
+        <p class="nav--text">{{ user.inventory.streamz }}</p>
       </router-link>
 
       <router-link v-else-if="!(user && user.isAuthenticated)" to="/login" class="nav--cat">
