@@ -1,16 +1,23 @@
-import * as THREE from 'three';
-import Stats from 'three/addons/libs/stats.module.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-import { Octree } from 'three/addons/math/Octree.js';
-import { OctreeHelper } from 'three/addons/helpers/OctreeHelper.js';
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { Player } from './classes/playerClass.js';
-import { Platform } from './classes/platformClass.js';
-import { remotePlayer } from './classes/remotePlayerClass.js';
+import * as THREE from "./node_modules/three/build/three.module.min.js";
+    // {
+    //   "imports": {
+    //     "m-1": "./module-1.js",
+    //     "m-2": "./module-2.js"
+    //   }
+    // }
 
+import three from "./node_modules/three/build/three.module.min.js";
+import { Stats } from './node_modules/three/examples/jsm/libs/stats.module.js';
+import { FontLoader } from './node_modules/three/examples/jsm/loaders/FontLoader.js';
+import { FBXLoader } from './node_modules/three/examples/jsm/loaders/FontLoader.js';
+import { GLTFLoader } from './node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import { TextGeometry } from './node_modules/three/examples/jsm/geometries/TextGeometry.js';
+import { Octree } from './node_modules/three/examples/jsm/math/Octree.js';
+import { OctreeHelper } from './node_modules/three/examples/jsm/helpers/OctreeHelper.js';
+import { GUI } from './node_modules/three/examples/jsm/libs/lil-gui.module.min.js';
+import { Player } from './public/classes/playerClass.js';
+import { Platform } from './public/classes/platformClass.js';
+import { remotePlayer } from './public/classes/remotePlayerClass.js';
 
 const scene = initScene();
 const container = document.getElementById('container');
@@ -21,9 +28,9 @@ const floorOctree = new Octree();
 const stats = initStats();
 const clock = new THREE.Clock();
 
-const glbLoader = new GLTFLoader().setPath('./worlds/');
+const glbLoader = new GLTFLoader().setPath('./public/worlds/');
 // const FBXcharacterLoader = new FBXLoader().setPath('./characters/');
-const GLBcharacterLoader = new GLTFLoader().setPath('./characters/');
+const GLBcharacterLoader = new GLTFLoader().setPath('./public/characters/');
 const textLoader = new FontLoader();
 // const fbxClientLoader = new FBXLoader().setPath('./public/characters/');
 
@@ -96,54 +103,48 @@ const images = [
     'iam.jpg',
 ];
 
-function fadeToAction(name, duration) {
+async function loadMap(pathToMap) {
+  return new Promise((resolve, reject) => {
+    glbLoader.load(pathToMap, function (object) {
+      try {
+        object.scene.scale.set(mapScale, mapScale, mapScale); // Scale the model by a factor of 2 in all directions
+        object.scene.position.set(0,-7,-10);
+        floorOctree.fromGraphNode(object.scene);
+        scene.add(object.scene);
 
-  // Check if the action is not already active
-  if (activeAction !== actions[name]) {
-    // If there is a previous action, fade it out
-    if (previousAction) {
-      previousAction.fadeOut(duration);
-    }
 
-    // Set the new active action
-    activeAction = actions[name];
+        object.scene.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (child.material.map) {
+              child.material.map.anisotropy = 4;
+            }
+          }
+        });
 
-    // If there is a new active action, reset, set parameters, fade in, and play
-    if (activeAction) {
-      activeAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(duration).play();
-    }
+        const helper = new OctreeHelper(floorOctree);
+        helper.visible = false;
+        scene.add(helper);
 
-    // Update the previous action
-    previousAction = activeAction;
-  }
+        const gui = new GUI({ width: 200 });
+        gui.add({ debug: false }, 'debug').onChange(function (value) {
+          helper.visible = value;
+        });
+
+        initEventListeners();
+        animate();
+        resolve(model); // Resolve the promise when the model is loaded
+      } catch (error) {
+        console.error(error);
+        reject(error); // Reject the promise if an error occurs during loading
+      }
+    }, undefined, function (e) {
+      console.error(e);
+      reject(e); // Reject the promise if an error occurs during loading
+    });
+  });
 }
-
-// async function loadSkin(pathToSkin) {
-//   return new Promise((resolve, reject) => {
-//     GLBcharacterLoader.load(pathToSkin, function (gltf) {
-//       try {
-//         let object = gltf.scene;
-//         mixer = new THREE.AnimationMixer(object);
-
-//         object.traverse(function (child) {
-//           if (child.isMesh) {
-//             child.castShadow = true;
-//             child.receiveShadow = true;
-//           }
-//         });
-
-//         object.scale.set(0.005, 0.005, -0.005);
-//         console.log( "Skin loaded" );
-//         console.log( object );
-
-//         resolve(object); // Resolve the promise when the model is loaded
-//       } catch (error) {
-//         console.log(error)
-//         reject(error); // Reject the promise if an error occurs during loading
-//       }
-//     });
-//   });
-// }
 
 async function loadFBXModel(pathToModel) {
   return new Promise((resolve, reject) => {
@@ -202,7 +203,6 @@ const animationStates = [
   "Human Armature|Working"
 ];
 
-
 const skin = 'AnimatedHuman.glb'
 const skinName = skin;
 const playerSkin = await loadFBXModel(skin, animationStates);
@@ -211,11 +211,8 @@ const player = new Player(playerSkin, skinName);
 
 scene.add(player.group);  
 
-const socket = io({
-  auth: {
-    serverOffset: 0
-  }
-})
+const socket = new WebSocket("ws://localhost:3000");
+
 
 const rmPlayer = new remotePlayer(player, socket);
 
@@ -407,6 +404,42 @@ function degreesToRadians(degrees) {
   return degrees * (Math.PI / 180);
 }
 
+function fadeToAction(name, duration) {
+
+  // Check if the action is not already active
+  if (activeAction !== actions[name]) {
+    // If there is a previous action, fade it out
+    if (previousAction) {
+      previousAction.fadeOut(duration);
+    }
+
+    // Set the new active action
+    activeAction = actions[name];
+
+    // If there is a new active action, reset, set parameters, fade in, and play
+    if (activeAction) {
+      activeAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(duration).play();
+    }
+
+    // Update the previous action
+    previousAction = activeAction;
+  }
+}
+
+function waitSeconds(seconds) {
+  console.log("Start waiting...");
+  
+  setTimeout(function() {
+    console.log("Finished waiting after 30 seconds!");
+    // You can add any code here that you want to execute after waiting for 30 seconds.
+  }, seconds * 1000); // 30,000 milliseconds = 30 seconds
+}
+
+// Call the function to start the waiting process
+function playGame(){
+  waitSeconds(30);
+  scene.remove(truePlatform);
+}
 // Met à jour la position de la caméra en fonction de la rotation
 function updateCameraRotation(deltaX, deltaY) {
     const rotationSpeed = 0.5;
@@ -618,36 +651,6 @@ function checkPlatformsCollisions(player, platforms) {
   });
 }
 
-// Chargement du modèle 3D
-glbLoader.load(mapPath, (gltf) => {
-  gltf.scene.scale.set(mapScale, mapScale, mapScale); // Scale the model by a factor of 2 in all directions
-  gltf.scene.position.set(0,-7,-10);
-  scene.add(gltf.scene);
-  floorOctree.fromGraphNode(gltf.scene);
-
-  gltf.scene.traverse((child) => {
-    if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = true;
-      if (child.material.map) {
-        child.material.map.anisotropy = 4;
-      }
-    }
-  });
-
-  const helper = new OctreeHelper(floorOctree);
-  helper.visible = false;
-  scene.add(helper);
-
-  const gui = new GUI({ width: 200 });
-  gui.add({ debug: false }, 'debug').onChange(function (value) {
-    helper.visible = value;
-  });
-
-  initEventListeners();
-  animate();
-});
-
 function playerCollisions() {
   const floorCollider = floorOctree.capsuleIntersect(player.collider);
   playerOnFloor = false;
@@ -661,6 +664,8 @@ function playerCollisions() {
     playerOnFloor = true;
   }
 }   
+
+await loadMap(mapPath);
 
 function animate() {
   const deltaTime = Math.min(0.5, clock.getDelta()) / STEPS_PER_FRAME;

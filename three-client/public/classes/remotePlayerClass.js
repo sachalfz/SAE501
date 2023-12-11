@@ -2,11 +2,9 @@ export class remotePlayer{
 	constructor(clientPlayer, clientSocket){		
 		const player = this;
 		this.playerGroup = clientPlayer.group;
-		const socket = clientSocket;
+		this.socket = clientSocket;
 		this.skinName = clientPlayer.skinName
-		
-		this.socket = socket;
-	}
+		}
 	
 	initSocket(){
 		//console.log("PlayerLocal.initSocket");

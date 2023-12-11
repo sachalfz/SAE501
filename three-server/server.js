@@ -13,29 +13,29 @@ const io = new Server(server, {
   connectionStateRecovery: {}
 });
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/room', express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.use('/room', express.static(path.join(__dirname, 'public')));
 
 const MAX_PLAYERS_PER_ROOM = 2;
 const rooms = [];
 const usedCodes = new Set();
 
 // Lobby route
-app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public', 'lobby.html')); // Replace 'lobby.html' with your lobby file
-});
+// app.get('/', (req, res) => {
+// 	res.sendFile(path.join(__dirname, 'public', 'lobby.html')); // Replace 'lobby.html' with your lobby file
+// });
   
-app.get('/room/:roomCode', (req, res) => {
-	const room = findRoomByCode(req.params.roomCode);
-	if (room) {
-		res.sendFile(path.join(__dirname, 'public', 'game.html')); // Replace 'game.html' with your game file
-	} else {
-		res.status(404).send('Room not found');
-	}
-});
+// app.get('/room/:roomCode', (req, res) => {
+// 	const room = findRoomByCode(req.params.roomCode);
+// 	if (room) {
+// 		res.sendFile(path.join(__dirname, 'public', 'game.html')); // Replace 'game.html' with your game file
+// 	} else {
+// 		res.status(404).send('Room not found');
+// 	}
+// });
 
 app.get('/getRandomRoom', (req, res) => {
 	const availableRoomID = findAvailableRoom();
