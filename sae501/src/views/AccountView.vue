@@ -6,8 +6,10 @@ import AccountInventory from '../components/AccountInventory.vue';
 
 <template>
     <div class="view account">
-        <AccountHead/>
-        <AccountStats/>
+        <div class="account--top">
+            <AccountHead/>
+            <AccountStats/>
+        </div>
         <AccountInventory/>
     </div> 
 </template>
