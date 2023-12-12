@@ -1,5 +1,6 @@
 import express from 'express';
 import { createServer } from 'http';
+import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { Server } from 'socket.io';
@@ -8,10 +9,23 @@ import { open } from 'sqlite';
 import { cp } from 'fs';
 
 const app = express();
+
+app.use(cors({
+	origin: 'http://localhost:5173',
+	methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+	credentials: true,
+}));
+
 const server = createServer(app);
 const io = new Server(server, {
-  connectionStateRecovery: {}
-});
+	cors: {
+	  origin: 'http://localhost:5173',
+	  methods: ['GET', 'POST'],
+	  credentials: true,
+	},
+	connectionStateRecovery: {},
+  });
+  
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);

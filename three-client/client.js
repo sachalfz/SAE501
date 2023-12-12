@@ -1,20 +1,13 @@
 import * as THREE from "./node_modules/three/build/three.module.min.js";
-    // {
-    //   "imports": {
-    //     "m-1": "./module-1.js",
-    //     "m-2": "./module-2.js"
-    //   }
-    // }
-
-import three from "./node_modules/three/build/three.module.min.js";
-import { Stats } from './node_modules/three/examples/jsm/libs/stats.module.js';
+import  Stats  from './node_modules/three/examples/jsm/libs/stats.module.js';
 import { FontLoader } from './node_modules/three/examples/jsm/loaders/FontLoader.js';
-import { FBXLoader } from './node_modules/three/examples/jsm/loaders/FontLoader.js';
+import { FBXLoader } from './node_modules/three/examples/jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from './node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { TextGeometry } from './node_modules/three/examples/jsm/geometries/TextGeometry.js';
 import { Octree } from './node_modules/three/examples/jsm/math/Octree.js';
 import { OctreeHelper } from './node_modules/three/examples/jsm/helpers/OctreeHelper.js';
 import { GUI } from './node_modules/three/examples/jsm/libs/lil-gui.module.min.js';
+import { io } from './node_modules/socket.io-client/dist/socket.io.esm.min.js';
 import { Player } from './public/classes/playerClass.js';
 import { Platform } from './public/classes/platformClass.js';
 import { remotePlayer } from './public/classes/remotePlayerClass.js';
@@ -107,13 +100,14 @@ async function loadMap(pathToMap) {
   return new Promise((resolve, reject) => {
     glbLoader.load(pathToMap, function (object) {
       try {
-        object.scene.scale.set(mapScale, mapScale, mapScale); // Scale the model by a factor of 2 in all directions
-        object.scene.position.set(0,-7,-10);
-        floorOctree.fromGraphNode(object.scene);
-        scene.add(object.scene);
+        const model = object.scene;
+        model.scale.set(mapScale, mapScale, mapScale); // Scale the model by a factor of 2 in all directions
+        model.position.set(0,-7,-10);
+        floorOctree.fromGraphNode(model);
+        scene.add(model);
 
 
-        object.scene.traverse((child) => {
+        model.traverse((child) => {
           if (child.isMesh) {
             child.castShadow = true;
             child.receiveShadow = true;
@@ -150,7 +144,7 @@ async function loadFBXModel(pathToModel) {
   return new Promise((resolve, reject) => {
     GLBcharacterLoader.load(pathToModel, function (object) {
       try {
-        let model = object.scene;
+        const model = object.scene;
         model.scale.set(0.5, 0.5, -0.5);
         mixer = new THREE.AnimationMixer(model);
         console.log(object)
@@ -211,7 +205,7 @@ const player = new Player(playerSkin, skinName);
 
 scene.add(player.group);  
 
-const socket = new WebSocket("ws://localhost:3000");
+const socket = io("http://localhost:3000");
 
 
 const rmPlayer = new remotePlayer(player, socket);
@@ -498,7 +492,7 @@ async function controls(deltaTime) {
   }
 
   if (keyStates['KeyP']) {
-    playerSkin = await loadSkin('jamesRun.fbx')  }
+  }
 
   if (playerOnFloor && keyStates['Space']) {
 
