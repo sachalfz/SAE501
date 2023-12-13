@@ -12,7 +12,9 @@ export class Player {
         this.collider = this.createCollider();
         this.skin = skin; // You can set this when loading the player's skin
         this.group = this.createPlayerGroup();
-        this.skinName = skinName
+        this.skinName = skinName;
+        this.isReady = false;
+        this.hasWon = false;
     }
   
     createHitbox() {

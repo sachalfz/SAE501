@@ -4,6 +4,8 @@ export class remotePlayer {
         this.socket = clientSocket;
         this.skinName = clientPlayer.skinName;
         this.id = clientPlayer.id;
+		this.isReady = clientPlayer.isReady;
+		this.hasWon = clientPlayer.hasWon;
     }
 
     initSocket() {
@@ -20,13 +22,15 @@ export class remotePlayer {
     getPlayerData() {
         const playerGroup = this.playerGroup;
         return {
+			id: this.id,
             x: playerGroup.position.x,
             y: playerGroup.position.y,
             z: playerGroup.position.z,
             h: playerGroup.rotation.y,
             room: playerGroup.room,
             model: this.skinName,
-            id: this.id,
+			isReady: this.isReady,
+			hasWon: this.hasWon, 
         };
     }
 }

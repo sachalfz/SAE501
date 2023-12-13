@@ -232,10 +232,10 @@ const remotePlayers = [];
 const remotePlayersIds = new Set();  // Use a Set for efficient membership checks
 
 // Function to create a remote player object
-async function createRemotePlayer(id, skin) {
+async function createRemotePlayer(id) {
   console.log('creating remote player');
   try {
-    const playerSkin = await loadFBXModel(skin, animationStates);
+    const playerSkin = await loadFBXModel('AnimatedHuman.glb', animationStates);
     console.log('player skin loaded:', playerSkin);
     const newPlayer = new Player(playerSkin, skin);
     newPlayer.id = id;
@@ -266,8 +266,7 @@ socket.on('remoteData', function(data) {
           // Check if the player ID is already known
       if (!remotePlayersIds.has(playerId)) {
         remotePlayersIds.add(playerId);  // Add the ID to the set
-        const playerSkin = playerData.model;
-        createRemotePlayer(playerId, playerSkin);
+        createRemotePlayer(playerId);
         console.log('A remote player has been created');
       } else {
         // Update remote player position
