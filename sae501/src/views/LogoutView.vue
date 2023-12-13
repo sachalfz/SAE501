@@ -1,8 +1,10 @@
 <template>
-    <div>
-      <h1>Logout</h1>
-      <p>Are you sure you want to logout?</p>
-      <button @click="handleLogout">Logout</button>
+    <div class="view logout">
+      <h1 class="login--title">Logout</h1>
+      <form @submit.prevent="handleLogout" class="login--form">
+        <p class="form--redirect">Are you sure you want to logout?</p>
+        <button class="form--submit">Logout</button>
+      </form>
     </div>
   </template>
   

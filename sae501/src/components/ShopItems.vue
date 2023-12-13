@@ -5,11 +5,11 @@
     <div class="shop--items">
         <div class="shop--items--self" v-for="(item, index) in items" :key="index">
             <img :src="item.picture" alt="item image" class="item--img">
-            <div class="item--price" v-if="isItemBought(item.id)" @click="addItemBoughtToInventory(item)">
+            <div class="item--price" v-if="isItemBought(item.id)">
                 <p class="item--already">Already Bought</p>
             </div>
-            <div class="item--price" v-if="!isItemBought(item.id)">
-                <p class="item--price--txt" @click="addItemBoughtToInventory(item)">{{ item.price }}</p>
+            <div class="item--price" v-if="!isItemBought(item.id)" @click="addItemBoughtToInventory(item)">
+                <p class="item--price--txt">{{ item.price }}</p>
                 <img src="../assets/icons/streamz_yellow.svg" alt="streamz" class="item--price--img">
             </div>
         </div>

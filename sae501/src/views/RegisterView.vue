@@ -1,20 +1,23 @@
 <template>
-  <div>
-    <h1>Register</h1>
-    <form @submit.prevent="handleRegister">
-      <label for="email">Email:</label>
-      <input type="email" id="email" v-model="email" required>
+  <div class="view register">
+    <h1 class="login--title">Register</h1>
+
+    <form @submit.prevent="handleRegister" class="login--form">
+      <div class="form--row">
+        <label for="email" class="form--label">Email:</label>
+        <input type="email" id="email" v-model="email" class="form--input" required>
+      </div>
+
+      <div class="form--row">
+        <label for="password" class="form--label">Password:</label>
+        <input type="password" id="password" v-model="password" class="form--input" required>
+      </div>
+      <button type="submit" class="form--submit">Register</button>
       
-      <label for="password">Password:</label>
-      <input type="password" id="password" v-model="password" required>
-      
-      <button type="submit">Register</button>
-      
-      <!-- Affichage du message d'erreur -->
       <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
     </form>
-    <!-- Texte pour se connecter si l'utilisateur a déjà un compte -->
-    <p>Already have an account? <router-link to="/login">Log in</router-link></p>
+
+    <p class="form--redirect">Already have an account? <router-link to="/login">Log in</router-link></p>
   </div>
 </template>
 
