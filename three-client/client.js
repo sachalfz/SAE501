@@ -38,10 +38,9 @@ let isJumping = false;
 let isFloating = false;
 let activeAction, previousAction;
 let timeisup = false;
-let mixer;
 let initialisingPlayers = [];
 let font, textGeo;
-let actions;
+const mixers = [];
 
 
 // Gravité et pas de simulation
@@ -146,8 +145,8 @@ async function loadFBXModel(pathToModel) {
       try {
         const model = object.scene;
         model.scale.set(0.5, 0.5, -0.5);
-        mixer = new THREE.AnimationMixer(model);
-        actions = {};
+        const mixer = new THREE.AnimationMixer(model);
+        let actions = {};
 
 
         // Loop through animations and create actions
@@ -165,10 +164,7 @@ async function loadFBXModel(pathToModel) {
           }
         }
         // model.scale.set(0.005, 0.005, -0.005);
-
-        fadeToAction("Human Armature|Idle", 0.5);
-
-        resolve(model); // Resolve the promise when the model is loaded
+        resolve({model: model, actions: actions, mixer: mixer}); // Resolve the promise when the model is loaded
       } catch (error) {
         console.error(error);
         reject(error); // Reject the promise if an error occurs during loading
@@ -193,9 +189,12 @@ const animationStates = [
 
 const skin = 'AnimatedHuman.glb'
 const skinName = skin;
-const playerSkin = await loadFBXModel(skin, animationStates);
+const fbxModel = await loadFBXModel(skin, animationStates);
+const playerSkin = fbxModel.model;
+const actions = fbxModel.actions;
+mixers.push({playerMixer: fbxModel.mixer});
 
-const player = new Player(playerSkin, skinName);
+const player = new Player(playerSkin, skinName, actions);
 
 scene.add(player.group);  
 
@@ -389,17 +388,16 @@ function degreesToRadians(degrees) {
   return degrees * (Math.PI / 180);
 }
 
-function fadeToAction(name, duration) {
+function fadeToAction(name, duration, actionsArray) {
 
   // Check if the action is not already active
-  if (activeAction !== actions[name]) {
+  if (activeAction !== actionsArray[name]) {
     // If there is a previous action, fade it out
     if (previousAction) {
       previousAction.fadeOut(duration);
     }
-
     // Set the new active action
-    activeAction = actions[name];
+    activeAction = actionsArray[name];
 
     // If there is a new active action, reset, set parameters, fade in, and play
     if (activeAction) {
@@ -488,8 +486,8 @@ async function controls(deltaTime) {
   if (playerOnFloor && keyStates['Space']) {
 
     isIdle = false;
-		fadeToAction("Human Armature|Jump", 0.5);
-		fadeToAction("Human Armature|Run", 0.5);
+		fadeToAction("Human Armature|Jump", 0.5, player.actions);
+		fadeToAction("Human Armature|Run", 0.5, player.actions);
 		
     player.velocity.y = 15;
   }
@@ -660,18 +658,25 @@ function animate() {
     }
   };
 
-  if (mixer) {
-    mixer.update(deltaTime * 2);
+  mixers.forEach(object => {
+    if (object){
+      object.playerMixer.update(deltaTime * 2);
 
+    }
+  });
+
+  if (player.actions) {
     if (isWalking) {
-      fadeToAction("Human Armature|Run", 0.2);
+      fadeToAction("Human Armature|Run", 0.2, player.actions);
+      player.action = "Human Armature|Run";
       isIdle = false;
     }else if (isWalking === false && isIdle === false) {
-      fadeToAction("Human Armature|Idle", 0.5);
+      player.action = "Human Armature|Idle";
+      fadeToAction("Human Armature|Idle", 0.5, player.actions);
       isIdle = true;
     }
-
   }
+  
   isWalking = false;
   // Update viewpointCamera position
   updateViewpointCameraPosition();
