@@ -68,8 +68,10 @@ io.sockets.on('connection', function(socket){
 		socket.userData.heading = data.h;
 		socket.userData.id = socket.id
 		socket.userData.room = data.room
+		socket.userData.isReady= data.isReady,
+		socket.userData.hasWon = data.hasWon,
 		// socket.userData.pb = data.pb,
-		// socket.userData.action = "Idle";
+		socket.userData.action = data.action;
 		const room = findRoomByCode(data.room);
 		console.log(room.players);
 	});
@@ -125,6 +127,9 @@ setInterval(function(){
 				z: player.z,
 				model: player.model,
 				heading: player.heading,
+				isReady: player.isReady,
+				hasWon: player.hasWon,
+				action: player.action,
 			});
 		}
 		if (pack.length > 0) io.to(room.id).emit('remoteData', pack);

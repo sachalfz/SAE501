@@ -147,7 +147,6 @@ async function loadFBXModel(pathToModel) {
         const model = object.scene;
         model.scale.set(0.5, 0.5, -0.5);
         mixer = new THREE.AnimationMixer(model);
-        console.log(object)
         actions = {};
 
 
@@ -165,13 +164,8 @@ async function loadFBXModel(pathToModel) {
             action.loop = THREE.LoopOnce;
           }
         }
-        console.log(actions);
         // model.scale.set(0.005, 0.005, -0.005);
 
-        // console.log(actions);
-        // activeAction = "Human Armature|Working";
-        // console.log(activeAction)
-        // activeAction.play();
         fadeToAction("Human Armature|Idle", 0.5);
 
         resolve(model); // Resolve the promise when the model is loaded
@@ -221,10 +215,8 @@ let room = null;
 socket.on('roomJoined', function(data){
   console.log('room joined:', data.roomId);
   player.group.room = data.roomId;
-  console.log(player.group.room);
   room = player.group.room;
   rmPlayer.initSocket(room);
-  console.log('room joined:', player.group.room);
 });
 
 // Map of remote players
@@ -236,7 +228,6 @@ async function createRemotePlayer(id) {
   console.log('creating remote player');
   try {
     const playerSkin = await loadFBXModel('AnimatedHuman.glb', animationStates);
-    console.log('player skin loaded:', playerSkin);
     const newPlayer = new Player(playerSkin, skin);
     newPlayer.id = id;
     remotePlayers.push(newPlayer);
@@ -248,12 +239,13 @@ async function createRemotePlayer(id) {
 }
 
 // Function to update a remote player's position
-function updateRemotePlayer(id, position, rotation) {
+function updateRemotePlayer(id, position, rotation, isReady, hasWon, action) {
   const toUpdatePlayer = remotePlayers.find((player) => player.id === id);
   if (toUpdatePlayer) {
     toUpdatePlayer.group.position.set(position.x, position.y, position.z);
     toUpdatePlayer.group.rotation.y = rotation;
-    
+    toUpdatePlayer.isReady = isReady;
+    toUpdatePlayer.hasWon = hasWon;
   }
 }
 
@@ -267,10 +259,9 @@ socket.on('remoteData', function(data) {
       if (!remotePlayersIds.has(playerId)) {
         remotePlayersIds.add(playerId);  // Add the ID to the set
         createRemotePlayer(playerId);
-        console.log('A remote player has been created');
       } else {
         // Update remote player position
-        updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading);
+        updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, player.isReady, player.hasWon, player.action, );
       }
     }
 
@@ -499,7 +490,6 @@ async function controls(deltaTime) {
     isIdle = false;
 		fadeToAction("Human Armature|Jump", 0.5);
 		fadeToAction("Human Armature|Run", 0.5);
-		console.log(activeAction);
 		
     player.velocity.y = 15;
   }
@@ -599,8 +589,6 @@ function keepOnePlatform(platformToKeep) {
       if (platformIndex !== -1) {
           scene.remove(platformsOnScene[platformIndex])
           platformsOnScene.splice(platformIndex, 1); // remove 1 element at index "platformIndex"
-          console.log("A platform was removed from the scene");
-          console.log(platformIndex);
       }
   });
   const platformIndex = platformsOnScene.indexOf(platformToKeep);
@@ -610,7 +598,6 @@ function keepOnePlatform(platformToKeep) {
   } else {
       console.log("Platform not found in the array.");
   }
-  console.log(platformsOnScene);
 }
 
 function checkPlatformsCollisions(player, platforms) {

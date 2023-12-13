@@ -10,7 +10,6 @@ export class remotePlayer {
 
     initSocket() {
         this.socket.emit('init', this.getPlayerData());
-        console.log('rmPlayer data initialised');
     }
 
     updateSocket() {
@@ -31,6 +30,7 @@ export class remotePlayer {
             model: this.skinName,
 			isReady: this.isReady,
 			hasWon: this.hasWon, 
+			action: this.action, 
         };
     }
 }
