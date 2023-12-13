@@ -212,7 +212,8 @@ const rmPlayer = new remotePlayer(player, socket);
 
 socket.on('setId', function(data){
   rmPlayer.id = data.id;
-  socket.emit('joinRoom', { roomId: '5QCYMH' });
+  // socket.emit('joinRoom', { roomId: '5QCYMH' });
+  socket.emit('joinRoom');
   console.log('id set:', rmPlayer.id);
 
 });
