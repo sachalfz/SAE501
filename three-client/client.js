@@ -95,6 +95,20 @@ const images = [
     'iam.jpg',
 ];
 
+const albums = [
+  {cover:'freeze-lmf.jpg', song: './public/sounds/freeze-lmf-tarkov.mp3'},
+  {cover:'freeze-pbb.jpg', song: './public/sounds/freeze-pbb-3planetes.mp3'},
+  {cover:'hamza-paradise.jpg', song: './public/sounds/hamza-paradise.mp3'},
+  {cover:'hamza-sincerement.jpg', song: './public/sounds/hamza-sincerement-freeYSL.mp3'},
+  {cover:'koba-affranchi.jpg', song: './public/sounds/koba-affranchi-rr91.mp3'},
+  {cover:'ninho-destin.jpg', song: './public/sounds/ninho-destin-putana.mp3'},
+  {cover:'ninho-jefe.jpg', song: './public/sounds/ninho-jefe-vvs.mp3'},
+  {cover:'niska-commando.jpg', song: './public/sounds/niska-commando-sale.mp3'},
+  {cover:'sch-jvlivs.jpg', song: './public/sounds/sch-jvlivs-pharmacie.mp3'},
+  {cover:'sch-jvlivs-2.jpg', song: './public/sounds/sch-jvlivs-2-crack.mp3'},
+  {cover:'sexion.jpg', song: './public/sounds/sexion-d-assaut-ma-direction.mp3'},
+]
+
 async function loadMap(pathToMap) {
   return new Promise((resolve, reject) => {
     glbLoader.load(pathToMap, function (object) {
@@ -388,6 +402,19 @@ function degreesToRadians(degrees) {
   return degrees * (Math.PI / 180);
 }
 
+function playSound(soundPath, duration) {
+  const audio = new Audio(soundPath);
+  console.log("Playing sound:", soundPath);
+
+  // Jouer le son
+  audio.play();
+
+  // Attendre la durée spécifiée avant de s'arrêter
+  setTimeout(function() {
+      audio.pause();
+  }, duration * 1000); // La fonction setTimeout prend le temps en millisecondes, donc nous multiplions par 1000 pour convertir en secondes
+}
+
 function fadeToAction(name, duration, actionsArray) {
 
   // Check if the action is not already active
@@ -416,6 +443,10 @@ function waitSeconds(seconds) {
     console.log("Finished waiting after 30 seconds!");
     // You can add any code here that you want to execute after waiting for 30 seconds.
   }, seconds * 1000); // 30,000 milliseconds = 30 seconds
+}
+
+function shuffleArray(array) {
+  return array.sort((a, b) => 0.5 - Math.random())
 }
 
 // Call the function to start the waiting process
@@ -536,46 +567,52 @@ function updatePlayerRotation() {
     player.group.rotation.set(0, playerAngle, 0); // Update player's group rotation}
 }
 
-function generateAllPlatforms (platformWidth, platformHeight, platformDepth, images, positions){
-  const shuffledPositions = positions.sort((a, b) => 0.5 - Math.random());
+function generateAllPlatforms (platformWidth, platformHeight, platformDepth, covers, positions){
+  const shuffledPositions = shuffleArray(positions);
 
-  truePlatform = new Platform(platformWidth, platformHeight, platformDepth, images[0], shuffledPositions[0]);
+  truePlatform = new Platform(platformWidth, platformHeight, platformDepth, covers[0], shuffledPositions[0]);
   platformsOnScene.push(truePlatform);
   scene.add(truePlatform);
 
-  fakePlatform1 = new Platform(platformWidth, platformHeight, platformDepth, images[1], shuffledPositions[1]);
+  fakePlatform1 = new Platform(platformWidth, platformHeight, platformDepth, covers[1], shuffledPositions[1]);
   platformsOnScene.push(fakePlatform1);
   scene.add(fakePlatform1);
 
-  fakePlatform2 = new Platform(platformWidth, platformHeight, platformDepth, images[2], shuffledPositions[2]);
+  fakePlatform2 = new Platform(platformWidth, platformHeight, platformDepth, covers[2], shuffledPositions[2]);
   platformsOnScene.push(fakePlatform2);
   scene.add(fakePlatform2);
 
-  fakePlatform3 = new Platform(platformWidth, platformHeight, platformDepth, images[3], shuffledPositions[3]);
+  fakePlatform3 = new Platform(platformWidth, platformHeight, platformDepth, covers[3], shuffledPositions[3]);
   platformsOnScene.push(fakePlatform3);
   scene.add(fakePlatform3);
 
-  fakePlatform4 = new Platform(platformWidth, platformHeight, platformDepth, images[4], shuffledPositions[4]);
+  fakePlatform4 = new Platform(platformWidth, platformHeight, platformDepth, covers[4], shuffledPositions[4]);
   platformsOnScene.push(fakePlatform4);
   scene.add(fakePlatform4);
 
-  fakePlatform5 = new Platform(platformWidth, platformHeight, platformDepth, images[5], shuffledPositions[5]);
+  fakePlatform5 = new Platform(platformWidth, platformHeight, platformDepth, covers[5], shuffledPositions[5]);
   platformsOnScene.push(fakePlatform5);
   scene.add(fakePlatform5);
 
-  fakePlatform6 = new Platform(platformWidth, platformHeight, platformDepth, images[6], shuffledPositions[6]);
+  fakePlatform6 = new Platform(platformWidth, platformHeight, platformDepth, covers[6], shuffledPositions[6]);
   platformsOnScene.push(fakePlatform6);
   scene.add(fakePlatform6);
 
-  fakePlatform7 = new Platform(platformWidth, platformHeight, platformDepth, images[7], shuffledPositions[7]);
+  fakePlatform7 = new Platform(platformWidth, platformHeight, platformDepth, covers[7], shuffledPositions[7]);
   platformsOnScene.push(fakePlatform7);
   scene.add(fakePlatform7);
 
-  fakePlatform8 = new Platform(platformWidth, platformHeight, platformDepth, images[8], shuffledPositions[8]);
+  fakePlatform8 = new Platform(platformWidth, platformHeight, platformDepth, covers[8], shuffledPositions[8]);
   platformsOnScene.push(fakePlatform8);
   scene.add(fakePlatform8);
   timeisup = false;
 }
+
+function playGame(){
+  const albums = shuffleArray(images);
+}
+
+fetch('https://drive.google.com/file/d/1XCtUwJALQXnljzmEET4WZZbiFeXyPQWQ/view')
   
 function keepOnePlatform(platformToKeep) {
 
