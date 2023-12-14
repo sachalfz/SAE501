@@ -5,12 +5,17 @@
             <p class="shop--refresh--time">{{ timeLeft.hours }}h {{ timeLeft.minutes }}m {{ timeLeft.seconds }}s</p>
         </div>
 
-        <div class="shop--credits">
+        <div class="shop--credits" v-if="this.user">
             <p class="shop--credits--txt">Your Streamz :</p>
             <div class="shop--credits--amount">
                 <p class="credits--amount--number">{{this.user.inventory.streamz}}</p>
                 <img src="../assets/icons/streamz_yellow.svg" class="credits--amount--icon" alt="credits"/>
             </div>    
+        </div>
+        <div class="shop--credits" v-else>
+            <p class="shop--credits--txt">
+                <router-link :to="'/login'" class="shop--redirection">Login</router-link> 
+                to see your Streamz !</p>
         </div>
     </div>
 </template>

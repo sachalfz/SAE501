@@ -41,14 +41,12 @@ export default {
             if (this.currentUser && this.currentUser.inventory && this.currentUser.inventory.items) {
                 // Vérifie si l'élément avec l'itemId est présent dans le tableau items de l'inventaire de l'utilisateur
                 for (const item of this.currentUser.inventory.items) {
-                    console.log(item, itemId)
                 if (item.id === itemId) {
                     return true; // Retourne vrai si l'élément est trouvé
                 }
                 }
                 return false; // Retourne faux si l'élément n'est pas trouvé
             } else {
-                console.error('Current user or inventory items is undefined or not an array');
                 return false; // Impossible de vérifier, retourne false par défaut
             }
         },
@@ -111,7 +109,6 @@ export default {
             .then(response => response.json())
             .then(data => {
                 this.items = data['hydra:member'];
-                console.log('Fetched items:', this.items);
             })
             .catch(error => {
                 console.error('Error fetching items:', error);
