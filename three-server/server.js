@@ -35,6 +35,7 @@ io.sockets.on('connection', function(socket){
     socket.userData = { x: 0, y: 0, z: 0, heading: 0, model: '' }; // Set a default value for the model
 
 	socket.emit('setId', { id:socket.id });
+
 	socket.on('joinRoom', function (data) {
 		console.log('trying to join a room', data);
 		let room;
@@ -75,6 +76,27 @@ io.sockets.on('connection', function(socket){
 		const room = findRoomByCode(data.room);
 		console.log(room.players);
 	});
+
+	socket.on('playerReady', function(data){
+		const room = findRoomByCode(data.room);
+		console.log('player ready', data);
+		if (room) {
+			const foundPlayer = room.players.find(item => item.id === data.id);
+			foundPlayer.isReady= data.isReady,
+			console.log(room.players);
+			if (room.players.every(element => element.isReady === true)) {
+				console.log('all players ready');
+				const shuffledAlbums = shuffleArray(albums);
+				const covers = [];
+				const song = shuffledAlbums[0].song;
+	
+				for (let i = 0; i < 9; i++) {
+					covers.push(shuffledAlbums[i].cover);
+				}
+				io.to(room.id).emit('startGame', {covers: covers, song: song, timeOut: 30});
+			}
+		}
+	});	
 		
 	socket.on('update', function(data){
 		const room = findRoomByCode(data.room);
@@ -87,7 +109,10 @@ io.sockets.on('connection', function(socket){
 				foundPlayer.y = data.y;
 				foundPlayer.z = data.z;
 				foundPlayer.heading = data.h;
-				foundPlayer.model = data.model;				
+				foundPlayer.model = data.model;
+				foundPlayer.hasWon = data.hasWon,
+				// foundPlayer.pb = data.pb,
+				foundPlayer.action = data.action;				
 			} else {
 				console.log('Player not found for ID:', data.id);
 			}
@@ -172,7 +197,36 @@ function generateUniqueRoomCode(usedCodes) {
 function findRoomByCode(code) {
 	return rooms.find(room => room.id === code);
 }
+
+function allReady(array) {
+	console.log(array); // Vérifiez si le tableau est correct
+	// Using the every method to check if the property is true for all elements
+	return array.every(element => element.isReady === true);
+}
+
+function shuffleArray(array) {
+	const clonedArray = [...array];
+	return clonedArray.sort((a, b) => 0.5 - Math.random())
+}
+
+const albums = [
+	{cover:'freeze-lmf.jpg', song: './public/sounds/freeze-lmf-tarkov.mp3'},
+	{cover:'freeze-pbb.jpg', song: './public/sounds/freeze-pbb-3planetes.mp3'},
+	{cover:'hamza-paradise.jpg', song: './public/sounds/hamza-paradise-hs.mp3'},
+	{cover:'hamza-sincerement.jpg', song: './public/sounds/hamza-sincerement-freeYSL.mp3'},
+	{cover:'koba-affranchi.jpg', song: './public/sounds/koba-affranchi-rr91.mp3'},
+	{cover:'ninho-destin.jpg', song: './public/sounds/ninho-destin-putana.mp3'},
+	{cover:'ninho-jefe.jpg', song: './public/sounds/ninho-jefe-vvs.mp3'},
+	{cover:'niska-commando.jpg', song: './public/sounds/niska-commando-sale.mp3'},
+	{cover:'sch-jvlivs.jpg', song: './public/sounds/sch-jvlivs-pharmacie.mp3'},
+	{cover:'sch-jvlivs-2.jpg', song: './public/sounds/sch-jvlivs-2-crack.mp3'},
+	{cover:'sexion.jpg', song: './public/sounds/sexion-d-assaut-ma-direction.mp3'},
+  ]
+
+
 // socket.onAny((eventName, ...args) => {
 // 	console.log(eventName); // 'hello'
 // 	console.log(args); // [ 1, '2', { 3: '4', 5: ArrayBuffer (1) [ 6 ] } ] 
 // });
+
+
