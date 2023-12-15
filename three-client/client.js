@@ -40,6 +40,8 @@ let activeAction, previousAction;
 let timeisup = false;
 let initialisingPlayers = [];
 let font, textGeo;
+let gameIsOn = false;
+let mainMapCollisions = true;
 const mixers = [];
 
 
@@ -68,46 +70,20 @@ const mapScale = 1;
 
 // Paramètre de platformes
 const platformWidth = 5;
-const platformHeight = 0.3;
+const platformHeight = 0.15;
 const platformDepth = 5;
 
 const positions = [
-  new THREE.Vector3(-9, -3.5, 4),
-  new THREE.Vector3(9, -3.5, 4),
-  new THREE.Vector3(0, -3.5, 20),
-  new THREE.Vector3(-19, -3.5, -5.5),
-  new THREE.Vector3(19, -3.5, -5.5),
-  new THREE.Vector3(-19.5, -1.5, -15),
-  new THREE.Vector3(19.5, -1.5, -15),
-  new THREE.Vector3(-10, -1.5, -24),
-  new THREE.Vector3(10, -1.5, -24),
+  new THREE.Vector3(-9, -5.5, 4),
+  new THREE.Vector3(9, -5.5, 4),
+  new THREE.Vector3(0, -5.5, 20),
+  new THREE.Vector3(-19, -5.5, -5.5),
+  new THREE.Vector3(19, -5.5, -5.5),
+  new THREE.Vector3(-19.5, -3.5, -15),
+  new THREE.Vector3(19.5, -3.5, -15),
+  new THREE.Vector3(-10, -3.5, -24),
+  new THREE.Vector3(10, -3.5, -24),
 ];
-
-const images = [
-    'sexion.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-    'iam.jpg',
-];
-
-const albums = [
-  {cover:'freeze-lmf.jpg', song: './public/sounds/freeze-lmf-tarkov.mp3'},
-  {cover:'freeze-pbb.jpg', song: './public/sounds/freeze-pbb-3planetes.mp3'},
-  {cover:'hamza-paradise.jpg', song: './public/sounds/hamza-paradise.mp3'},
-  {cover:'hamza-sincerement.jpg', song: './public/sounds/hamza-sincerement-freeYSL.mp3'},
-  {cover:'koba-affranchi.jpg', song: './public/sounds/koba-affranchi-rr91.mp3'},
-  {cover:'ninho-destin.jpg', song: './public/sounds/ninho-destin-putana.mp3'},
-  {cover:'ninho-jefe.jpg', song: './public/sounds/ninho-jefe-vvs.mp3'},
-  {cover:'niska-commando.jpg', song: './public/sounds/niska-commando-sale.mp3'},
-  {cover:'sch-jvlivs.jpg', song: './public/sounds/sch-jvlivs-pharmacie.mp3'},
-  {cover:'sch-jvlivs-2.jpg', song: './public/sounds/sch-jvlivs-2-crack.mp3'},
-  {cover:'sexion.jpg', song: './public/sounds/sexion-d-assaut-ma-direction.mp3'},
-]
 
 async function loadMap(pathToMap) {
   return new Promise((resolve, reject) => {
@@ -118,7 +94,6 @@ async function loadMap(pathToMap) {
         model.position.set(0,-7,-10);
         floorOctree.fromGraphNode(model);
         scene.add(model);
-
 
         model.traverse((child) => {
           if (child.isMesh) {
@@ -214,7 +189,6 @@ scene.add(player.group);
 
 const socket = io("http://localhost:3000");
 
-
 const rmPlayer = new remotePlayer(player, socket);
 
 socket.on('setId', function(data){
@@ -240,7 +214,11 @@ const remotePlayersIds = new Set();  // Use a Set for efficient membership check
 async function createRemotePlayer(id) {
   console.log('creating remote player');
   try {
-    const playerSkin = await loadFBXModel('AnimatedHuman.glb', animationStates);
+    const fbxModel = await loadFBXModel('AnimatedHuman.glb', animationStates);
+    const playerSkin = fbxModel.model;
+    const actions = fbxModel.actions;
+    mixers.push({playerMixer: fbxModel.mixer});
+
     const newPlayer = new Player(playerSkin, skin);
     newPlayer.id = id;
     remotePlayers.push(newPlayer);
@@ -294,6 +272,27 @@ socket.on('deletePlayer', function(data){
     console.log('Player with id:', data.id,'removed');
   }
 });
+
+socket.on('startGame', function(data){
+  if (platformsOnScene.length<7) {
+    generateAllPlatforms(platformWidth, platformHeight, platformDepth, data.covers, positions);
+  }
+  playSound(data.song, data.timeOut);
+  waitSeconds(data.timeOut);
+
+  scene.remove(mainMap);
+  mainMapCollisions = false;
+  playerOnFloor = false;
+  waitSeconds(1);
+  playerOnFloor = true;
+  waitSeconds(5);
+  keepOnePlatform(truePlatform);
+  waitSeconds(5);
+  scene.add(mainMap);
+  mainMapCollisions = true;
+  gameIsOn = false;
+});
+
 
 // Fonctions d'initialisation
 function initScene(){
@@ -383,7 +382,7 @@ function initEventListeners(){
 // Fonction pour téléporter le joueur s'il sort de la zone
 function teleportPlayerIfOob() {
   if (player.group.position.y <= -25) {
-    player.group.position.set(0, -4, 0);
+    player.group.position.set(0, 13, 0);
     player.group.rotation.set(0, 0, 0);
     isFloating = false;
     isJumping = false;
@@ -438,22 +437,20 @@ function fadeToAction(name, duration, actionsArray) {
 
 function waitSeconds(seconds) {
   console.log("Start waiting...");
-  
-  setTimeout(function() {
-    console.log("Finished waiting after 30 seconds!");
-    // You can add any code here that you want to execute after waiting for 30 seconds.
-  }, seconds * 1000); // 30,000 milliseconds = 30 seconds
+
+  return new Promise(resolve => {
+    setTimeout(() => {
+      console.log("Finished waiting after " + seconds + " seconds!");
+      resolve();
+    }, seconds * 1000); // Convert seconds to milliseconds
+  });
 }
 
 function shuffleArray(array) {
-  return array.sort((a, b) => 0.5 - Math.random())
+  const clonedArray = [...array];
+  return clonedArray.sort((a, b) => 0.5 - Math.random())
 }
 
-// Call the function to start the waiting process
-function playGame(){
-  waitSeconds(30);
-  scene.remove(truePlatform);
-}
 // Met à jour la position de la caméra en fonction de la rotation
 function updateCameraRotation(deltaX, deltaY) {
     const rotationSpeed = 0.5;
@@ -475,6 +472,8 @@ function updateViewpointCameraPosition() {
   viewpointCamera.position.copy(position);
   viewpointCamera.lookAt(player.group.position);
 }
+
+const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
 // Contrôles du joueur
 async function controls(deltaTime) {
@@ -502,14 +501,22 @@ async function controls(deltaTime) {
   }
 
   if (keyStates['KeyY']) {
-    keepOnePlatform(truePlatform);
   }
   
   if (keyStates['KeyJ']) {
-    if (platformsOnScene.length<7) {
-      generateAllPlatforms(platformWidth, platformHeight, platformDepth, images, positions);
+    // if (platformsOnScene.length<7) {
+    //   generateAllPlatforms(platformWidth, platformHeight, platformDepth, images, positions);
+    // }
+    if (gameIsOn === false) {
+      player.group.isReady = true;
+      waitSeconds(1);
+      socket.emit('playerReady', {room: player.group.room, id: rmPlayer.id, isReady: player.group.isReady});
+      console.log('Player ready');
+      gameIsOn = true;
     }
   }
+
+  // TODO: find a way to wait for a period of time
 
   if (keyStates['KeyP']) {
   }
@@ -551,7 +558,9 @@ function updatePlayer(deltaTime) {
   player.velocity.addScaledVector(player.velocity, damping);
   const deltaPosition = player.velocity.clone().multiplyScalar(deltaTime);
   player.collider.translate(deltaPosition);
-  playerCollisions();
+  if (mainMapCollisions) {
+    playerCollisions();
+  }
   checkPlatformsCollisions(player, platformsOnScene);
   player.group.position.copy(player.collider.end); // Update player's group position
 }
@@ -606,10 +615,6 @@ function generateAllPlatforms (platformWidth, platformHeight, platformDepth, cov
   platformsOnScene.push(fakePlatform8);
   scene.add(fakePlatform8);
   timeisup = false;
-}
-
-function playGame(){
-  const albums = shuffleArray(images);
 }
 
 fetch('https://drive.google.com/file/d/1XCtUwJALQXnljzmEET4WZZbiFeXyPQWQ/view')
@@ -681,7 +686,7 @@ function playerCollisions() {
   }
 }   
 
-await loadMap(mapPath);
+const mainMap  = await loadMap(mapPath);
 
 function animate() {
   const deltaTime = Math.min(0.5, clock.getDelta()) / STEPS_PER_FRAME;
