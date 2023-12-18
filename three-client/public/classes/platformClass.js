@@ -25,7 +25,7 @@ export class Platform extends THREE.Object3D {
 
         platformMesh.castShadow = true;
         platformMesh.receiveShadow = true;
-        platformMesh.position.copy(position); // Set the position here
+        platformMesh.position.set(position.x, position.y, position.z); // Set the position here
 
         return platformMesh;
     }

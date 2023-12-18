@@ -15,6 +15,7 @@ export class Player {
         this.group = this.createPlayerGroup();
         this.skinName = skinName;
         this.isReady = false;
+        this.isDead = false;
         this.hasWon = false;
         this.action = false;
     }

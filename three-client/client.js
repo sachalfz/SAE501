@@ -27,7 +27,6 @@ const GLBcharacterLoader = new GLTFLoader().setPath('./public/characters/');
 const textLoader = new FontLoader();
 // const fbxClientLoader = new FBXLoader().setPath('./public/characters/');
 
-
 const keyStates = {};
 let truePlatform, fakePlatform1, fakePlatform2, fakePlatform3, fakePlatform4, fakePlatform5, fakePlatform6, fakePlatform7, fakePlatform8;
 let platformsOnScene = [];
@@ -40,10 +39,9 @@ let activeAction, previousAction;
 let timeisup = false;
 let initialisingPlayers = [];
 let font, textGeo;
-let gameIsOn = false;
+let gameIsOn = false, roundIsOn = false;
 let mainMapCollisions = true;
 const mixers = [];
-
 
 // Gravité et pas de simulation
 const GRAVITY = 30;
@@ -72,18 +70,6 @@ const mapScale = 1;
 const platformWidth = 5;
 const platformHeight = 0.15;
 const platformDepth = 5;
-
-const positions = [
-  new THREE.Vector3(-9, -5.5, 4),
-  new THREE.Vector3(9, -5.5, 4),
-  new THREE.Vector3(0, -5.5, 20),
-  new THREE.Vector3(-19, -5.5, -5.5),
-  new THREE.Vector3(19, -5.5, -5.5),
-  new THREE.Vector3(-19.5, -3.5, -15),
-  new THREE.Vector3(19.5, -3.5, -15),
-  new THREE.Vector3(-10, -3.5, -24),
-  new THREE.Vector3(10, -3.5, -24),
-];
 
 async function loadMap(pathToMap) {
   return new Promise((resolve, reject) => {
@@ -230,12 +216,13 @@ async function createRemotePlayer(id) {
 }
 
 // Function to update a remote player's position
-function updateRemotePlayer(id, position, rotation, isReady, hasWon, action) {
+function updateRemotePlayer(id, position, rotation, isReady, isDead, hasWon, action) {
   const toUpdatePlayer = remotePlayers.find((player) => player.id === id);
   if (toUpdatePlayer) {
     toUpdatePlayer.group.position.set(position.x, position.y, position.z);
     toUpdatePlayer.group.rotation.y = rotation;
     toUpdatePlayer.isReady = isReady;
+    toUpdatePlayer.isDead = isDead;
     toUpdatePlayer.hasWon = hasWon;
   }
 }
@@ -252,7 +239,7 @@ socket.on('remoteData', function(data) {
         createRemotePlayer(playerId);
       } else {
         // Update remote player position
-        updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, player.isReady, player.hasWon, player.action, );
+        updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, player.isReady, player.isDead, player.hasWon, player.action, );
       }
     }
 
@@ -273,27 +260,45 @@ socket.on('deletePlayer', function(data){
   }
 });
 
-socket.on('startGame', function(data){
-  if (platformsOnScene.length<7) {
-    generateAllPlatforms(platformWidth, platformHeight, platformDepth, data.covers, positions);
-  }
-  playSound(data.song, data.timeOut);
-  waitSeconds(data.timeOut);
+socket.on('startGame', function(data) {
+  console.log('Game started');
+  startGame(data.positions, data.covers, data.song, data.timeOut);
 
-  scene.remove(mainMap);
-  mainMapCollisions = false;
-  playerOnFloor = false;
-  waitSeconds(1);
-  playerOnFloor = true;
-  waitSeconds(5);
-  keepOnePlatform(truePlatform);
-  waitSeconds(5);
-  scene.add(mainMap);
-  mainMapCollisions = true;
-  gameIsOn = false;
 });
 
+function startGame(positions, covers, song, timeOut) {
+  if (roundIsOn === false) {
+    roundIsOn = true;
 
+    if (platformsOnScene.length < 7) {
+        generateAllPlatforms(platformWidth, platformHeight, platformDepth, covers, positions);
+    }
+
+    playSound(song, timeOut);
+
+    setTimeout(() => {
+        console.log('Time is up');
+
+        scene.remove(mainMap);
+        mainMapCollisions = false;
+        playerOnFloor = false;
+        keepOnePlatform(truePlatform);
+        playerOnFloor = true;
+
+
+        setTimeout(() => {
+            // Additional code after another delay
+            scene.add(mainMap);
+            mainMapCollisions = true;
+            socket.emit('roundIsOver', {room: player.group.room});
+            roundIsOn = false;
+        }, 5000); // 5 seconds in milliseconds
+
+    }, timeOut * 1000); // Convert seconds to milliseconds
+    gameIsOn = false;
+
+}
+}
 // Fonctions d'initialisation
 function initScene(){
   const scene = new THREE.Scene();
@@ -382,12 +387,9 @@ function initEventListeners(){
 // Fonction pour téléporter le joueur s'il sort de la zone
 function teleportPlayerIfOob() {
   if (player.group.position.y <= -25) {
-    player.group.position.set(0, 13, 0);
-    player.group.rotation.set(0, 0, 0);
-    isFloating = false;
-    isJumping = false;
-    isWalking = false;
-    isIdle = true;
+    player.group.position.set(0, 10, 0);
+    player.isDead = true;
+    scene.remove(player.group);
   }
 }
 
@@ -504,13 +506,10 @@ async function controls(deltaTime) {
   }
   
   if (keyStates['KeyJ']) {
-    // if (platformsOnScene.length<7) {
-    //   generateAllPlatforms(platformWidth, platformHeight, platformDepth, images, positions);
-    // }
     if (gameIsOn === false) {
-      player.group.isReady = true;
+      player.isReady = true;
       waitSeconds(1);
-      socket.emit('playerReady', {room: player.group.room, id: rmPlayer.id, isReady: player.group.isReady});
+      socket.emit('playerReady', {room: player.group.room, id: rmPlayer.id, isReady: player.isReady});
       console.log('Player ready');
       gameIsOn = true;
     }
@@ -577,41 +576,40 @@ function updatePlayerRotation() {
 }
 
 function generateAllPlatforms (platformWidth, platformHeight, platformDepth, covers, positions){
-  const shuffledPositions = shuffleArray(positions);
 
-  truePlatform = new Platform(platformWidth, platformHeight, platformDepth, covers[0], shuffledPositions[0]);
+  truePlatform = new Platform(platformWidth, platformHeight, platformDepth, covers[0], positions[0]);
   platformsOnScene.push(truePlatform);
   scene.add(truePlatform);
 
-  fakePlatform1 = new Platform(platformWidth, platformHeight, platformDepth, covers[1], shuffledPositions[1]);
+  fakePlatform1 = new Platform(platformWidth, platformHeight, platformDepth, covers[1], positions[1]);
   platformsOnScene.push(fakePlatform1);
   scene.add(fakePlatform1);
 
-  fakePlatform2 = new Platform(platformWidth, platformHeight, platformDepth, covers[2], shuffledPositions[2]);
+  fakePlatform2 = new Platform(platformWidth, platformHeight, platformDepth, covers[2], positions[2]);
   platformsOnScene.push(fakePlatform2);
   scene.add(fakePlatform2);
 
-  fakePlatform3 = new Platform(platformWidth, platformHeight, platformDepth, covers[3], shuffledPositions[3]);
+  fakePlatform3 = new Platform(platformWidth, platformHeight, platformDepth, covers[3], positions[3]);
   platformsOnScene.push(fakePlatform3);
   scene.add(fakePlatform3);
 
-  fakePlatform4 = new Platform(platformWidth, platformHeight, platformDepth, covers[4], shuffledPositions[4]);
+  fakePlatform4 = new Platform(platformWidth, platformHeight, platformDepth, covers[4], positions[4]);
   platformsOnScene.push(fakePlatform4);
   scene.add(fakePlatform4);
 
-  fakePlatform5 = new Platform(platformWidth, platformHeight, platformDepth, covers[5], shuffledPositions[5]);
+  fakePlatform5 = new Platform(platformWidth, platformHeight, platformDepth, covers[5], positions[5]);
   platformsOnScene.push(fakePlatform5);
   scene.add(fakePlatform5);
 
-  fakePlatform6 = new Platform(platformWidth, platformHeight, platformDepth, covers[6], shuffledPositions[6]);
+  fakePlatform6 = new Platform(platformWidth, platformHeight, platformDepth, covers[6], positions[6]);
   platformsOnScene.push(fakePlatform6);
   scene.add(fakePlatform6);
 
-  fakePlatform7 = new Platform(platformWidth, platformHeight, platformDepth, covers[7], shuffledPositions[7]);
+  fakePlatform7 = new Platform(platformWidth, platformHeight, platformDepth, covers[7], positions[7]);
   platformsOnScene.push(fakePlatform7);
   scene.add(fakePlatform7);
 
-  fakePlatform8 = new Platform(platformWidth, platformHeight, platformDepth, covers[8], shuffledPositions[8]);
+  fakePlatform8 = new Platform(platformWidth, platformHeight, platformDepth, covers[8], positions[8]);
   platformsOnScene.push(fakePlatform8);
   scene.add(fakePlatform8);
   timeisup = false;
@@ -695,7 +693,7 @@ function animate() {
     controls(deltaTime);
     updatePlayer(deltaTime);
     teleportPlayerIfOob();
-    if (player.group.room) {
+    if (player.group.room && player) {
       rmPlayer.updateSocket(player);
     }
   };

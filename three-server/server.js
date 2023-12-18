@@ -7,6 +7,7 @@ import { Server } from 'socket.io';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import { cp } from 'fs';
+import { start } from 'repl';
 
 const app = express();
 
@@ -27,6 +28,7 @@ const io = new Server(server, {
   });
 
 const MAX_PLAYERS_PER_ROOM = 2;
+let playing = false;
 const rooms = [];
 const usedCodes = new Set();
 
@@ -62,47 +64,66 @@ io.sockets.on('connection', function(socket){
 	});	
 
 	socket.on('init', function(data){
-        socket.userData.model = data.model
+
+		socket.userData.id = data.id;
 		socket.userData.x = data.x;
 		socket.userData.y = data.y;
 		socket.userData.z = data.z;
 		socket.userData.heading = data.h;
-		socket.userData.id = socket.id
-		socket.userData.room = data.room
-		socket.userData.isReady= data.isReady,
-		socket.userData.hasWon = data.hasWon,
-		// socket.userData.pb = data.pb,
+
 		socket.userData.action = data.action;
+		socket.userData.model = data.model
+		socket.userData.room = data.room;
+		// socket.userData.pb = data.pb,
 		const room = findRoomByCode(data.room);
 		console.log(room.players);
 	});
 
 	socket.on('playerReady', function(data){
 		const room = findRoomByCode(data.room);
-		console.log('player ready', data);
 		if (room) {
 			const foundPlayer = room.players.find(item => item.id === data.id);
-			foundPlayer.isReady= data.isReady,
-			console.log(room.players);
+			foundPlayer.isReady= data.isReady;
+			
 			if (room.players.every(element => element.isReady === true)) {
 				console.log('all players ready');
-				const shuffledAlbums = shuffleArray(albums);
-				const covers = [];
-				const song = shuffledAlbums[0].song;
-	
-				for (let i = 0; i < 9; i++) {
-					covers.push(shuffledAlbums[i].cover);
-				}
-				io.to(room.id).emit('startGame', {covers: covers, song: song, timeOut: 30});
+				playing = true;
+				startGame(room);
 			}
 		}
 	});	
-		
-	socket.on('update', function(data){
+
+	socket.on('roundIsOver', function(data){
 		const room = findRoomByCode(data.room);
 		if (room) {
+			if (playing) {
+				// Check if the updated player is the only one alive
+				const alivePlayers = room.players.filter(player => !player.isDead);
+
+				if (alivePlayers.length === 1) {
+					const winningPlayer = alivePlayers[0];
+					console.log('The updated player is the only one alive in the room.');
+					
+					// Set hasWon to true for the winning player
+					winningPlayer.hasWon = true;
+					console.log('Player with ID:', winningPlayer.id, 'has won!');
+				}	
+				playing = false;
+			} else {
+				if (!playing) {
+					startGame(room);
+					playing = true;
+				}
+			}
+		}
+	});
+		
+	socket.on('update', function(data) {
+		const room = findRoomByCode(data.room);
+	
+		if (room) {
 			const foundPlayer = room.players.find(item => item.id === data.id);
-			
+	
 			if (foundPlayer) {
 				// Update the values of the found player with the new data
 				foundPlayer.x = data.x;
@@ -110,15 +131,19 @@ io.sockets.on('connection', function(socket){
 				foundPlayer.z = data.z;
 				foundPlayer.heading = data.h;
 				foundPlayer.model = data.model;
-				foundPlayer.hasWon = data.hasWon,
-				// foundPlayer.pb = data.pb,
-				foundPlayer.action = data.action;				
+
+				foundPlayer.isReady = data.isReady;
+				foundPlayer.isDead = data.isDead;
+				foundPlayer.hasWon = data.hasWon;
+				// foundPlayer.pb = data.pb; // Commented-out code
+				foundPlayer.action = data.action;
+
 			} else {
-				console.log('Player not found for ID:', data.id);
+				console.log('Player not found for ID:', data.id, 'in room:', data.room);
 			}
 		}
 	});
-
+	
 	socket.on('disconnect', function(){
 		const room = findRoomByCode(socket.userData.room);
 		if (room) {
@@ -153,6 +178,7 @@ setInterval(function(){
 				model: player.model,
 				heading: player.heading,
 				isReady: player.isReady,
+				isDead: player.isDead,
 				hasWon: player.hasWon,
 				action: player.action,
 			});
@@ -209,6 +235,18 @@ function shuffleArray(array) {
 	return clonedArray.sort((a, b) => 0.5 - Math.random())
 }
 
+function startGame(room) {
+	const shuffledAlbums = shuffleArray(albums);
+	const shuffledPositions = shuffleArray(positions);
+	const covers = [];
+	const song = shuffledAlbums[0].song;
+
+	for (let i = 0; i < 9; i++) {
+		covers.push(shuffledAlbums[i].cover);
+	}
+	io.to(room.id).emit('startGame', {covers: covers, song: song, timeOut: 30, positions: shuffledPositions});
+}
+
 const albums = [
 	{cover:'freeze-lmf.jpg', song: './public/sounds/freeze-lmf-tarkov.mp3'},
 	{cover:'freeze-pbb.jpg', song: './public/sounds/freeze-pbb-3planetes.mp3'},
@@ -220,10 +258,20 @@ const albums = [
 	{cover:'niska-commando.jpg', song: './public/sounds/niska-commando-sale.mp3'},
 	{cover:'sch-jvlivs.jpg', song: './public/sounds/sch-jvlivs-pharmacie.mp3'},
 	{cover:'sch-jvlivs-2.jpg', song: './public/sounds/sch-jvlivs-2-crack.mp3'},
-	{cover:'sexion.jpg', song: './public/sounds/sexion-d-assaut-ma-direction.mp3'},
-  ]
+	{cover:'sexion-pointsvitaux.jpg', song: './public/sounds/sexion-d-assaut-ma-direction.mp3'},
+]
 
-
+const positions = [
+	{x:-9, y:-5.5, z:4},
+	{x:9, y:-5.5, z:4},
+	{x:0, y:-5.5, z:20},
+	{x:-19, y:-5.5, z:-5.5},
+	{x:19, y:-5.5, z:-5.5},
+	{x:-19.5, y:-3.5, z:-15},
+	{x:19.5, y:-3.5, z:-15},
+	{x:-10, y:-3.5, z:-24},
+	{x:10, y:-3.5, z:-24},
+  ];
 // socket.onAny((eventName, ...args) => {
 // 	console.log(eventName); // 'hello'
 // 	console.log(args); // [ 1, '2', { 3: '4', 5: ArrayBuffer (1) [ 6 ] } ] 
