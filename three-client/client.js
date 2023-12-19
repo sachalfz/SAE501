@@ -264,14 +264,13 @@ socket.on('deletePlayer', function(data){
 });
 
 socket.on('startRound', function(data) {
-  if (roundIsOn === false) {
-    console.log('Starting round', data);
+
     startGame(data.positions, data.covers, data.song, data.timeOut);
-  }
 });
 
 function startGame(positions, covers, song, timeOut) {
   if (roundIsOn === false) {
+    console.log('Starting round');
     roundIsOn = true;
     if (platformsOnScene.length < 7) {
         generateAllPlatforms(platformWidth, platformHeight, platformDepth, covers, positions);

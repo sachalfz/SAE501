@@ -246,7 +246,7 @@ function startRound(room) {
 		for (let i = 0; i < 9; i++) {
 			covers.push(shuffledAlbums[i].cover);
 		}
-		io.to(room.id).emit('startRound', {covers: covers, song: song, timeOut: 20, positions: shuffledPositions});	
+		io.to(room.id).emit('startRound', {covers: covers, song: song, timeOut: 30, positions: shuffledPositions});	
 	}
 }
 
