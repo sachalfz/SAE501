@@ -472,7 +472,7 @@ const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
 // Contrôles du joueur
 async function controls(deltaTime) {
-  const speedDelta = deltaTime * (playerOnFloor ? 20 : 4);
+  const speedDelta = deltaTime * (playerOnFloor ? 20 : 6);
 
   if (keyStates['KeyW']) {
     player.velocity.add(getForwardVector().multiplyScalar(-speedDelta));
