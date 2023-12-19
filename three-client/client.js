@@ -58,7 +58,7 @@ const cameraRotation = {
     x: 0,
     y: 0,
 };
-
+ 
 // Paramètres de camera-joueur
 const cameraDistanceFromPlayer = 6;
 
@@ -181,12 +181,9 @@ socket.on('setId', function(data){
   rmPlayer.id = data.id;
   // socket.emit('joinRoom', { roomId: '5QCYMH' });
   socket.emit('joinRoom');
-  console.log('id set:', rmPlayer.id);
-
 });
 let room = null;
 socket.on('roomJoined', function(data){
-  console.log('room joined:', data.roomId);
   player.group.room = data.roomId;
   room = player.group.room;
   rmPlayer.initSocket(room);
@@ -197,7 +194,7 @@ const remotePlayers = [];
 const remotePlayersIds = new Set();  // Use a Set for efficient membership checks
 
 // Function to create a remote player object
-async function createRemotePlayer(id) {
+async function createRemotePlayer(id, x, y, z) {
   console.log('creating remote player');
   try {
     const fbxModel = await loadFBXModel('AnimatedHuman.glb', animationStates);
@@ -207,6 +204,7 @@ async function createRemotePlayer(id) {
 
     const newPlayer = new Player(playerSkin, skin);
     newPlayer.id = id;
+    newPlayer.group.position.set(x, y, z);
     remotePlayers.push(newPlayer);
     scene.add(newPlayer.group);
   } catch (error) {
@@ -224,6 +222,9 @@ function updateRemotePlayer(id, position, rotation, isReady, isDead, hasWon, act
     toUpdatePlayer.isReady = isReady;
     toUpdatePlayer.isDead = isDead;
     toUpdatePlayer.hasWon = hasWon;
+    if (toUpdatePlayer.isDead === true) {
+      scene.remove(toUpdatePlayer.group);
+    }
   }
 }
 
@@ -232,19 +233,21 @@ socket.on('remoteData', function(data) {
   for (const playerData of data) {
     const playerId = playerData.id;
 
-    if (playerId !== rmPlayer.id) {
+    if (playerId) {
+      if (playerId !== rmPlayer.id) {
           // Check if the player ID is already known
-      if (!remotePlayersIds.has(playerId)) {
-        remotePlayersIds.add(playerId);  // Add the ID to the set
-        createRemotePlayer(playerId);
-      } else {
-        // Update remote player position
-        updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, player.isReady, player.isDead, player.hasWon, player.action, );
+        if (!remotePlayersIds.has(playerId)) {
+          remotePlayersIds.add(playerId);  // Add the ID to the set
+          createRemotePlayer(playerId, data.x, data.y, data.z);
+          // createRemotePlayer(playerId);
+        } else {
+          // Update remote player position
+          updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, playerData.isReady, playerData.isDead, playerData.hasWon, playerData.action, );
+        }
       }
     }
-
   }
-});
+}); 
 
 socket.on('deletePlayer', function(data){
   const disconnectedPlayer = remotePlayers.find(player => player.id === data.id);
@@ -260,16 +263,16 @@ socket.on('deletePlayer', function(data){
   }
 });
 
-socket.on('startGame', function(data) {
-  console.log('Game started');
-  startGame(data.positions, data.covers, data.song, data.timeOut);
-
+socket.on('startRound', function(data) {
+  if (roundIsOn === false) {
+    console.log('Starting round', data);
+    startGame(data.positions, data.covers, data.song, data.timeOut);
+  }
 });
 
 function startGame(positions, covers, song, timeOut) {
   if (roundIsOn === false) {
     roundIsOn = true;
-
     if (platformsOnScene.length < 7) {
         generateAllPlatforms(platformWidth, platformHeight, platformDepth, covers, positions);
     }
@@ -277,28 +280,21 @@ function startGame(positions, covers, song, timeOut) {
     playSound(song, timeOut);
 
     setTimeout(() => {
-        console.log('Time is up');
 
-        scene.remove(mainMap);
         mainMapCollisions = false;
-        playerOnFloor = false;
         keepOnePlatform(truePlatform);
-        playerOnFloor = true;
-
 
         setTimeout(() => {
             // Additional code after another delay
-            scene.add(mainMap);
             mainMapCollisions = true;
-            socket.emit('roundIsOver', {room: player.group.room});
             roundIsOn = false;
-        }, 5000); // 5 seconds in milliseconds
+            socket.emit('roundIsOver', {room: player.group.room});
+        }, 2000); // 5 seconds in milliseconds
 
     }, timeOut * 1000); // Convert seconds to milliseconds
-    gameIsOn = false;
+  }
+}
 
-}
-}
 // Fonctions d'initialisation
 function initScene(){
   const scene = new THREE.Scene();
@@ -438,11 +434,9 @@ function fadeToAction(name, duration, actionsArray) {
 }
 
 function waitSeconds(seconds) {
-  console.log("Start waiting...");
-
   return new Promise(resolve => {
     setTimeout(() => {
-      console.log("Finished waiting after " + seconds + " seconds!");
+      // console.log("Finished waiting after " + seconds + " seconds!");
       resolve();
     }, seconds * 1000); // Convert seconds to milliseconds
   });
@@ -510,7 +504,6 @@ async function controls(deltaTime) {
       player.isReady = true;
       waitSeconds(1);
       socket.emit('playerReady', {room: player.group.room, id: rmPlayer.id, isReady: player.isReady});
-      console.log('Player ready');
       gameIsOn = true;
     }
   }
@@ -557,9 +550,7 @@ function updatePlayer(deltaTime) {
   player.velocity.addScaledVector(player.velocity, damping);
   const deltaPosition = player.velocity.clone().multiplyScalar(deltaTime);
   player.collider.translate(deltaPosition);
-  if (mainMapCollisions) {
-    playerCollisions();
-  }
+  playerCollisions();
   checkPlatformsCollisions(player, platformsOnScene);
   player.group.position.copy(player.collider.end); // Update player's group position
 }
@@ -639,12 +630,12 @@ function keepOnePlatform(platformToKeep) {
 }
 
 function checkPlatformsCollisions(player, platforms) {
-  platforms.forEach(platform => {
+  let collision = false;
+  for (const platform of platforms){
     const playerBox = new THREE.Box3().setFromObject(player.hitbox);
     const boxBox = new THREE.Box3().setFromObject(platform.mesh);
     // Check if the player's bounding box intersects with the box's bounding box
-    const collision = playerBox.intersectsBox(boxBox);
-
+    collision = playerBox.intersectsBox(boxBox);
     if (collision) {
         // If there is a collision, check if the player is above the box's top face
         const playerPosition = player.group.position;
@@ -666,15 +657,16 @@ function checkPlatformsCollisions(player, platforms) {
         player.velocity.y = -1;
 
         }
+      break;
     }
-  });
+  }    
 }
 
 function playerCollisions() {
   const floorCollider = floorOctree.capsuleIntersect(player.collider);
   playerOnFloor = false;
 
-  if (floorCollider) {
+  if (floorCollider && mainMapCollisions) {
     // playerOnFloor = floorCollider.normal.y > 0;
     if (!playerOnFloor) {
       player.velocity.addScaledVector(floorCollider.normal, -floorCollider.normal.dot(player.velocity));
@@ -716,7 +708,9 @@ function animate() {
       isIdle = true;
     }
   }
-  
+  if (player.hasWon === true) {
+    alert('You won!');  
+  }
   isWalking = false;
   // Update viewpointCamera position
   updateViewpointCameraPosition();

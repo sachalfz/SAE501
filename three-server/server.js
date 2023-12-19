@@ -27,8 +27,8 @@ const io = new Server(server, {
 	connectionStateRecovery: {},
   });
 
-const MAX_PLAYERS_PER_ROOM = 2;
-let playing = false;
+const MAX_PLAYERS_PER_ROOM = 3;
+let playing = false, gameWon = false;
 const rooms = [];
 const usedCodes = new Set();
 
@@ -87,8 +87,7 @@ io.sockets.on('connection', function(socket){
 			
 			if (room.players.every(element => element.isReady === true)) {
 				console.log('all players ready');
-				playing = true;
-				startGame(room);
+				startRound(room);
 			}
 		}
 	});	
@@ -96,25 +95,26 @@ io.sockets.on('connection', function(socket){
 	socket.on('roundIsOver', function(data){
 		const room = findRoomByCode(data.room);
 		if (room) {
-			if (playing) {
-				// Check if the updated player is the only one alive
-				const alivePlayers = room.players.filter(player => !player.isDead);
+			// Check if the updated player is the only one alive
+			const alivePlayers = room.players.filter(player => !player.isDead);
 
-				if (alivePlayers.length === 1) {
-					const winningPlayer = alivePlayers[0];
-					console.log('The updated player is the only one alive in the room.');
-					
-					// Set hasWon to true for the winning player
-					winningPlayer.hasWon = true;
-					console.log('Player with ID:', winningPlayer.id, 'has won!');
-				}	
-				playing = false;
-			} else {
-				if (!playing) {
-					startGame(room);
-					playing = true;
-				}
+			if (alivePlayers.length > 1) {
+				console.log('More than one player is alive in the room.');
+				startRound(room);
+				playing = true;
+				return;
 			}
+			else if (alivePlayers.length === 1) {
+				const winningPlayer = alivePlayers[0];					
+				// Set hasWon to true for the winning player
+				winningPlayer.hasWon = true;
+				console.log('Player with ID:', winningPlayer.id, 'has won!');
+				gameWon = true;
+				return;
+			} 
+			else if (alivePlayers.length === 0) {
+				console.log('No players are alive in the room.');
+			}	
 		}
 	});
 		
@@ -132,7 +132,7 @@ io.sockets.on('connection', function(socket){
 				foundPlayer.heading = data.h;
 				foundPlayer.model = data.model;
 
-				foundPlayer.isReady = data.isReady;
+				foundPlayer.isReady = data.isReady; 
 				foundPlayer.isDead = data.isDead;
 				foundPlayer.hasWon = data.hasWon;
 				// foundPlayer.pb = data.pb; // Commented-out code
@@ -235,16 +235,19 @@ function shuffleArray(array) {
 	return clonedArray.sort((a, b) => 0.5 - Math.random())
 }
 
-function startGame(room) {
-	const shuffledAlbums = shuffleArray(albums);
-	const shuffledPositions = shuffleArray(positions);
-	const covers = [];
-	const song = shuffledAlbums[0].song;
+function startRound(room) {
+	if (room) {
+		console.log('Starting round in room:', room.id);
+		const shuffledAlbums = shuffleArray(albums);
+		const shuffledPositions = shuffleArray(positions);
+		const covers = [];
+		const song = shuffledAlbums[0].song;
 
-	for (let i = 0; i < 9; i++) {
-		covers.push(shuffledAlbums[i].cover);
+		for (let i = 0; i < 9; i++) {
+			covers.push(shuffledAlbums[i].cover);
+		}
+		io.to(room.id).emit('startRound', {covers: covers, song: song, timeOut: 20, positions: shuffledPositions});	
 	}
-	io.to(room.id).emit('startGame', {covers: covers, song: song, timeOut: 30, positions: shuffledPositions});
 }
 
 const albums = [
