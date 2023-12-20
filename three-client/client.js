@@ -41,6 +41,8 @@ let initialisingPlayers = [];
 let font, textGeo;
 let gameIsOn = false, roundIsOn = false;
 let mainMapCollisions = true;
+let cameraIsRotating = false;
+
 const mixers = [];
 
 // Gravité et pas de simulation
@@ -148,6 +150,21 @@ async function loadFBXModel(pathToModel) {
       console.error(e);
       reject(e); // Reject the promise if an error occurs during loading
     });
+  });
+}
+
+function loadFont() {
+  const loader = new FontLoader();
+  return new Promise((resolve, reject) => {
+    loader.load(
+      'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
+      (response) => {
+        font = response;
+        resolve();
+      },
+      undefined,
+      reject
+    );
   });
 }
 
@@ -293,6 +310,77 @@ function startGame(positions, covers, song, timeOut) {
     }, timeOut * 1000); // Convert seconds to milliseconds
   }
 }
+
+function createText(text, x, y, z, r) {
+  const materials = [new THREE.MeshBasicMaterial({ color: 0xffffff })];
+
+  textGeo = new TextGeometry(text, {
+    font: font,
+    size: 1,
+    height: 5,
+    curveSegments: 12,
+    bevelEnabled: true,
+    bevelThickness: 10,
+    bevelSize: 8,
+    bevelOffset: 0,
+    bevelSegments: 5,
+  });
+
+  const textMesh1 = new THREE.Mesh(textGeo, materials);
+
+  // Calculate center of the text geometry
+  textGeo.computeBoundingBox();
+  const textBoundingBox = textGeo.boundingBox;
+  const textCenterX = -0.5 * (textBoundingBox.max.x - textBoundingBox.min.x);
+  // const textCenterY = -0.5 * (textBoundingBox.max.y - textBoundingBox.min.y);
+  const textCenterZ = -0.5 * (textBoundingBox.max.z - textBoundingBox.min.z);
+
+  if (r === Math.abs(90)) {
+    textMesh1.position.x = x + textCenterX;
+    textMesh1.position.y = y;
+    textMesh1.position.z = z ;
+  } else {
+    textMesh1.position.x = x ;
+    textMesh1.position.y = y;
+    textMesh1.position.z = z + textCenterX;
+  }
+
+  
+
+  textMesh1.rotation.y = degreesToRadians(r);
+
+  return textMesh1;
+
+  console.log('Text created:', text);
+}
+
+await loadFont();
+
+const textGroup = new THREE.Group();
+scene.add(textGroup);
+
+function writeText(text){
+  const text1 = createText(text, 40, 0, -12, -90);
+  const text2 = createText(text, -40, 0, -6, 90);
+  const text3 = createText(text, -6, 0, -40, -0);
+  const text4 = createText(text, 3, 0, 40, 180);
+
+  const tempGroup = new THREE.Group();
+  tempGroup.add(text1);
+  tempGroup.add(text2);
+  tempGroup.add(text3);
+  tempGroup.add(text4);
+
+  if (textGroup[0]) {
+    textGroup.group.remove(textGroup[0]);
+    textGroup.add(tempGroup);
+  } else {
+    textGroup.add(tempGroup);
+  
+  }
+}
+
+writeText('Saute sur les plateformes pour gagner des points !')
 
 // Fonctions d'initialisation
 function initScene(){
@@ -448,6 +536,9 @@ function shuffleArray(array) {
 
 // Met à jour la position de la caméra en fonction de la rotation
 function updateCameraRotation(deltaX, deltaY) {
+    if (deltaX > 0.00151 || deltaY > 0.0015) {
+      cameraIsRotating = true
+    }
     const rotationSpeed = 0.5;
     cameraRotation.x -= deltaX * rotationSpeed;
     cameraRotation.y -= -deltaY * rotationSpeed;
@@ -472,7 +563,7 @@ const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
 // Contrôles du joueur
 async function controls(deltaTime) {
-  const speedDelta = deltaTime * (playerOnFloor ? 20 : 6);
+  const speedDelta = deltaTime * (playerOnFloor ? 20 : 7);
 
   if (keyStates['KeyW']) {
     player.velocity.add(getForwardVector().multiplyScalar(-speedDelta));
@@ -507,8 +598,6 @@ async function controls(deltaTime) {
     }
   }
 
-  // TODO: find a way to wait for a period of time
-
   if (keyStates['KeyP']) {
   }
 
@@ -541,12 +630,22 @@ function getSideVector() {
 
 // Met à jour la position du joueur
 function updatePlayer(deltaTime) {
+  // Set a higher damping factor to reduce inertia quickly
   let damping = Math.exp(-4 * deltaTime) - 1;
+
+  // Adjust the damping for non-floor scenarios
   if (!playerOnFloor) {
     player.velocity.y -= GRAVITY * deltaTime;
     damping *= 0.1;
   }
+
   player.velocity.addScaledVector(player.velocity, damping);
+
+  // Set a minimum velocity threshold to stop player when very slow
+  const minVelocity = 0.01;
+  if (player.velocity.length() < minVelocity || cameraIsRotating) {
+    player.velocity.set(player.velocity.x * 0.1 , player.velocity.y, player.velocity.z*0.1);
+  }
   const deltaPosition = player.velocity.clone().multiplyScalar(deltaTime);
   player.collider.translate(deltaPosition);
   playerCollisions();
@@ -605,7 +704,7 @@ function generateAllPlatforms (platformWidth, platformHeight, platformDepth, cov
   timeisup = false;
 }
 
-fetch('https://drive.google.com/file/d/1XCtUwJALQXnljzmEET4WZZbiFeXyPQWQ/view')
+// fetch('https://drive.google.com/file/d/1XCtUwJALQXnljzmEET4WZZbiFeXyPQWQ/view')
   
 function keepOnePlatform(platformToKeep) {
 
@@ -684,6 +783,7 @@ function animate() {
     controls(deltaTime);
     updatePlayer(deltaTime);
     teleportPlayerIfOob();
+    cameraIsRotating = false;
     if (player.group.room && player) {
       rmPlayer.updateSocket(player);
     }
