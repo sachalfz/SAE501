@@ -19,32 +19,32 @@ import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router';
 
-// export default {
-//     data() {
-//         return {
-//         userExists: false,
-//         currentUser:null,
-//         };
-//     },
-//     computed: {
-//         // Utilisation de la valeur calculée user provenant du script setup
-//         user() {
-//             const store = useStore();
-//             return computed(() => store.state.user).value;
-//         },
-//     },
-//     mounted() {
-//         this.currentUser = this.user;
-//         this.checkUserExists(this.currentUser);
-//     },
-//     methods: {
-//     checkUserExists(usr) {
-//         this.userExists = !!usr;
-//         if (!this.userExists) {
-//             this.$router.push('/login');
-//         }
-//         },
-//     },
-// };
+export default {
+    data() {
+        return {
+        userExists: false,
+        currentUser:null,
+        };
+    },
+    computed: {
+        // Utilisation de la valeur calculée user provenant du script setup
+        user() {
+            const store = useStore();
+            return computed(() => store.state.user).value;
+        },
+    },
+    mounted() {
+        this.currentUser = this.user;
+        this.checkUserExists(this.currentUser);
+    },
+    methods: {
+    checkUserExists(usr) {
+        this.userExists = !!usr;
+        if (!this.userExists) {
+            this.$router.push('/login');
+        }
+        },
+    },
+};
 </script>
 
