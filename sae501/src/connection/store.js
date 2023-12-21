@@ -1,6 +1,9 @@
 // store.js
 import { createStore } from 'vuex';
 import axios from 'axios'; // Importez axios ici
+import { apiShop } from '@/main.js';
+import { apiMusic } from '@/main.js';
+import { apiUserInventory } from '@/main.js';
 
 const store = createStore({
   state() {
@@ -36,17 +39,19 @@ const store = createStore({
 
     async login({ commit }, { email, password }) {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/login', {
+        console.log(`${apiUserInventory}/login`)
+        const response = await axios.post(`${apiUserInventory}/login`, {
           email: email,
           password: password
         });
+
         
         // Récupérer l'utilisateur depuis la réponse de la connexion
         const user = response.data.user;
         user.isAuthenticated = true;
     
         // Récupérer l'inventaire de l'utilisateur en utilisant l'ID de l'utilisateur
-        const inventoryResponse = await axios.get(`http://127.0.0.1:8000/api/inventory/${user.id}`);
+        const inventoryResponse = await axios.get(`${apiUserInventory}/api/inventory/${user.id}`);
         const inventory = inventoryResponse.data.inventory;
     
         // Ajouter l'inventaire à l'objet utilisateur
@@ -94,7 +99,7 @@ const store = createStore({
           roles: ['ROLE_USER']
         };
     
-        const response = await axios.post('http://127.0.0.1:8000/api/users', userData);
+        const response = await axios.post(`${apiUserInventory}/api/users`, userData);
     
         // Si l'inscription réussit, vous pouvez retourner les données de l'utilisateur ou gérer la réponse si nécessaire
         return response.data;

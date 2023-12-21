@@ -21,6 +21,10 @@
 import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex'
 
+import { apiShop } from '@/main.js';
+import { apiMusic } from '@/main.js';
+import { apiUserInventory } from '@/main.js';
+
 export default {
     computed: {
         // Utilisation de la valeur calculée user provenant du script setup
@@ -55,10 +59,10 @@ export default {
                         "profilepicture": newProfilePic,
                         "gameswon": this.currentUser.inventory.gameswon,
                         "gamesplayed": this.currentUser.inventory.gamesplayed,
-                        "user": `http://127.0.0.1:8000/api/users/${this.currentUser.id}`,
+                        "user": `${apiUserInventory}/api/users/${this.currentUser.id}`,
                     };
 
-                    fetch(`http://127.0.0.1:8000/api/inventories/${this.user.inventory.id}`, {
+                    fetch(`${apiUserInventory}/api/inventories/${this.user.inventory.id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/ld+json',

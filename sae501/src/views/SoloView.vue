@@ -17,7 +17,10 @@ import SoloGuesses from '../components/SoloGuesses.vue';
 import SoloRevealGuess from '../components/SoloRevealGuess.vue';
 import SoloTryAgain from '../components/SoloTryAgain.vue';
 import { computed, onMounted } from 'vue';
-import { useStore } from 'vuex'
+import { useStore } from 'vuex';
+import { apiShop } from '@/main.js';
+import { apiMusic } from '@/main.js';
+import { apiUserInventory } from '@/main.js';
 
 export default {
   components: {
@@ -60,10 +63,10 @@ export default {
           "profilepicture": this.currentUser.inventory.profilepicture,
           "gameswon": this.currentUser.inventory.gameswon + gameWon,
           "gamesplayed": this.currentUser.inventory.gamesplayed + gamePlayed,
-          "user": `http://127.0.0.1:8000/api/users/${this.currentUser.id}`,
+          "user": `${apiUserInventory}/api/users/${this.currentUser.id}`,
         };
 
-        fetch(`http://127.0.0.1:8000/api/inventories/${this.user.inventory.id}`, {
+        fetch(`${apiUserInventory}/api/inventories/${this.user.inventory.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/ld+json',
@@ -126,7 +129,7 @@ export default {
     },
   },
   mounted() {
-    fetch('http://127.0.0.1:8002/api/alba')
+    fetch(`${apiMusic}/api/alba`)
       .then(response => response.json())
       .then(data => {
         this.albums = data;
