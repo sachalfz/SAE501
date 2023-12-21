@@ -22,152 +22,24 @@ const stats = initStats();
 const clock = new THREE.Clock();
 
 const glbLoader = new GLTFLoader().setPath('./public/worlds/');
-// const FBXcharacterLoader = new FBXLoader().setPath('./characters/');
 const GLBcharacterLoader = new GLTFLoader().setPath('./public/characters/');
 const textLoader = new FontLoader();
+// const FBXcharacterLoader = new FBXLoader().setPath('./characters/');
 // const fbxClientLoader = new FBXLoader().setPath('./public/characters/');
 
-const keyStates = {};
-let truePlatform, fakePlatform1, fakePlatform2, fakePlatform3, fakePlatform4, fakePlatform5, fakePlatform6, fakePlatform7, fakePlatform8;
-let platformsOnScene = [];
-let playerOnFloor = false;
-let isIdle = true;
-let isWalking = false;
-let isJumping = false;
-let isFloating = false;
-let activeAction, previousAction;
-let timeisup = false;
-let initialisingPlayers = [];
-let font, textGeo;
-let gameIsOn = false, roundIsOn = false;
-let mainMapCollisions = true;
+const keyStates = {}; // Store the state of each key
+let truePlatform, fakePlatform1, fakePlatform2, fakePlatform3, fakePlatform4, fakePlatform5, fakePlatform6, fakePlatform7, fakePlatform8; // Plateformes
+let platformsOnScene = []; // Liste des plateformes
+let playerOnFloor = false; // Le joueur est-il sur le sol ?
+let isIdle = true; // Le joueur est-il immobile ?
+let isWalking = false; // Le joueur est-il en train de marcher ?
+let activeAction, previousAction; // Animations
+let font, textGeo; // Texte
+let gameIsOn = false, roundIsOn = false; // Le jeu est-il en cours ?
+let mainMapCollisions = true; // Les collisions avec la map sont-elles activées ? 
 
-const mixers = [];
-
-// Gravité et pas de simulation
-const GRAVITY = 30;
-const STEPS_PER_FRAME = 5;
-
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 5, 5);
-
-const viewpointCamera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-viewpointCamera.position.set(0, 5, 5);
-
-// Rotation de la caméra
-const cameraRotation = {
-    x: 0,
-    y: 0,
-};
- 
-// Paramètres de camera-joueur
-const cameraDistanceFromPlayer = 8;
-
-// Paramètres de la map
-var mapPath = 'ConcertStage.glb';
-const mapScale = 1;
-
-// Paramètre de platformes
-const platformWidth = 5;
-const platformHeight = 0.15;
-const platformDepth = 5;
-
-async function loadMap(pathToMap) {
-  return new Promise((resolve, reject) => {
-    glbLoader.load(pathToMap, function (object) {
-      try {
-        const model = object.scene;
-        model.scale.set(mapScale, mapScale, mapScale); // Scale the model by a factor of 2 in all directions
-        model.position.set(0,-7,-10);
-        floorOctree.fromGraphNode(model);
-        scene.add(model);
-
-        model.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-            if (child.material.map) {
-              child.material.map.anisotropy = 4;
-            }
-          }
-        });
-
-        const helper = new OctreeHelper(floorOctree);
-        helper.visible = false;
-        scene.add(helper);
-
-        const gui = new GUI({ width: 200 });
-        gui.add({ debug: false }, 'debug').onChange(function (value) {
-          helper.visible = value;
-        });
-
-        initEventListeners();
-        animate();
-        resolve(model); // Resolve the promise when the model is loaded
-      } catch (error) {
-        console.error(error);
-        reject(error); // Reject the promise if an error occurs during loading
-      }
-    }, undefined, function (e) {
-      console.error(e);
-      reject(e); // Reject the promise if an error occurs during loading
-    });
-  });
-}
-
-async function loadFBXModel(pathToModel) {
-  return new Promise((resolve, reject) => {
-    GLBcharacterLoader.load(pathToModel, function (object) {
-      try {
-        const model = object.scene;
-        model.scale.set(0.5, 0.5, -0.5);
-        const mixer = new THREE.AnimationMixer(model);
-        let actions = {};
-
-
-        // Loop through animations and create actions
-        for (let i = 0; i < object.animations.length; i++) {
-          const clip = object.animations[i];
-          const action = mixer.clipAction(clip);
-
-          if (animationStates.indexOf(clip.name) !== -1) {
-            actions[clip.name] = action;
-          }
-
-          if (animationStates.indexOf(clip.name) === 2) {
-            action.clampWhenFinished = true;
-            action.loop = THREE.LoopOnce;
-          }
-        }
-        // model.scale.set(0.005, 0.005, -0.005);
-        resolve({model: model, actions: actions, mixer: mixer}); // Resolve the promise when the model is loaded
-      } catch (error) {
-        console.error(error);
-        reject(error); // Reject the promise if an error occurs during loading
-      }
-    }, undefined, function (e) {
-      console.error(e);
-      reject(e); // Reject the promise if an error occurs during loading
-    });
-  });
-}
-
-function loadFont() {
-  const loader = new FontLoader();
-  return new Promise((resolve, reject) => {
-    loader.load(
-      'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
-      (response) => {
-        font = response;
-        resolve();
-      },
-      undefined,
-      reject
-    );
-  });
-}
-
-const animationStates = [
+const mixers = []; // Array of mixers
+const animationStates = [ // Liste des animations disponibles
   "Human Armature|ArmatureAction.002",
   "Human Armature|Death",
   "Human Armature|Idle",
@@ -178,216 +50,39 @@ const animationStates = [
   "Human Armature|Working"
 ];
 
+// Gravité et pas de simulation
+const GRAVITY = 30;
+const STEPS_PER_FRAME = 5;
+
+const socket = io("http://localhost:3000");
+
+// Paramètres de camera
+const viewpointCamera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+viewpointCamera.position.set(0, 5, 5);
+
+const cameraRotation = {
+    x: 0,
+    y: 0,
+};
+const cameraDistanceFromPlayer = 8;
+
+// Paramètres de la map
+var mapPath = 'ConcertStage.glb';
+const mapScale = 1;
+
+
+// Paramètre du joueur 
 const skin = 'AnimatedHuman.glb'
 const skinName = skin;
 const fbxModel = await loadFBXModel(skin, animationStates);
 const playerSkin = fbxModel.model;
 const actions = fbxModel.actions;
 mixers.push({playerMixer: fbxModel.mixer});
-
-const player = new Player(playerSkin, skinName, actions);
-
+const player = new Player(playerSkin, skinName, actions); // Joueur local
 scene.add(player.group);  
+const rmPlayer = new remotePlayer(player, socket); // Joueur a distance correspondant au joueur local
 
-const socket = io("http://localhost:3000");
-
-const rmPlayer = new remotePlayer(player, socket);
-
-socket.on('setId', function(data){
-  rmPlayer.id = data.id;
-  // socket.emit('joinRoom', { roomId: '5QCYMH' });
-  socket.emit('joinRoom');
-});
 let room = null;
-socket.on('roomJoined', function(data){
-  player.group.room = data.roomId;
-  room = player.group.room;
-  rmPlayer.initSocket(room);
-});
-
-// Map of remote players
-const remotePlayers = [];
-const remotePlayersIds = new Set();  // Use a Set for efficient membership checks
-
-// Function to create a remote player object
-async function createRemotePlayer(id, x, y, z) {
-  console.log('creating remote player');
-  try {
-    const fbxModel = await loadFBXModel('AnimatedHuman.glb', animationStates);
-    const playerSkin = fbxModel.model;
-    const actions = fbxModel.actions;
-    mixers.push({playerMixer: fbxModel.mixer});
-
-    const newPlayer = new Player(playerSkin, skin);
-    newPlayer.id = id;
-    newPlayer.group.position.set(x, y, z);
-    remotePlayers.push(newPlayer);
-    scene.add(newPlayer.group);
-  } catch (error) {
-    console.error('Error loading player skin:', error);
-    // Handle the error appropriately, e.g., display a fallback skin.
-  }
-}
-
-// Function to update a remote player's position
-function updateRemotePlayer(id, position, rotation, isReady, isDead, hasWon, action) {
-  const toUpdatePlayer = remotePlayers.find((player) => player.id === id);
-  if (toUpdatePlayer) {
-    toUpdatePlayer.group.position.set(position.x, position.y, position.z);
-    toUpdatePlayer.group.rotation.y = rotation;
-    toUpdatePlayer.isReady = isReady;
-    toUpdatePlayer.isDead = isDead;
-    toUpdatePlayer.hasWon = hasWon;
-    if (toUpdatePlayer.isDead === true) {
-      scene.remove(toUpdatePlayer.group);
-    }
-  }
-}
-
-// Listen for 'remoteData' event
-socket.on('remoteData', function(data) {
-  for (const playerData of data) {
-    const playerId = playerData.id;
-
-    if (playerId) {
-      if (playerId !== rmPlayer.id) {
-          // Check if the player ID is already known
-        if (!remotePlayersIds.has(playerId)) {
-          remotePlayersIds.add(playerId);  // Add the ID to the set
-          createRemotePlayer(playerId, data.x, data.y, data.z);
-          // createRemotePlayer(playerId);
-        } else {
-          // Update remote player position
-          updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, playerData.isReady, playerData.isDead, playerData.hasWon, playerData.action, );
-        }
-      }
-    }
-  }
-}); 
-
-socket.on('deletePlayer', function(data){
-  const disconnectedPlayer = remotePlayers.find(player => player.id === data.id);
-
-  if (disconnectedPlayer) {
-    scene.remove(disconnectedPlayer.group)
-    // Remove the disconnected player from the connectedPlayers array
-    remotePlayers.filter(player => player.id !== data.id);
-    remotePlayersIds.delete(player => player.id !== data.id);
-
-
-    console.log('Player with id:', data.id,'removed');
-  }
-});
-
-socket.on('startRound', function(data) {
-
-    startGame(data.positions, data.covers, data.song, data.timeOut);
-});
-
-function startGame(positions, covers, song, timeOut) {
-  if (roundIsOn === false) {
-    console.log('Starting round');
-    writeText('Jump on the cover of the song playing before the time is up !');
-    roundIsOn = true;
-    if (platformsOnScene.length < 7) {
-        generateAllPlatforms(platformWidth, platformHeight, platformDepth, covers, positions);
-    }
-
-    playSound(song, timeOut);
-
-    setTimeout(() => {
-
-        mainMapCollisions = false;
-        keepOnePlatform(truePlatform);
-
-        setTimeout(() => {
-            // Additional code after another delay
-            mainMapCollisions = true;
-            roundIsOn = false;
-            socket.emit('roundIsOver', {room: player.group.room});
-        }, 2000); // 5 seconds in milliseconds
-
-    }, timeOut * 1000); // Convert seconds to milliseconds
-  }
-}
-
-function createText(text, x, y, z, r) {
-  const materials = [new THREE.MeshBasicMaterial({ color: 0xffffff })];
-
-  textGeo = new TextGeometry(text, {
-    font: font,
-    size: 1,
-    height: 5,
-    curveSegments: 12,
-    bevelEnabled: true,
-    bevelThickness: 10,
-    bevelSize: 8,
-    bevelOffset: 0,
-    bevelSegments: 5,
-  });
-
-  const textMesh1 = new THREE.Mesh(textGeo, materials);
-
-  // Calculate center of the text geometry
-  textGeo.computeBoundingBox();
-  const textBoundingBox = textGeo.boundingBox;
-  const textCenterX = -0.5 * (textBoundingBox.max.x - textBoundingBox.min.x);
-  // const textCenterY = -0.5 * (textBoundingBox.max.y - textBoundingBox.min.y);
-  const textCenterZ = -0.5 * (textBoundingBox.max.z - textBoundingBox.min.z);
-
-  if (r === Math.abs(180)) {
-    textMesh1.position.x = x - textCenterX;
-    textMesh1.position.y = y;
-    textMesh1.position.z = z ;
-  } else {
-    textMesh1.position.x = x + textCenterX ;
-    textMesh1.position.y = y;
-    textMesh1.position.z = z ;
-  }
-    // textMesh1.position.x = x + textCenterX ;
-    // textMesh1.position.y = y;
-    // textMesh1.position.z = z ;
-
-  
-
-  textMesh1.rotation.y = degreesToRadians(r);
-
-  return textMesh1;
-
-  console.log('Text created:', text);
-}
-
-await loadFont();
-
-const textGroup = new THREE.Group();
-scene.add(textGroup);
-
-function writeText(text){
-  // const text1 = createText(text + '2', 40, 0, -12, -90);
-  // const text2 = createText(text + '3', -40, 0, -6, 90);
-  const text3 = createText(text, 7, 0, -45, 0);
-  const text4 = createText(text, -7, 0, 40, 180);
-
-  const tempGroup = new THREE.Group();
-  // tempGroup.add(text1);
-  // tempGroup.add(text2);
-  tempGroup.add(text3);
-  tempGroup.add(text4);
-
-  const textToRemove = textGroup.children[0];
-  console.log(textGroup.children[0]);
-  if (textToRemove) {
-    console.log('Removing text:', textToRemove);
-    textGroup.remove(textToRemove);
-    scene.remove(textToRemove);
-    textGroup.add(tempGroup);
-
-  } else {
-    textGroup.add(tempGroup);
-  }
-}
-
-writeText('Waiting for players to get ready ! ( press J )')
 
 // Fonctions d'initialisation
 function initScene(){
@@ -474,71 +169,98 @@ function initEventListeners(){
     window.addEventListener('resize', onWindowResize);  
 }
 
-// Fonction pour téléporter le joueur s'il sort de la zone
-function teleportPlayerIfOob() {
-  if (player.group.position.y <= -25) {
-    player.group.position.set(0, 10, 0);
-    player.isDead = true;
-    scene.remove(player.group);
-  }
-}
+async function loadMap(pathToMap) {
+  return new Promise((resolve, reject) => {
+    glbLoader.load(pathToMap, function (object) {
+      try {
+        const model = object.scene;
+        model.scale.set(mapScale, mapScale, mapScale); // Scale the model by a factor of 2 in all directions
+        model.position.set(0,-7,-10);
+        floorOctree.fromGraphNode(model);
+        scene.add(model);
 
-function onWindowResize() {
-  viewpointCamera.aspect = window.innerWidth / window.innerHeight;
-  viewpointCamera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (child.material.map) {
+              child.material.map.anisotropy = 4;
+            }
+          }
+        });
 
-function degreesToRadians(degrees) {
-  return degrees * (Math.PI / 180);
-}
+        const helper = new OctreeHelper(floorOctree);
+        helper.visible = false;
+        scene.add(helper);
 
-function playSound(soundPath, duration) {
-  const audio = new Audio(soundPath);
-  console.log("Playing sound:", soundPath);
+        const gui = new GUI({ width: 200 });
+        gui.add({ debug: false }, 'debug').onChange(function (value) {
+          helper.visible = value;
+        });
 
-  // Jouer le son
-  audio.play();
-
-  // Attendre la durée spécifiée avant de s'arrêter
-  setTimeout(function() {
-      audio.pause();
-  }, duration * 1000); // La fonction setTimeout prend le temps en millisecondes, donc nous multiplions par 1000 pour convertir en secondes
-}
-
-function fadeToAction(name, duration, actionsArray) {
-
-  // Check if the action is not already active
-  if (activeAction !== actionsArray[name]) {
-    // If there is a previous action, fade it out
-    if (previousAction) {
-      previousAction.fadeOut(duration);
-    }
-    // Set the new active action
-    activeAction = actionsArray[name];
-
-    // If there is a new active action, reset, set parameters, fade in, and play
-    if (activeAction) {
-      activeAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(duration).play();
-    }
-
-    // Update the previous action
-    previousAction = activeAction;
-  }
-}
-
-function waitSeconds(seconds) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      // console.log("Finished waiting after " + seconds + " seconds!");
-      resolve();
-    }, seconds * 1000); // Convert seconds to milliseconds
+        initEventListeners();
+        animate();
+        resolve(model); // Resolve the promise when the model is loaded
+      } catch (error) {
+        console.error(error);
+        reject(error); // Reject the promise if an error occurs during loading
+      }
+    }, undefined, function (e) {
+      console.error(e);
+      reject(e); // Reject the promise if an error occurs during loading
+    });
   });
 }
 
-function shuffleArray(array) {
-  const clonedArray = [...array];
-  return clonedArray.sort((a, b) => 0.5 - Math.random())
+async function loadFBXModel(pathToModel) {
+  return new Promise((resolve, reject) => {
+    GLBcharacterLoader.load(pathToModel, function (object) {
+      try {
+        const model = object.scene;
+        model.scale.set(0.5, 0.5, -0.5);
+        const mixer = new THREE.AnimationMixer(model);
+        let actions = {};
+
+
+        // Loop through animations and create actions
+        for (let i = 0; i < object.animations.length; i++) {
+          const clip = object.animations[i];
+          const action = mixer.clipAction(clip);
+
+          if (animationStates.indexOf(clip.name) !== -1) {
+            actions[clip.name] = action;
+          }
+
+          if (animationStates.indexOf(clip.name) === 2) {
+            action.clampWhenFinished = true;
+            action.loop = THREE.LoopOnce;
+          }
+        }
+        // model.scale.set(0.005, 0.005, -0.005);
+        resolve({model: model, actions: actions, mixer: mixer}); // Resolve the promise when the model is loaded
+      } catch (error) {
+        console.error(error);
+        reject(error); // Reject the promise if an error occurs during loading
+      }
+    }, undefined, function (e) {
+      console.error(e);
+      reject(e); // Reject the promise if an error occurs during loading
+    });
+  });
+}
+
+function loadFont() {
+  return new Promise((resolve, reject) => {
+    textLoader.load(
+      'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
+      (response) => {
+        font = response;
+        resolve();
+      },
+      undefined,
+      reject
+    );
+  });
 }
 
 // Contrôles du joueur
@@ -665,46 +387,46 @@ function updatePlayerRotation() {
     player.group.rotation.set(0, playerAngle, 0); // Update player's group rotation}
 }
 
-function generateAllPlatforms (platformWidth, platformHeight, platformDepth, covers, positions){
+function generateAllPlatforms (covers, positions){
 
-  truePlatform = new Platform(platformWidth, platformHeight, platformDepth, covers[0], positions[0]);
+  truePlatform = new Platform(covers[0], positions[0]);
   platformsOnScene.push(truePlatform);
   scene.add(truePlatform);
 
-  fakePlatform1 = new Platform(platformWidth, platformHeight, platformDepth, covers[1], positions[1]);
+  fakePlatform1 = new Platform(covers[1], positions[1]);
   platformsOnScene.push(fakePlatform1);
   scene.add(fakePlatform1);
 
-  fakePlatform2 = new Platform(platformWidth, platformHeight, platformDepth, covers[2], positions[2]);
+  fakePlatform2 = new Platform(covers[2], positions[2]);
   platformsOnScene.push(fakePlatform2);
   scene.add(fakePlatform2);
 
-  fakePlatform3 = new Platform(platformWidth, platformHeight, platformDepth, covers[3], positions[3]);
+  fakePlatform3 = new Platform(covers[3], positions[3]);
   platformsOnScene.push(fakePlatform3);
   scene.add(fakePlatform3);
 
-  fakePlatform4 = new Platform(platformWidth, platformHeight, platformDepth, covers[4], positions[4]);
+  fakePlatform4 = new Platform(covers[4], positions[4]);
   platformsOnScene.push(fakePlatform4);
   scene.add(fakePlatform4);
 
-  fakePlatform5 = new Platform(platformWidth, platformHeight, platformDepth, covers[5], positions[5]);
+  fakePlatform5 = new Platform(covers[5], positions[5]);
   platformsOnScene.push(fakePlatform5);
   scene.add(fakePlatform5);
 
-  fakePlatform6 = new Platform(platformWidth, platformHeight, platformDepth, covers[6], positions[6]);
+  fakePlatform6 = new Platform(covers[6], positions[6]);
   platformsOnScene.push(fakePlatform6);
   scene.add(fakePlatform6);
 
-  fakePlatform7 = new Platform(platformWidth, platformHeight, platformDepth, covers[7], positions[7]);
+  fakePlatform7 = new Platform(covers[7], positions[7]);
   platformsOnScene.push(fakePlatform7);
   scene.add(fakePlatform7);
 
-  fakePlatform8 = new Platform(platformWidth, platformHeight, platformDepth, covers[8], positions[8]);
+  fakePlatform8 = new Platform(covers[8], positions[8]);
   platformsOnScene.push(fakePlatform8);
   scene.add(fakePlatform8);
   timeisup = false;
 }
-  
+
 function keepOnePlatform(platformToKeep) {
 
   if (platformsOnScene.includes(platformToKeep)) {
@@ -773,7 +495,244 @@ function playerCollisions() {
   }
 }   
 
-const mainMap  = await loadMap(mapPath);
+socket.on('setId', function(data){
+  rmPlayer.id = data.id;
+  // socket.emit('joinRoom', { roomId: '5QCYMH' });
+  socket.emit('joinRoom');
+});
+
+socket.on('roomJoined', function(data){
+  player.group.room = data.roomId;
+  room = player.group.room;
+  rmPlayer.initSocket(room);
+});
+
+socket.on('startRound', function(data) {
+  startGame(data.positions, data.covers, data.song, data.timeOut);
+});
+
+// Listen for 'remoteData' event
+socket.on('remoteData', function(data) {
+  for (const playerData of data) {
+    const playerId = playerData.id;
+
+    if (playerId) {
+      if (playerId !== rmPlayer.id) {
+          // Check if the player ID is already known
+        if (!remotePlayersIds.has(playerId)) {
+          remotePlayersIds.add(playerId);  // Add the ID to the set
+          createRemotePlayer(playerId, data.x, data.y, data.z);
+          // createRemotePlayer(playerId);
+        } else {
+          // Update remote player position
+          updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, playerData.isReady, playerData.isDead, playerData.hasWon, playerData.action, );
+        }
+      }
+    }
+  }
+}); 
+
+socket.on('deletePlayer', function(data){
+  const disconnectedPlayer = remotePlayers.find(player => player.id === data.id);
+
+  if (disconnectedPlayer) {
+    scene.remove(disconnectedPlayer.group)
+    // Remove the disconnected player from the connectedPlayers array
+    remotePlayers.filter(player => player.id !== data.id);
+    remotePlayersIds.delete(player => player.id !== data.id);
+
+
+    console.log('Player with id:', data.id,'removed');
+  }
+});
+
+// Function to create a remote player object
+async function createRemotePlayer(id, x, y, z) {
+  try {
+    const fbxModel = await loadFBXModel('AnimatedHuman.glb', animationStates);
+    const playerSkin = fbxModel.model;
+    const actions = fbxModel.actions;
+    mixers.push({playerMixer: fbxModel.mixer});
+
+    const newPlayer = new Player(playerSkin, skin);
+    newPlayer.id = id;
+    newPlayer.group.position.set(x, y, z);
+    remotePlayers.push(newPlayer);
+    scene.add(newPlayer.group);
+  } catch (error) {
+    console.error('Error loading player skin:', error);
+    // Handle the error appropriately, e.g., display a fallback skin.
+  }
+}
+
+// Function to update a remote player's position
+function updateRemotePlayer(id, position, rotation, isReady, isDead, hasWon, action) {
+  const toUpdatePlayer = remotePlayers.find((player) => player.id === id);
+  if (toUpdatePlayer) {
+    toUpdatePlayer.group.position.set(position.x, position.y, position.z);
+    toUpdatePlayer.group.rotation.y = rotation;
+    toUpdatePlayer.isReady = isReady;
+    toUpdatePlayer.isDead = isDead;
+    toUpdatePlayer.hasWon = hasWon;
+    if (toUpdatePlayer.isDead === true) {
+      scene.remove(toUpdatePlayer.group);
+    }
+  }
+}
+
+// Fonction pour téléporter le joueur s'il sort de la zone
+function teleportPlayerIfOob() {
+  if (player.group.position.y <= -25) {
+    player.group.position.set(0, 10, 0);
+    player.isDead = true;
+    scene.remove(player.group);
+  }
+}
+
+function onWindowResize() {
+  viewpointCamera.aspect = window.innerWidth / window.innerHeight;
+  viewpointCamera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function degreesToRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+function playSound(soundPath, duration) {
+  const audio = new Audio(soundPath);
+  console.log("Playing sound:", soundPath);
+
+  // Jouer le son
+  audio.play();
+
+  // Attendre la durée spécifiée avant de s'arrêter
+  setTimeout(function() {
+      audio.pause();
+  }, duration * 1000); // La fonction setTimeout prend le temps en millisecondes, donc nous multiplions par 1000 pour convertir en secondes
+}
+
+function fadeToAction(name, duration, actionsArray) {
+
+  // Check if the action is not already active
+  if (activeAction !== actionsArray[name]) {
+    // If there is a previous action, fade it out
+    if (previousAction) {
+      previousAction.fadeOut(duration);
+    }
+    // Set the new active action
+    activeAction = actionsArray[name];
+
+    // If there is a new active action, reset, set parameters, fade in, and play
+    if (activeAction) {
+      activeAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(duration).play();
+    }
+
+    // Update the previous action
+    previousAction = activeAction;
+  }
+}
+
+function waitSeconds(seconds) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, seconds * 1000); // Convert seconds to milliseconds
+  });
+}
+
+function startGame(positions, covers, song, timeOut) {
+  if (roundIsOn === false) {
+    roundIsOn = true;
+    writeText('Jump on the cover of the song playing before the time is up !');
+    if (platformsOnScene.length < 7) {
+        generateAllPlatforms(covers, positions);
+    }
+
+    playSound(song, timeOut);
+
+    setTimeout(() => {
+
+        mainMapCollisions = false;
+        keepOnePlatform(truePlatform);
+
+        setTimeout(() => {
+            // Additional code after another delay
+            mainMapCollisions = true;
+            roundIsOn = false;
+            socket.emit('roundIsOver', {room: player.group.room});
+        }, 2000); // 5 seconds in milliseconds
+
+    }, timeOut * 1000); // Convert seconds to milliseconds
+  }
+}
+
+function createText(text, x, y, z, r) {
+  const materials = [new THREE.MeshBasicMaterial({ color: 0xffffff })];
+
+  textGeo = new TextGeometry(text, {
+    font: font,
+    size: 1,
+    height: 5,
+    curveSegments: 12,
+    bevelEnabled: true,
+    bevelThickness: 10,
+    bevelSize: 8,
+    bevelOffset: 0,
+    bevelSegments: 5,
+  });
+
+  const textMesh1 = new THREE.Mesh(textGeo, materials);
+
+  // Calculate center of the text geometry
+  textGeo.computeBoundingBox();
+  const textBoundingBox = textGeo.boundingBox;
+  const textCenterX = -0.5 * (textBoundingBox.max.x - textBoundingBox.min.x);
+  // const textCenterY = -0.5 * (textBoundingBox.max.y - textBoundingBox.min.y);
+  const textCenterZ = -0.5 * (textBoundingBox.max.z - textBoundingBox.min.z);
+
+  if (r === Math.abs(180)) {
+    textMesh1.position.x = x - textCenterX;
+    textMesh1.position.y = y;
+    textMesh1.position.z = z ;
+  } else {
+    textMesh1.position.x = x + textCenterX ;
+    textMesh1.position.y = y;
+    textMesh1.position.z = z ;
+  }
+    // textMesh1.position.x = x + textCenterX ;
+    // textMesh1.position.y = y;
+    // textMesh1.position.z = z ;
+
+  
+
+  textMesh1.rotation.y = degreesToRadians(r);
+
+  return textMesh1;
+}
+
+function writeText(text){
+  // const text1 = createText(text + '2', 40, 0, -12, -90);
+  // const text2 = createText(text + '3', -40, 0, -6, 90);
+  const text3 = createText(text, 7, 0, -45, 0);
+  const text4 = createText(text, -7, 0, 40, 180);
+
+  const tempGroup = new THREE.Group();
+  // tempGroup.add(text1);
+  // tempGroup.add(text2);
+  tempGroup.add(text3);
+  tempGroup.add(text4);
+
+  const textToRemove = textGroup.children[0];
+  if (textToRemove) {
+    textGroup.remove(textToRemove);
+    scene.remove(textToRemove);
+    textGroup.add(tempGroup);
+
+  } else {
+    textGroup.add(tempGroup);
+  }
+}
 
 function animate() {
   const deltaTime = Math.min(0.5, clock.getDelta()) / STEPS_PER_FRAME;
@@ -811,15 +770,19 @@ function animate() {
     alert('You won!');  
   }
   isWalking = false;
-  // Update viewpointCamera position
 
-
-  // Render the scene with viewpointCamera looking at player's position
   renderer.render(scene, viewpointCamera);
-
-  // Update camera to look at player's position
-  camera.lookAt(player.group.position.x, player.group.position.y, player.group.position.z);
 
   stats.update();
   requestAnimationFrame(animate);
 }
+
+await loadFont();
+
+const textGroup = new THREE.Group();
+scene.add(textGroup);
+
+
+writeText('Waiting for players to get ready ! ( press J )')
+
+const mainMap  = await loadMap(mapPath);

@@ -1,12 +1,11 @@
 import * as THREE from 'three';
 
 export class Platform extends THREE.Object3D {
-    constructor(width, height, depth, imagePath, position) {
+    constructor(imagePath, position) {
         super();
-
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
+        this.width = 5;
+        this.height =  0.15;
+        this.depth = 5;
         this.imagePath = imagePath;
 
         // Create the platform mesh and set its position

@@ -76,7 +76,6 @@ io.sockets.on('connection', function(socket){
 		socket.userData.room = data.room;
 		// socket.userData.pb = data.pb,
 		const room = findRoomByCode(data.room);
-		console.log(room.players);
 	});
 
 	socket.on('playerReady', function(data){
