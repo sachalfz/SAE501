@@ -27,9 +27,9 @@ data() {
 methods: {
     getLifeImage(index) {
     if (index < this.remainingLives) {
-        return `${this.assetsRepo}/assets/icons/disk_full.svg`; // Remplacez par le chemin de votre image pour une vie active
+        return `https://mmi21-05.mmi-limoges.fr/assets/icons/disk_full.svg`; // Remplacez par le chemin de votre image pour une vie active
     } else {
-        return `${this.assetsRepo}/assets/icons/disk_broken.svg`; // Remplacez par le chemin de votre image pour une vie inactive
+        return `https://mmi21-05.mmi-limoges.fr/assets/icons/disk_broken.svg`; // Remplacez par le chemin de votre image pour une vie inactive
     }
     }
 }
