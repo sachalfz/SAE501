@@ -50,6 +50,10 @@ const animationStates = [ // Liste des animations disponibles
   "Human Armature|Working"
 ];
 
+// Map of remote players
+const remotePlayers = [];
+const remotePlayersIds = new Set();  // Use a Set for efficient membership checks
+
 // Gravité et pas de simulation
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
@@ -70,7 +74,6 @@ const cameraDistanceFromPlayer = 8;
 var mapPath = 'ConcertStage.glb';
 const mapScale = 1;
 
-
 // Paramètre du joueur 
 const skin = 'AnimatedHuman.glb'
 const skinName = skin;
@@ -83,6 +86,8 @@ scene.add(player.group);
 const rmPlayer = new remotePlayer(player, socket); // Joueur a distance correspondant au joueur local
 
 let room = null;
+
+// TODO : fix spectator mode lags
 
 // Fonctions d'initialisation
 function initScene(){
@@ -586,6 +591,8 @@ function teleportPlayerIfOob() {
     player.group.position.set(0, 10, 0);
     player.isDead = true;
     scene.remove(player.group);
+    const deathTxt = createText('You fell off... spectate the rest of the game. ', 7, 12, -30, 0);
+    scene.add(deathTxt);
   }
 }
 
