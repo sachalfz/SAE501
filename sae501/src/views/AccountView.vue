@@ -7,10 +7,10 @@ import AccountInventory from '../components/AccountInventory.vue';
 <template>
     <div class="view account" v-if="this.user">
         <div class="account--top">
-            <!-- <AccountHead/>
-            <AccountStats/> -->
+            <AccountHead/>
+            <AccountStats/>
         </div>
-        <!-- <AccountInventory/> -->
+        <AccountInventory/>
     </div> 
 </template>
 
@@ -20,31 +20,31 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router';
 
 export default {
-    data() {
-        return {
-        userExists: false,
-        currentUser:null,
-        };
-    },
-    computed: {
-        // Utilisation de la valeur calculée user provenant du script setup
-        user() {
-            const store = useStore();
-            return computed(() => store.state.user).value;
-        },
-    },
-    mounted() {
-        this.currentUser = this.user;
-        this.checkUserExists(this.currentUser);
-    },
-    methods: {
-    checkUserExists(usr) {
-        this.userExists = !!usr;
-        if (!this.userExists) {
-            this.$router.push('/login');
-        }
-        },
-    },
-};
+//     data() {
+//         return {
+//         userExists: false,
+//         currentUser:null,
+//         };
+//     },
+//     computed: {
+//         // Utilisation de la valeur calculée user provenant du script setup
+//         user() {
+//             const store = useStore();
+//             return computed(() => store.state.user).value;
+//         },
+//     },
+//     mounted() {
+//         this.currentUser = this.user;
+//         this.checkUserExists(this.currentUser);
+//     },
+//     methods: {
+//     checkUserExists(usr) {
+//         this.userExists = !!usr;
+//         if (!this.userExists) {
+//             this.$router.push('/login');
+//         }
+//         },
+//     },
+// };
 </script>
 
