@@ -78,6 +78,7 @@ export default {
             },
         cancelModification(){
             this.confirmationDialogVisible = false;
+            
         },
     },
 };
