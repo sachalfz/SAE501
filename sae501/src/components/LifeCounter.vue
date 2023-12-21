@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { assetsRepo } from '@/main.js';
 export default {
 props: {
     remainingLives: {
@@ -26,9 +27,9 @@ data() {
 methods: {
     getLifeImage(index) {
     if (index < this.remainingLives) {
-        return "../src/assets/icons/disk_full.svg"; // Remplacez par le chemin de votre image pour une vie active
+        return `${this.assetsRepo}/assets/icons/disk_full.svg`; // Remplacez par le chemin de votre image pour une vie active
     } else {
-        return "../src/assets/icons/disk_broken.svg"; // Remplacez par le chemin de votre image pour une vie inactive
+        return `${this.assetsRepo}/assets/icons/disk_broken.svg`; // Remplacez par le chemin de votre image pour une vie inactive
     }
     }
 }

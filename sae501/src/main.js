@@ -13,6 +13,8 @@ import 'bootstrap'
 import 'popper.js'
 import 'jquery'
 
+export const assetsRepo = 'https://mmi21-05.mmi-limoges.fr'
+
 export const apiShop = 'https://shop.mmi-limoges.fr'
 export const apiShopLocal = 'http://localhost:3000'
 
