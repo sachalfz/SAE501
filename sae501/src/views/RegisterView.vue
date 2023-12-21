@@ -15,7 +15,7 @@
       <button type="submit" class="form--submit">Register</button>
 
       <div v-if="showNotification" class="notification true">
-        User registered
+        User registered, redirection to login page in 5 seconds
       </div>
       
       <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
@@ -47,7 +47,8 @@ export default {
         // Définir un délai pour masquer automatiquement la notification après quelques secondes
         setTimeout(() => {
             this.showNotification = false;
-        }, 3000); // Par exemple, 3000 ms (3 secondes)
+            this.$router.push('/login');
+        }, 5000); // Par exemple, 3000 ms (3 secondes)
         return;
         // Redirection ou traitement suite à l'inscription réussie
       } catch (error) {
