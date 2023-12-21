@@ -5,7 +5,7 @@ import AccountInventory from '../components/AccountInventory.vue';
 </script>
 
 <template>
-    <div class="view account" v-if="this.user">
+    <div class="view account">
         <div class="account--top">
             <AccountHead/>
             <AccountStats/>
