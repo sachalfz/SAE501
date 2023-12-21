@@ -23,6 +23,7 @@ export default {
     data() {
         return {
         userExists: false,
+        currentUser:null,
         };
     },
     computed: {
@@ -33,11 +34,12 @@ export default {
         },
     },
     mounted() {
-        this.checkUserExists();
+        this.currentUser = this.user;
+        this.checkUserExists(this.currentUser);
     },
     methods: {
-    checkUserExists() {
-        this.userExists = !!this.user;
+    checkUserExists(usr) {
+        this.userExists = !!usr;
         if (!this.userExists) {
             this.$router.push('/login');
         }
