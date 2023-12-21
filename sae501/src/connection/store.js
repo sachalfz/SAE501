@@ -39,7 +39,6 @@ const store = createStore({
 
     async login({ commit }, { email, password }) {
       try {
-        console.log(`${apiUserInventory}/login`)
         const response = await axios.post(`${apiUserInventory}/login`, {
           email: email,
           password: password
