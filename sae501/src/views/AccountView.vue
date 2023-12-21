@@ -7,8 +7,8 @@ import AccountInventory from '../components/AccountInventory.vue';
 <template>
     <div class="view account" v-if="this.user">
         <div class="account--top">
-            <AccountHead/>
-            <AccountStats/>
+            <!-- <AccountHead/>
+            <AccountStats/> -->
         </div>
         <AccountInventory/>
     </div> 
