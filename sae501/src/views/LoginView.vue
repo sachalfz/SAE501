@@ -15,6 +15,8 @@
 
         <button type="submit" class="form--submit">Login</button>
       </form>
+
+      <p class="form--redirect">Don't have an account? <router-link to="/register">Register</router-link></p>
     </div>
 </template>
 

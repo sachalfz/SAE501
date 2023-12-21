@@ -13,6 +13,10 @@
         <input type="password" id="password" v-model="password" class="form--input" required>
       </div>
       <button type="submit" class="form--submit">Register</button>
+
+      <div v-if="showNotification" class="notification true">
+        User registered
+      </div>
       
       <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
     </form>
@@ -28,6 +32,7 @@ export default {
       email: '',
       password: '',
       errorMessage: '', // Variable pour stocker le message d'erreur
+      showNotification: false,
     };
   },
   methods: {
@@ -38,6 +43,12 @@ export default {
           password: this.password,
         });
         console.log('User registered:', response);
+        this.showNotification = true;
+        // Définir un délai pour masquer automatiquement la notification après quelques secondes
+        setTimeout(() => {
+            this.showNotification = false;
+        }, 3000); // Par exemple, 3000 ms (3 secondes)
+        return;
         // Redirection ou traitement suite à l'inscription réussie
       } catch (error) {
         console.error('Registration failed:', error);
