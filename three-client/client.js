@@ -288,6 +288,7 @@ socket.on('startRound', function(data) {
 function startGame(positions, covers, song, timeOut) {
   if (roundIsOn === false) {
     console.log('Starting round');
+    writeText('Jump on the cover of the song playing before the time is up !');
     roundIsOn = true;
     if (platformsOnScene.length < 7) {
         generateAllPlatforms(platformWidth, platformHeight, platformDepth, covers, positions);
@@ -335,15 +336,18 @@ function createText(text, x, y, z, r) {
   // const textCenterY = -0.5 * (textBoundingBox.max.y - textBoundingBox.min.y);
   const textCenterZ = -0.5 * (textBoundingBox.max.z - textBoundingBox.min.z);
 
-  if (r === Math.abs(90)) {
-    textMesh1.position.x = x + textCenterX;
+  if (r === Math.abs(180)) {
+    textMesh1.position.x = x - textCenterX;
     textMesh1.position.y = y;
     textMesh1.position.z = z ;
   } else {
-    textMesh1.position.x = x ;
+    textMesh1.position.x = x + textCenterX ;
     textMesh1.position.y = y;
-    textMesh1.position.z = z + textCenterX;
+    textMesh1.position.z = z ;
   }
+    // textMesh1.position.x = x + textCenterX ;
+    // textMesh1.position.y = y;
+    // textMesh1.position.z = z ;
 
   
 
@@ -360,27 +364,31 @@ const textGroup = new THREE.Group();
 scene.add(textGroup);
 
 function writeText(text){
-  const text1 = createText(text, 40, 0, -12, -90);
-  const text2 = createText(text, -40, 0, -6, 90);
-  const text3 = createText(text, -6, 0, -40, -0);
-  const text4 = createText(text, 3, 0, 40, 180);
+  // const text1 = createText(text + '2', 40, 0, -12, -90);
+  // const text2 = createText(text + '3', -40, 0, -6, 90);
+  const text3 = createText(text, 7, 0, -45, 0);
+  const text4 = createText(text, -7, 0, 40, 180);
 
   const tempGroup = new THREE.Group();
-  tempGroup.add(text1);
-  tempGroup.add(text2);
+  // tempGroup.add(text1);
+  // tempGroup.add(text2);
   tempGroup.add(text3);
   tempGroup.add(text4);
 
-  if (textGroup[0]) {
-    textGroup.group.remove(textGroup[0]);
+  const textToRemove = textGroup.children[0];
+  console.log(textGroup.children[0]);
+  if (textToRemove) {
+    console.log('Removing text:', textToRemove);
+    textGroup.remove(textToRemove);
+    scene.remove(textToRemove);
     textGroup.add(tempGroup);
+
   } else {
     textGroup.add(tempGroup);
-  
   }
 }
 
-writeText('Saute sur les plateformes pour gagner des points !')
+writeText('Waiting for players to get ready ! ( press J )')
 
 // Fonctions d'initialisation
 function initScene(){
@@ -534,32 +542,16 @@ function shuffleArray(array) {
   return clonedArray.sort((a, b) => 0.5 - Math.random())
 }
 
-// Met à jour la position de la caméra en fonction de la rotation
-function updateCameraRotation(deltaX, deltaY) {
-    if (deltaX > 0.00151 || deltaY > 0.0015) {
-      cameraIsRotating = true
-    }
-    const rotationSpeed = 0.5;
-    cameraRotation.x -= deltaX * rotationSpeed;
-    cameraRotation.y -= -deltaY * rotationSpeed;
-    cameraRotation.y = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.y));
-    const spherical = new THREE.Spherical(cameraDistanceFromPlayer, cameraRotation.y, cameraRotation.x);
-    const position = new THREE.Vector3().setFromSpherical(spherical);
-    viewpointCamera.position.copy(position);
-    viewpointCamera.lookAt(player.group.position);
-}
-
-// Met à jour la position de la caméra relative au joueur
-function updateViewpointCameraPosition() {
-  const offsetX = cameraDistanceFromPlayer * Math.sin(cameraRotation.x) * Math.cos(cameraRotation.y);
-  const offsetY = cameraDistanceFromPlayer * Math.sin(cameraRotation.y);
-  const offsetZ = cameraDistanceFromPlayer * Math.cos(cameraRotation.x) * Math.cos(cameraRotation.y);
-  const position = new THREE.Vector3().set(player.group.position.x + offsetX, player.group.position.y + offsetY, player.group.position.z + offsetZ);
-  viewpointCamera.position.copy(position);
-  viewpointCamera.lookAt(player.group.position);
-}
-
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+
+const playerCamera = new THREE.Group();
+scene.add(playerCamera);
+
+// Add the player's mesh to the group
+playerCamera.add(player.group);
+
+// Add the viewpoint camera to the group
+playerCamera.add(viewpointCamera);
 
 // Contrôles du joueur
 async function controls(deltaTime) {
@@ -586,7 +578,17 @@ async function controls(deltaTime) {
     isWalking = true;
   }
 
+  if (playerOnFloor && keyStates['Space']) {
+
+    isIdle = false;
+		fadeToAction("Human Armature|Jump", 0.5, player.actions);
+		fadeToAction("Human Armature|Run", 0.5, player.actions);
+		
+    player.velocity.y = 15;
+  }
+
   if (keyStates['KeyY']) {
+    writeText("T'es nul !")
   }
   
   if (keyStates['KeyJ']) {
@@ -596,18 +598,6 @@ async function controls(deltaTime) {
       socket.emit('playerReady', {room: player.group.room, id: rmPlayer.id, isReady: player.isReady});
       gameIsOn = true;
     }
-  }
-
-  if (keyStates['KeyP']) {
-  }
-
-  if (playerOnFloor && keyStates['Space']) {
-
-    isIdle = false;
-		fadeToAction("Human Armature|Jump", 0.5, player.actions);
-		fadeToAction("Human Armature|Run", 0.5, player.actions);
-		
-    player.velocity.y = 15;
   }
 }
 
@@ -626,6 +616,31 @@ function getSideVector() {
   const forward = getForwardVector();
   const side = new THREE.Vector3(-forward.z, 0, forward.x);
   return side;
+}
+
+// Met à jour la position de la caméra en fonction de la rotation
+function updateCameraRotation(deltaX, deltaY) {
+  if (deltaX > 0.00151 || deltaY > 0.0015) {
+    cameraIsRotating = true
+  }
+  const rotationSpeed = 0.5;
+  cameraRotation.x -= deltaX * rotationSpeed;
+  cameraRotation.y -= -deltaY * rotationSpeed;
+  cameraRotation.y = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.y));
+  const spherical = new THREE.Spherical(cameraDistanceFromPlayer, cameraRotation.y, cameraRotation.x);
+  const position = new THREE.Vector3().setFromSpherical(spherical);
+  viewpointCamera.position.copy(position);
+  viewpointCamera.lookAt(player.group.position);
+}
+
+// Met à jour la position de la caméra relative au joueur
+function updateViewpointCameraPosition() {
+const offsetX = cameraDistanceFromPlayer * Math.sin(cameraRotation.x) * Math.cos(cameraRotation.y);
+const offsetY = cameraDistanceFromPlayer * Math.sin(cameraRotation.y);
+const offsetZ = cameraDistanceFromPlayer * Math.cos(cameraRotation.x) * Math.cos(cameraRotation.y);
+const position = new THREE.Vector3().set(player.group.position.x + offsetX, player.group.position.y + offsetY, player.group.position.z + offsetZ);
+viewpointCamera.position.copy(position);
+viewpointCamera.lookAt(player.group.position);
 }
 
 // Met à jour la position du joueur
