@@ -41,7 +41,6 @@ let initialisingPlayers = [];
 let font, textGeo;
 let gameIsOn = false, roundIsOn = false;
 let mainMapCollisions = true;
-let cameraIsRotating = false;
 
 const mixers = [];
 
@@ -62,7 +61,7 @@ const cameraRotation = {
 };
  
 // Paramètres de camera-joueur
-const cameraDistanceFromPlayer = 6;
+const cameraDistanceFromPlayer = 8;
 
 // Paramètres de la map
 var mapPath = 'ConcertStage.glb';
@@ -542,20 +541,9 @@ function shuffleArray(array) {
   return clonedArray.sort((a, b) => 0.5 - Math.random())
 }
 
-const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-
-const playerCamera = new THREE.Group();
-scene.add(playerCamera);
-
-// Add the player's mesh to the group
-playerCamera.add(player.group);
-
-// Add the viewpoint camera to the group
-playerCamera.add(viewpointCamera);
-
 // Contrôles du joueur
 async function controls(deltaTime) {
-  const speedDelta = deltaTime * (playerOnFloor ? 20 : 7);
+  const speedDelta = deltaTime * (playerOnFloor ? 25 : 10);
 
   if (keyStates['KeyW']) {
     player.velocity.add(getForwardVector().multiplyScalar(-speedDelta));
@@ -603,9 +591,10 @@ async function controls(deltaTime) {
 
 // Obtient le vecteur de direction vers l'avant
 function getForwardVector() {
+  let playerToCamera = null;
   const cameraPosition = viewpointCamera.position;
   const playerPosition = player.group.position;
-  const playerToCamera = new THREE.Vector3().subVectors(cameraPosition, playerPosition);
+  playerToCamera = new THREE.Vector3().subVectors(cameraPosition, playerPosition);
   playerToCamera.y = 0;
   playerToCamera.normalize();
   return playerToCamera;
@@ -620,9 +609,6 @@ function getSideVector() {
 
 // Met à jour la position de la caméra en fonction de la rotation
 function updateCameraRotation(deltaX, deltaY) {
-  if (deltaX > 0.00151 || deltaY > 0.0015) {
-    cameraIsRotating = true
-  }
   const rotationSpeed = 0.5;
   cameraRotation.x -= deltaX * rotationSpeed;
   cameraRotation.y -= -deltaY * rotationSpeed;
@@ -635,12 +621,12 @@ function updateCameraRotation(deltaX, deltaY) {
 
 // Met à jour la position de la caméra relative au joueur
 function updateViewpointCameraPosition() {
-const offsetX = cameraDistanceFromPlayer * Math.sin(cameraRotation.x) * Math.cos(cameraRotation.y);
-const offsetY = cameraDistanceFromPlayer * Math.sin(cameraRotation.y);
-const offsetZ = cameraDistanceFromPlayer * Math.cos(cameraRotation.x) * Math.cos(cameraRotation.y);
-const position = new THREE.Vector3().set(player.group.position.x + offsetX, player.group.position.y + offsetY, player.group.position.z + offsetZ);
-viewpointCamera.position.copy(position);
-viewpointCamera.lookAt(player.group.position);
+  const offsetX = cameraDistanceFromPlayer * Math.sin(cameraRotation.x) * Math.cos(cameraRotation.y);
+  const offsetY = cameraDistanceFromPlayer * Math.sin(cameraRotation.y);
+  const offsetZ = cameraDistanceFromPlayer * Math.cos(cameraRotation.x) * Math.cos(cameraRotation.y);
+  const position = new THREE.Vector3().set(player.group.position.x + offsetX, player.group.position.y + offsetY, player.group.position.z + offsetZ);
+  viewpointCamera.position.copy(position);
+  viewpointCamera.lookAt(player.group.position);
 }
 
 // Met à jour la position du joueur
@@ -658,7 +644,7 @@ function updatePlayer(deltaTime) {
 
   // Set a minimum velocity threshold to stop player when very slow
   const minVelocity = 0.01;
-  if (player.velocity.length() < minVelocity || cameraIsRotating) {
+  if (player.velocity.length() < minVelocity) {
     player.velocity.set(player.velocity.x * 0.1 , player.velocity.y, player.velocity.z*0.1);
   }
   const deltaPosition = player.velocity.clone().multiplyScalar(deltaTime);
@@ -718,8 +704,6 @@ function generateAllPlatforms (platformWidth, platformHeight, platformDepth, cov
   scene.add(fakePlatform8);
   timeisup = false;
 }
-
-// fetch('https://drive.google.com/file/d/1XCtUwJALQXnljzmEET4WZZbiFeXyPQWQ/view')
   
 function keepOnePlatform(platformToKeep) {
 
@@ -796,9 +780,10 @@ function animate() {
 
   for (let i = 0; i < STEPS_PER_FRAME; i++) {
     controls(deltaTime);
+    updateViewpointCameraPosition();
     updatePlayer(deltaTime);
+    updatePlayerRotation();
     teleportPlayerIfOob();
-    cameraIsRotating = false;
     if (player.group.room && player) {
       rmPlayer.updateSocket(player);
     }
@@ -827,8 +812,7 @@ function animate() {
   }
   isWalking = false;
   // Update viewpointCamera position
-  updateViewpointCameraPosition();
-  updatePlayerRotation();
+
 
   // Render the scene with viewpointCamera looking at player's position
   renderer.render(scene, viewpointCamera);
