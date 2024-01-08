@@ -362,7 +362,7 @@ function updatePlayer(deltaTime) {
   let damping = Math.exp(-4 * deltaTime) - 1;
 
   // Adjust the damping for non-floor scenarios
-  if (!playerOnFloor) {
+  if (!playerOnFloor && player.isDead === false) {
     player.velocity.y -= GRAVITY * deltaTime;
     damping *= 0.1;
   }
@@ -374,11 +374,13 @@ function updatePlayer(deltaTime) {
   if (player.velocity.length() < minVelocity) {
     player.velocity.set(player.velocity.x * 0.1 , player.velocity.y, player.velocity.z*0.1);
   }
-  const deltaPosition = player.velocity.clone().multiplyScalar(deltaTime);
-  player.collider.translate(deltaPosition);
-  playerCollisions();
-  checkPlatformsCollisions(player, platformsOnScene);
-  player.group.position.copy(player.collider.end); // Update player's group position
+  if (player.isDead === false) {
+    const deltaPosition = player.velocity.clone().multiplyScalar(deltaTime);
+    player.collider.translate(deltaPosition);
+    playerCollisions();
+    checkPlatformsCollisions(player, platformsOnScene);
+    player.group.position.copy(player.collider.end); // Update player's group position
+  }
 }
 
 function updatePlayerRotation() { 
@@ -429,7 +431,6 @@ function generateAllPlatforms (covers, positions){
   fakePlatform8 = new Platform(covers[8], positions[8]);
   platformsOnScene.push(fakePlatform8);
   scene.add(fakePlatform8);
-  timeisup = false;
 }
 
 function keepOnePlatform(platformToKeep) {
@@ -446,7 +447,6 @@ function keepOnePlatform(platformToKeep) {
   });
   const platformIndex = platformsOnScene.indexOf(platformToKeep);
   scene.add(platformsOnScene[platformIndex])
-  timeisup = true;
 
   } else {
       console.log("Platform not found in the array.");
@@ -544,6 +544,7 @@ socket.on('deletePlayer', function(data){
     scene.remove(disconnectedPlayer.group)
     // Remove the disconnected player from the connectedPlayers array
     remotePlayers.filter(player => player.id !== data.id);
+    console.log('Player with id:', data.id,'removed');
     remotePlayersIds.delete(player => player.id !== data.id);
 
 
@@ -554,6 +555,7 @@ socket.on('deletePlayer', function(data){
 // Function to create a remote player object
 async function createRemotePlayer(id, x, y, z) {
   try {
+    console.log('Creating remote player with ID:', id);
     const fbxModel = await loadFBXModel('AnimatedHuman.glb', animationStates);
     const playerSkin = fbxModel.model;
     const actions = fbxModel.actions;
@@ -584,7 +586,6 @@ function updateRemotePlayer(id, position, rotation, isReady, isDead, hasWon, act
     }
   }
 }
-
 // Fonction pour téléporter le joueur s'il sort de la zone
 function teleportPlayerIfOob() {
   if (player.group.position.y <= -25) {
@@ -750,6 +751,7 @@ function animate() {
     updatePlayer(deltaTime);
     updatePlayerRotation();
     teleportPlayerIfOob();
+
     if (player.group.room && player) {
       rmPlayer.updateSocket(player);
     }

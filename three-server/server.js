@@ -48,6 +48,10 @@ io.sockets.on('connection', function(socket){
 		if (!room) {
 			// If a specific room was not provided or not found, check for available rooms
 			room = rooms.find(availableRoom => availableRoom.players.length < MAX_PLAYERS_PER_ROOM);
+			if (room) {
+				console.log('Available room:', room.id);
+				console.log('Available room players:', room.players.length);
+			}
 			if (!room) {
 				// If no available room is found, create a new room
 				room = createRoom();
@@ -56,6 +60,7 @@ io.sockets.on('connection', function(socket){
 	
 		if (room.players.length < MAX_PLAYERS_PER_ROOM) {
 			joinRoom(socket, room);
+			console.log('Available room players:', room.players.length);
 			io.to(room.id).emit('roomJoined', { roomId: room.id });
 		} else {
 			// Inform the client that the room is full
@@ -82,6 +87,8 @@ io.sockets.on('connection', function(socket){
 		const room = findRoomByCode(data.room);
 		if (room) {
 			const foundPlayer = room.players.find(item => item.id === data.id);
+			console.log(foundPlayer.id, "is ready");
+
 			foundPlayer.isReady= data.isReady;
 			
 			if (room.players.every(element => element.isReady === true)) {
@@ -144,6 +151,7 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	socket.on('disconnect', function(){
+		console.log('user disconnected w/ id:', socket.id);
 		const room = findRoomByCode(socket.userData.room);
 		if (room) {
 		  const index = room.players.findIndex(player => player.id === socket.id);
