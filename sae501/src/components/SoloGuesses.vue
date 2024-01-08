@@ -79,10 +79,10 @@ export default {
       const contentAlbumToGuess = this.albumToGuess[property];
       console.log(contentSelectedAlbum, contentAlbumToGuess)
       if (contentSelectedAlbum < contentAlbumToGuess) {
-          return "../src/assets/icons/arrow_up_dark.svg"; // Remplacez par le chemin de votre image pour une vie active
+          return "https://mmi21-05.mmi-limoges.fr/assets/icons/arrow_up_dark.svg"; // Remplacez par le chemin de votre image pour une vie active
       } 
       else {
-          return "../src/assets/icons/arrow_down_dark.svg"; // Remplacez par le chemin de votre image pour une vie inactive
+          return "https://mmi21-05.mmi-limoges.fr/assets/icons/arrow_down_dark.svg"; // Remplacez par le chemin de votre image pour une vie inactive
       }
     }
   },
