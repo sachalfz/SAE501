@@ -3,7 +3,7 @@
         Not enough Streamz for this item
     </div>
     <div class="shop--items">
-        <div class="shop--items--self" v-for="(item, index) in items" :key="index">
+        <div class="shop--items--self" v-for="(item, index) in todayItems" :key="index">
             <img :src="item.picture" alt="item image" class="item--img">
             <div class="item--price" v-if="isItemBought(item.id)">
                 <p class="item--already">Already Bought</p>
@@ -106,13 +106,24 @@ export default {
             } catch (error) {
                 console.error('Error updating user inventory:', error);
             }
-        }
+        },
+        // Fonction pour mélanger aléatoirement un tableau
+        shuffleArray(array) {
+            const shuffled = array.slice(); // Crée une copie du tableau original
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Échange des éléments aléatoirement
+            }
+            return shuffled;
+        },
     },
     mounted() {
         fetch(`${apiShop}/api/items`)
             .then(response => response.json())
             .then(data => {
                 this.items = data['hydra:member'];
+                const shuffledItems = this.shuffleArray(this.items);
+                this.todayItems = shuffledItems.slice(0, 4);
             })
             .catch(error => {
                 console.error('Error fetching items:', error);
