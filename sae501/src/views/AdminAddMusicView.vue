@@ -24,7 +24,7 @@ export default {
     },
     mounted() {
         // Vérifier si l'utilisateur n'a pas le rôle admin
-        if (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN'))) {
+        if (this.user.roles.includes('ROLE_ADMIN') || (this.user.roles.includes('ROLE_USER') && this.user.roles.includes('ROLE_ADMIN'))) {
             // Rediriger vers la page /login
             this.$router.push('/login');
         }
