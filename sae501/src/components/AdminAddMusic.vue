@@ -37,7 +37,6 @@
 </template>
 
 <script>
-import { apiMusic } from '@/main.js';
 import axios from 'axios';
 
 export default {
@@ -57,7 +56,7 @@ export default {
     methods: {
         async handleAddMusic() {
             try {
-                const response = await axios.post(`${apiMusic}/api/alba`, {
+                const response = await axios.post('https://music.mmi-limoges.fr/api/alba', {
                     name: this.formData.projectName,
                     artist: this.formData.artistName,
                     date: this.formData.year,
