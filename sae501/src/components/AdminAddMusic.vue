@@ -49,8 +49,9 @@ export default {
                 certification: '',
                 label: '',
                 coverLink: '',
-                year: 0,
+                year: '',
             },
+            showNotification: false,
         };
     },
     methods: {
