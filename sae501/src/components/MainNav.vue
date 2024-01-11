@@ -47,6 +47,11 @@
       <router-link v-if="!(user && user.isAuthenticated)" to="/register" class="nav--cat">
         <p class="nav--text">REGISTER</p>
       </router-link>
+
+      <router-link v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/addmusic" class="nav--cat">
+          <p class="nav--text">ADD MUSIC</p>
+      </router-link>
+
   </div>
 </template>
 

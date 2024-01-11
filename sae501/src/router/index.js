@@ -6,6 +6,7 @@ import ShopView from '../views/ShopView.vue'
 import LoginView from '../views/LoginView.vue'
 import LogoutView from '../views/LogoutView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import AdminAddMusicView from '../views/AdminAddMusicView.vue'
 
 const devServerURL = 'http://localhost:5173/';
 const isProduction = import.meta.env.MODE === 'production';
@@ -47,6 +48,11 @@ const routes = [
     path: '/logout',
     name: 'Logout',
     component: LogoutView,
+  },
+  {
+    path: '/admin/addmusic',
+    name: 'AdminAddMusic',
+    component: AdminAddMusicView,
   },
 ];
 
