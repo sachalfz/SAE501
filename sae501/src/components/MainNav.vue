@@ -40,6 +40,10 @@
         <p class="nav--text">ADD MUSIC</p>
       </router-link>
 
+      <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/additem" class="nav--cat nav--cat--subadmin">
+        <p class="nav--text">ADD SHOP ITEM</p>
+      </router-link>
+
       <router-link v-if="user && user.isAuthenticated" :to="`/account/${user.id}`" class="nav--cat">
         <img :src="user.inventory.profilepicture" alt="Profile pic" height="36" class="nav--img">
         <p class="nav--text">ACCOUNT</p>

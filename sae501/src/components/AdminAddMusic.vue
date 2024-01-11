@@ -3,15 +3,15 @@
     <div>
         <form @submit.prevent="handleAddMusic" class="login--form">
             <div class="form--row">
-                <label for="projectName" class="form--label">Nom du projet:</label>
+                <label for="projectName" class="form--label">Project Name:</label>
                 <input class="form--input" type="text" id="projectName" placeholder="Ex: Destin" v-model="formData.projectName" required>
             </div>
             <div class="form--row">
-                <label for="artistName" class="form--label">Nom de l'artiste:</label>
+                <label for="artistName" class="form--label">Artist Name:</label>
                 <input class="form--input" type="text" placeholder="Ex: Ninho" id="artistName" v-model="formData.artistName" required>
             </div>
             <div class="form--row">
-                <label for="year" class="form--label">Année:</label>
+                <label for="year" class="form--label">Date:</label>
                 <input class="form--input" type="text" id="year" v-model="formData.year" pattern="\d{4}" placeholder="Ex: 2023" required>
             </div>
             <div class="form--row">
@@ -23,11 +23,11 @@
                 <input class="form--input" type="text" placeholder="Ex: REC118" id="label" v-model="formData.label" required>
             </div>
             <div class="form--row">
-                <label for="coverLink" class="form--label">Lien de la cover:</label>
+                <label for="coverLink" class="form--label">Cover Link:</label>
                 <input class="form--input" type="text" placeholder="Ex: https://amazon.fr/..." id="coverLink" v-model="formData.coverLink" required>
             </div>
 
-            <button class="form--submit" type="submit">Ajouter</button>
+            <button class="form--submit" type="submit">Add Music</button>
 
             <div v-if="showNotification" class="notification true">
                 Music registered, redirection to home page in 3 seconds
