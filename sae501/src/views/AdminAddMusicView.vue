@@ -1,7 +1,7 @@
 <!-- AdminAddMusicView.vue -->
 <template>
-    <div>
-      <h2>Admin Add Music View</h2>
+    <div class="view admin">
+      <h2 class="login--title">Add Music</h2>
       <AdminAddMusic />
     </div>
 </template>
