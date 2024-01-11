@@ -31,11 +31,20 @@
           <p class="nav--text">SHOP</p>
       </router-link>
 
+      <div @click="toggleDropdownAdmin" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" class="nav--cat nav--cat--admin">
+        <img src="https://mmi21-05.mmi-limoges.fr/assets/icons/admin.svg" alt="Logo" class="nav--cat-logo">  
+        <p class="nav--text">ADMIN</p>
+      </div>
+
+      <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/addmusic" class="nav--cat nav--cat--subadmin">
+        <p class="nav--text">ADD MUSIC</p>
+      </router-link>
+
       <router-link v-if="user && user.isAuthenticated" :to="`/account/${user.id}`" class="nav--cat">
         <img :src="user.inventory.profilepicture" alt="Profile pic" height="36" class="nav--img">
         <p class="nav--text">ACCOUNT</p>
       </router-link>
-
+      
       <router-link v-else-if="!(user && user.isAuthenticated)" to="/login" class="nav--cat">
         <p class="nav--text">LOGIN</p>
       </router-link>
@@ -48,9 +57,6 @@
         <p class="nav--text">REGISTER</p>
       </router-link>
 
-      <router-link v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/addmusic" class="nav--cat">
-          <p class="nav--text">ADD MUSIC</p>
-      </router-link>
 
   </div>
 </template>
@@ -63,6 +69,7 @@ export default {
   data() {
     return {
       isMenuOpen: false,
+      isDropdownVisible: false,
     };
   },
   computed: {
@@ -79,6 +86,9 @@ export default {
   methods: {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
+    },
+    toggleDropdownAdmin() {
+      this.isDropdownVisible = !this.isDropdownVisible;
     },
   },
 };

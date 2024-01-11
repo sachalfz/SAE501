@@ -55,6 +55,14 @@
     text-decoration: none;
 }
 
+.nav--cat--admin{
+    cursor: pointer;
+}
+
+.nav--cat--subadmin{
+    margin-left: 0rem;
+}
+
 .nav--cat-logo{
     height: var(--fs-36);
     width: var(--fs-36);
