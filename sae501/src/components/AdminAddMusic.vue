@@ -59,7 +59,7 @@ export default {
                 const response = await axios.post('https://music.mmi-limoges.fr/api/alba', {
                     name: this.formData.projectName,
                     artist: this.formData.artistName,
-                    date: this.formData.year,
+                    date: parseInt(this.formData.year),
                     label: this.formData.label,
                     beatmakers: [],
                     cover: this.formData.coverLink,
@@ -77,8 +77,8 @@ export default {
                 // Redirection ou traitement suite à l'inscription réussie
             } catch (error) {
                 console.error('Music Registration failed:', error);
-                // Afficher le message d'erreur reçu du serveur
-                this.errorMessage = error.message || 'Music Registration failed'; // Utilisation du message d'erreur renvoyé par le serveur
+                console.log('Server Response:', error.response); // Ajout de cette ligne
+                this.errorMessage = error.message || 'Music Registration failed';
             }
         },
     },
