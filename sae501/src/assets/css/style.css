@@ -148,11 +148,114 @@
     box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
 }
 
+.rules{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.rules-svg{
+    width: 1.2rem;
+    height: 1.2rem;
+    color: hsla(var(--clr-green));
+}
+
 .rules-txt{
     font-size: var(--fs-14);
     margin: 0;
     color: hsla(var(--clr-green));
     font-weight: var(--fw-medium);
+}
+
+.popuprules{
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(15px);
+    background-color: hsla(var(--clr-dark)/ .75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.popuprules--header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 28rem;
+}
+
+.popuprules--header--title{
+    margin: 0;
+    padding: 0;
+    font-size: var(--fs-24);
+    color: hsla(var(--clr-light));
+    font-weight: var(--fw-bold);
+}
+
+.close--icon{
+    height: 2rem;
+    width: 2rem;
+    color: hsla(var(--clr-light));
+    margin: 0;
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+}
+
+.close--icon:hover{
+    color: hsla(var(--clr-red));
+}
+
+.popuprules--description{
+    margin: 0;
+    padding: 0;
+    font-size: var(--fs-18);
+    color: hsla(var(--clr-light));
+    font-weight: var(--fw-light);
+    max-width: 28rem;
+    text-align: justify;
+}
+
+.popuprules--lifes{
+    margin-top: 2rem;
+    width: 28rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.popuprules--lifes--group{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.popuprules--lifes--icon{
+    height: 2rem;
+    width: 2rem;
+    color: hsla(var(--clr-light));
+}
+
+.popuprules--lifes--txt{
+    margin: 0;
+    padding: 0;
+    font-size: var(--fs-18);
+    font-weight: var(--fw-light);
+    color: hsla(var(--clr-light));
+    font-weight: var(--fw-light);
 }
 
 .bloc-txt{
@@ -177,6 +280,7 @@
 
 .group--searchbar{
     position: relative;
+    z-index: 5;
     display: flex;
     align-items: center;
     justify-content: flex-start;
