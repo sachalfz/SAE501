@@ -20,7 +20,7 @@
             </div>
             <div class="form--row">
                 <label for="label" class="form--label">Label:</label>
-                <input class="form--input" type="text" placeholder="Ex: REC118" id="label" v-model="formData.label" required>
+                <input class="form--input" type="text" placeholder="Ex: REC118" id="label" v-model="formData.label">
             </div>
             <div class="form--row">
                 <label for="coverLink" class="form--label">Cover Link:</label>
