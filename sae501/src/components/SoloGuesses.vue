@@ -1,14 +1,15 @@
 <template>
     <!-- <p class="sologuesses--self--txt">{{ this.albumToGuess.name }}</p> -->
     <div class="sologuesses">
-        <div class="sologuesses--categories">
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Name</p></div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Artist</p> </div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Year</p></div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Label</p></div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Certification</p></div>
-            <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Beatmakers</p></div>
-        </div>
+      <div class="sologuesses--categories">
+          <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Name</p><div class="tooltip">Name of the Album</div></div>
+          <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Artist</p><div class="tooltip">Name of the Artist</div></div>
+          <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Year</p><div class="tooltip">Year of release</div></div>
+          <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Label</p><div class="tooltip">Label(s) that produced the Album</div></div>
+          <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Certification</p><div class="tooltip">Type of Certification obtained</div></div>
+          <div class="sologuesses--categories--self"><p class="sologuesses--categories--self--txt">Beatmakers</p><div class="tooltip">Beatmakers featuring on the Album</div></div>
+      </div>
+
         <div class="sologuesses--results">
             <div v-for="(album, index) in selectedAlbums" :key="index" class="sologuesses--album">
                 <div class="sologuesses--self" :class="{ 'true': isPropertyMatchingString(album, 'name'), 'false': !isPropertyMatchingString(album, 'name') }">
