@@ -37,7 +37,7 @@
       </div>
 
       <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/addmusic" class="nav--cat nav--cat--subadmin">
-        <p class="nav--text">ADD MUSIC</p>
+        <p class="nav--text">ADD ALBUM</p>
       </router-link>
 
       <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/additem" class="nav--cat nav--cat--subadmin">

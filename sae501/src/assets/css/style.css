@@ -86,7 +86,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 25rem;
+    width: 18rem;
     height: 100%;
     background-color: hsla(var(--clr-dark)/ .75);
     backdrop-filter: blur(15px);
@@ -813,7 +813,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    gap: 1.5rem;
+    gap: 1rem;
     background-color: hsla(var(--clr-light));
     border-radius: 6px;
     width: 100%;
@@ -840,7 +840,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    gap: 1.5rem;
+    gap: 1rem;
     background-color: hsla(var(--clr-accent));
     border-radius: 6px;
     width: 100%;
@@ -956,7 +956,7 @@
 }
 
 .inventory--all{
-    gap: 2rem;
+    gap: 1rem;
     width: 28rem;
     display: flex;
     flex-direction: column;
@@ -986,7 +986,7 @@
     display: grid;
     width: 28rem;
     grid-template-columns: repeat(2,1fr);
-    gap: 1rem;   
+    gap: 1rem; 
 }
 
 .inventory--items--self{
@@ -1112,7 +1112,12 @@
         flex-direction: row;
         justify-content: center;
         align-items: flex-start;
-        gap: 8rem;
+        gap: 4rem;
+    }
+
+    .account--top{
+        height: 30rem;
+        width: 32rem;
     }
 
     .sologuesses{
@@ -1126,5 +1131,37 @@
     
     .form--row{
         width: 45rem;
+    }
+
+    .shop--head{
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        width: 50rem;
+    }
+
+    .shop--items{
+        width: 50rem;
+        grid-template-columns: repeat(4,1fr);
+    }
+
+    .inventory--all{
+        background-color: hsla(var(--clr-dark)/ 0.25);
+        border-radius: 5px;
+        padding: 2rem;
+        height: 30rem;
+        gap: 2rem;
+        width: 32rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+
+    }
+
+    .inventory--items{
+        overflow-y: scroll;
+        gap: 1rem;
     }
 }
