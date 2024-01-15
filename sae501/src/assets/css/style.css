@@ -1106,6 +1106,138 @@
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s;
 }
+
+@media screen and (max-width: 450px) {
+    .solo-rules{
+        gap: 1rem;
+    }
+
+    .searchbar{
+        width: 20rem;
+    }
+
+    .searchbar--autocompletion{
+        width: 20rem;
+    }
+
+    .rules-bloc{
+        width: 6rem;
+    }
+
+    .bloc-txt{
+        font-size: var(--fs-14);
+    }
+
+    .sologuesses{
+        width: 20rem;
+    }
+
+    .shop--refresh{
+        width: 20rem;
+    }
+
+    .shop--refresh--txt{
+        font-size: var(--fs-14);
+    }
+
+    .shop--refresh--time{
+        font-size: var(--fs-18);
+    }
+
+    .shop--credits{
+        width: 20rem;
+    }
+
+    .shop--credits--txt{
+        font-size: var(--fs-14);
+    }
+
+    .shop--credits--amount{
+        gap: 0.2rem;
+    }
+
+    .credits--amount--number{
+        font-size: var(--fs-18);
+    }
+
+    .credits--amount--icon{
+        width: 1.5rem;
+    }
+
+    .shop--items{
+        width: 20rem;
+    }
+
+    .item--already{
+        font-size: var(--fs-14);
+        text-align: center;
+    }
+
+    .item--price--txt{
+        font-size: var(--fs-18);
+    }
+
+    .item--price--img{
+        width: 1.5rem;
+    }
+
+    .account{
+        gap: 4rem;
+    }
+
+    .account--top{
+        width: 20rem;
+        gap: 1rem;
+    }
+
+    .stats--head{
+        width: 20rem;
+        gap: 1rem;
+    }
+
+    .account--head--profilepic{
+        width: 20rem;
+        height: 20rem;
+    }
+
+    .stats--self{
+        width: 9.5rem;
+    }
+
+    .stats--self--title{
+        font-size: var(--fs-14);
+    }
+
+    .account--head{
+        width: 20rem;
+        gap: 1rem;
+    }
+
+    .inventory--all{
+        width: 20rem;
+    }
+
+    .inventory--items{
+        width: 20rem;
+    }
+
+    .item--equip--txt{
+        font-size: var(--fs-14);
+    }
+
+    .form--row{
+        width: 20rem;
+    }
+
+    .form--label{
+        width: 8rem;
+        font-size: var(--fs-14);
+    }
+
+    .form--input{
+        font-size: var(--fs-14);
+    }
+}
  
 @media screen and (min-width:1300px) {
     .account{
