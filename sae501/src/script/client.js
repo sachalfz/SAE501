@@ -14,7 +14,7 @@ import { remotePlayer } from '../classes/remotePlayerClass.js';
 
 export async function createScene() {
   const scene = initScene();
-  const container = document.getElementById('container');
+  const container = document.getElementById('webgl');
   const renderer = initRenderer();
   initFillLight();
   initDirLight();
@@ -59,7 +59,7 @@ export async function createScene() {
   const GRAVITY = 30;
   const STEPS_PER_FRAME = 5;
 
-  const socket = io("http://localhost:3000");
+  const socket = io("http://rapguess-server.mmi-limoges.fr:3000");
 
   // Paramètres de camera
   const viewpointCamera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
