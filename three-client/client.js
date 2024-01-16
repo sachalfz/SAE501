@@ -1,16 +1,16 @@
 import * as THREE from "./node_modules/three/build/three.module.min.js";
-import  Stats  from './node_modules/three/examples/jsm/libs/stats.module.js';
 import { FontLoader } from './node_modules/three/examples/jsm/loaders/FontLoader.js';
-import { FBXLoader } from './node_modules/three/examples/jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from './node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { TextGeometry } from './node_modules/three/examples/jsm/geometries/TextGeometry.js';
 import { Octree } from './node_modules/three/examples/jsm/math/Octree.js';
 import { OctreeHelper } from './node_modules/three/examples/jsm/helpers/OctreeHelper.js';
-import { GUI } from './node_modules/three/examples/jsm/libs/lil-gui.module.min.js';
 import { io } from './node_modules/socket.io-client/dist/socket.io.esm.min.js';
 import { Player } from './public/classes/playerClass.js';
 import { Platform } from './public/classes/platformClass.js';
 import { remotePlayer } from './public/classes/remotePlayerClass.js';
+// import { GUI } from './node_modules/three/examples/jsm/libs/lil-gui.module.min.js';
+// import  Stats  from './node_modules/three/examples/jsm/libs/stats.module.js';
+// import { FBXLoader } from './node_modules/three/examples/jsm/loaders/FBXLoader.js';
 
 const scene = initScene();
 const container = document.getElementById('container');
@@ -18,7 +18,7 @@ const renderer = initRenderer();
 initFillLight();
 initDirLight();
 const floorOctree = new Octree();
-const stats = initStats();
+// const stats = initStats();
 const clock = new THREE.Clock();
 
 const glbLoader = new GLTFLoader().setPath('./public/worlds/');
@@ -138,15 +138,15 @@ function initDirLight(){
   return directionalLight;
 }
 
-function initStats(){
-  // Stats
-  const stats = new Stats();
-  stats.domElement.style.position = 'absolute';
-  stats.domElement.style.top = '0px';
-  container.appendChild(stats.domElement);
+// function initStats(){
+//   // Stats
+//   const stats = new Stats();
+//   stats.domElement.style.position = 'absolute';
+//   stats.domElement.style.top = '0px';
+//   container.appendChild(stats.domElement);
 
-  return stats
-}
+//   return stats
+// }
 
 function initEventListeners(){
     document.addEventListener('keydown', function(event) {
@@ -198,10 +198,10 @@ async function loadMap(pathToMap) {
         helper.visible = false;
         scene.add(helper);
 
-        const gui = new GUI({ width: 200 });
-        gui.add({ debug: false }, 'debug').onChange(function (value) {
-          helper.visible = value;
-        });
+        // const gui = new GUI({ width: 200 });
+        // gui.add({ debug: false }, 'debug').onChange(function (value) {
+        //   helper.visible = value;
+        // });
 
         initEventListeners();
         animate();
@@ -504,7 +504,11 @@ socket.on('setId', function(data){
   rmPlayer.id = data.id;
   console.log('user id:', rmPlayer.id);
   // socket.emit('joinRoom', { roomId: '5QCYMH' });
-  socket.emit('joinRoom', { id: rmPlayer.id  });
+  if (room) {
+    socket.emit('joinRoom', { roomCode: room, id: rmPlayer.id });
+  } else {
+    socket.emit('joinRoom', { id: rmPlayer.id  });
+  }
 });
 
 socket.on('roomJoined', function(data){
@@ -783,7 +787,7 @@ function animate() {
 
   renderer.render(scene, viewpointCamera);
 
-  stats.update();
+  // stats.update();
   requestAnimationFrame(animate);
 }
 

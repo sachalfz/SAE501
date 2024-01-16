@@ -1,22 +1,8 @@
 import express from 'express';
 import { createServer } from 'http';
-import cors from 'cors';
-import { fileURLToPath } from 'url';
-import path from 'path';
 import { Server } from 'socket.io';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import { cp } from 'fs';
-import { start } from 'repl';
-import { error } from 'console';
 
 const app = express();
-
-app.use(cors({
-	origin: 'http://localhost:5173',
-	methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-	credentials: true,
-}));
 
 const server = createServer(app);
 const io = new Server(server, {
@@ -29,7 +15,6 @@ const io = new Server(server, {
   });
 
 const MAX_PLAYERS_PER_ROOM = 3;
-let playing = false, gameWon = false;
 const rooms = [];
 const usedCodes = new Set();
 
