@@ -502,8 +502,9 @@ function playerCollisions() {
 
 socket.on('setId', function(data){
   rmPlayer.id = data.id;
+  console.log('user id:', rmPlayer.id);
   // socket.emit('joinRoom', { roomId: '5QCYMH' });
-  socket.emit('joinRoom');
+  socket.emit('joinRoom', { id: rmPlayer.id  });
 });
 
 socket.on('roomJoined', function(data){

@@ -8,6 +8,7 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import { cp } from 'fs';
 import { start } from 'repl';
+import { error } from 'console';
 
 const app = express();
 
@@ -36,7 +37,20 @@ io.sockets.on('connection', function(socket){
 	console.log('a user connected w/ id:', socket.id);
     socket.userData = { x: 0, y: 0, z: 0, heading: 0, model: '' }; // Set a default value for the model
 
-	socket.emit('setId', { id:socket.id });
+	socket.timeout(5000).emit('setId', { id:socket.id }, (error, response) => {
+		if (error) {
+			console.log(error);
+			socket.timeout(5000).emit('setId', { id:socket.id }, (error, response) => {
+				if (error) {
+					console.log('has retried twice:', error);
+				} else {
+					console.log(response);
+				}
+			});
+		} else {
+			console.log(response);
+		}
+	});
 
 	socket.on('joinRoom', function (data) {
 		console.log('trying to join a room', data);
@@ -44,13 +58,25 @@ io.sockets.on('connection', function(socket){
 		if (data && data.roomCode) {
 			room = findRoomByCode(data.roomCode);
 		}
+
+		let connected = false;
+		rooms.forEach(room => {
+			room.players.forEach(player => {
+				if (player.id === data.id) {
+					console.log('Player already connected to room:', room.id);
+					connected = true;
+					return;
+				}
+			});
+		});
 	
-		if (!room) {
+		if (!room && !connected) {
 			// If a specific room was not provided or not found, check for available rooms
 			room = rooms.find(availableRoom => availableRoom.players.length < MAX_PLAYERS_PER_ROOM);
+
 			if (room) {
 				console.log('Available room:', room.id);
-				console.log('Available room players:', room.players.length);
+				console.log('Available room players:', room.players);
 			}
 			if (!room) {
 				// If no available room is found, create a new room
@@ -58,11 +84,11 @@ io.sockets.on('connection', function(socket){
 			}
 		}
 	
-		if (room.players.length < MAX_PLAYERS_PER_ROOM) {
+		if (room && room.players.length < MAX_PLAYERS_PER_ROOM) {
 			joinRoom(socket, room);
 			console.log('Available room players:', room.players.length);
 			io.to(room.id).emit('roomJoined', { roomId: room.id });
-		} else {
+		} else if (room) {
 			// Inform the client that the room is full
 			io.to(room.id).emit('roomFull');
 		}
@@ -155,10 +181,14 @@ io.sockets.on('connection', function(socket){
 		const room = findRoomByCode(socket.userData.room);
 		if (room) {
 		  const index = room.players.findIndex(player => player.id === socket.id);
+
 		  if (index !== -1) {
+
 			room.players.splice(index, 1);
+			console.log(room.players.length);
 			io.to(room.id).emit('deletePlayer', { id: socket.id });
 			console.log(`${socket.id} disconnected from room ${room.id}`);	
+
 			if (room.players.length === 0) {
 			  // Remove the empty room
 			  const roomIndex = rooms.indexOf(room);
