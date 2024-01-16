@@ -28,6 +28,8 @@
 
 .nav--img{
     border-radius: 6px;
+    height: 2rem;
+    width: 2rem;
     box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
 }
 
@@ -48,11 +50,14 @@
 
 .nav--cat{
     display: flex;
+    width: 10rem;
+    padding-bottom: 0.5rem;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     gap: 0.5rem;
     text-decoration: none;
+    border-bottom: solid 1px hsla(var(--clr-light)/ 0.25);
 }
 
 .nav--cat--admin{
@@ -63,9 +68,23 @@
     margin-left: 0rem;
 }
 
+.nav--cat-close{
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    height: 2rem;
+    width: 2rem;
+    color: hsla(var(--clr-light));
+    transition: all .1s ease-in-out;
+}
+
+.nav--cat-close:hover{
+    color: hsla(var(--clr-red));
+}
+
 .nav--cat-logo{
-    height: var(--fs-36);
-    width: var(--fs-36);
+    height: 2rem;
+    width: 2rem;
     padding: 0;
 }
 
@@ -96,7 +115,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     padding: 3rem;
-    gap: 2rem;
+    gap: 1rem;
     transition: right 0.3s;
   }
   
@@ -104,8 +123,8 @@
     padding: 0;
     background: none;
     border: none;
-    width: var(--fs-36);
-    height: var(--fs-36);
+    width: 2rem;
+    height: 2rem;
 }
 
 .header{

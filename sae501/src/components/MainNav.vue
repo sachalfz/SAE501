@@ -6,14 +6,14 @@
           </router-link>
 
           <button @click="toggleMenu" class="nav--popup">
-              <img src="../assets/icons/nav_yellow.svg" alt="open">
+              <img src="../assets/icons/nav_yellow.svg" alt="Menu" class="nav--popup">
           </button>
       </nav>
   </header>
 
   <div class="popup--menu" v-show="isMenuOpen">
       <button class="popup--close-button" @click="toggleMenu">
-          <img src="../assets/icons/close_yellow.svg" alt="close">
+          <font-awesome-icon icon="times" class="nav--cat-close"/>
       </button>
 
       <router-link :to="'/'" class="nav--cat" style="gap: 0.5rem;">
@@ -37,11 +37,11 @@
       </div>
 
       <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/addmusic" class="nav--cat nav--cat--subadmin">
-        <p class="nav--text">ADD ALBUM</p>
+        <p class="nav--text">+ ADD ALBUM</p>
       </router-link>
 
       <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/additem" class="nav--cat nav--cat--subadmin">
-        <p class="nav--text">ADD SHOP ITEM</p>
+        <p class="nav--text">+ ADD SHOP ITEM</p>
       </router-link>
 
       <router-link v-if="user && user.isAuthenticated" :to="`/account/${user.id}`" class="nav--cat">
@@ -68,6 +68,12 @@
 <script>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faQuestionCircle, faTimes);
 
 export default {
   data() {
@@ -95,5 +101,8 @@ export default {
       this.isDropdownVisible = !this.isDropdownVisible;
     },
   },
+  components: {
+      FontAwesomeIcon
+  }
 };
 </script>
