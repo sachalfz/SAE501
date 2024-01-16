@@ -3,7 +3,7 @@ import { Capsule } from 'three/addons/math/Capsule.js';
 
 
 export class Player {
-    constructor(skin, skinName) {
+    constructor(skin, skinName, actions) {
         this.width = 0.6;
         this.height = 1.51;
         this.depth = 1;
@@ -11,8 +11,13 @@ export class Player {
         this.hitbox = this.createHitbox();
         this.collider = this.createCollider();
         this.skin = skin; // You can set this when loading the player's skin
+        this.actions = actions; // You can set this when loading the player's skin
         this.group = this.createPlayerGroup();
-        this.skinName = skinName
+        this.skinName = skinName;
+        this.isReady = false;
+        this.isDead = false;
+        this.hasWon = false;
+        this.action = false;
     }
   
     createHitbox() {

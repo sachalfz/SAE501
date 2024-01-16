@@ -1,12 +1,11 @@
 import * as THREE from 'three';
 
 export class Platform extends THREE.Object3D {
-    constructor(width, height, depth, imagePath, position) {
+    constructor(imagePath, position) {
         super();
-
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
+        this.width = 5;
+        this.height =  0.15;
+        this.depth = 5;
         this.imagePath = imagePath;
 
         // Create the platform mesh and set its position
@@ -17,7 +16,7 @@ export class Platform extends THREE.Object3D {
     }
 
     createPlatformWithImage(position) {
-        const textureLoader = new THREE.TextureLoader().setPath('./covers/');
+        const textureLoader = new THREE.TextureLoader().setPath('/covers/');
         const texture = textureLoader.load(this.imagePath);
         const geometry = new THREE.BoxGeometry(this.width, this.height, this.depth);
         const material = new THREE.MeshBasicMaterial({ map: texture });
@@ -25,7 +24,7 @@ export class Platform extends THREE.Object3D {
 
         platformMesh.castShadow = true;
         platformMesh.receiveShadow = true;
-        platformMesh.position.copy(position); // Set the position here
+        platformMesh.position.set(position.x, position.y, position.z); // Set the position here
 
         return platformMesh;
     }

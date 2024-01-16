@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { createScene } from '../script/script.js';
+import { createScene } from '../script/client.js';
 
 export default {
   mounted() {
