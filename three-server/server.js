@@ -12,8 +12,9 @@ const io = new Server(server, {
 	  credentials: true,
 	},
 	connectionStateRecovery: {},
-  });
+});
 
+let port = 4000;
 const MAX_PLAYERS_PER_ROOM = 3;
 const rooms = [];
 const usedCodes = new Set();
@@ -184,8 +185,8 @@ io.sockets.on('connection', function(socket){
     });
 });
 
-server.listen(3000, () => {
-    console.log('Server running at http://localhost:3000');
+server.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/`);
 });
 
 setInterval(function(){
@@ -273,17 +274,17 @@ function startRound(room) {
 }
 
 const albums = [
-	{cover:'freeze-lmf.jpg', song: './public/sounds/freeze-lmf-tarkov.mp3'},
-	{cover:'freeze-pbb.jpg', song: './public/sounds/freeze-pbb-3planetes.mp3'},
-	{cover:'hamza-paradise.jpg', song: './public/sounds/hamza-paradise-hs.mp3'},
-	{cover:'hamza-sincerement.jpg', song: './public/sounds/hamza-sincerement-freeYSL.mp3'},
-	{cover:'koba-affranchi.jpg', song: './public/sounds/koba-affranchi-rr91.mp3'},
-	{cover:'ninho-destin.jpg', song: './public/sounds/ninho-destin-putana.mp3'},
-	{cover:'ninho-jefe.jpg', song: './public/sounds/ninho-jefe-vvs.mp3'},
-	{cover:'niska-commando.jpg', song: './public/sounds/niska-commando-sale.mp3'},
-	{cover:'sch-jvlivs.jpg', song: './public/sounds/sch-jvlivs-pharmacie.mp3'},
-	{cover:'sch-jvlivs-2.jpg', song: './public/sounds/sch-jvlivs-2-crack.mp3'},
-	{cover:'sexion-pointsvitaux.jpg', song: './public/sounds/sexion-d-assaut-ma-direction.mp3'},
+	{cover:'freeze-lmf.jpg', song: '/public/sounds/freeze-lmf-tarkov.mp3'},
+	{cover:'freeze-pbb.jpg', song: '/public/sounds/freeze-pbb-3planetes.mp3'},
+	{cover:'hamza-paradise.jpg', song: '/public/sounds/hamza-paradise-hs.mp3'},
+	{cover:'hamza-sincerement.jpg', song: '/public/sounds/hamza-sincerement-freeYSL.mp3'},
+	{cover:'koba-affranchi.jpg', song: '/public/sounds/koba-affranchi-rr91.mp3'},
+	{cover:'ninho-destin.jpg', song: '/public/sounds/ninho-destin-putana.mp3'},
+	{cover:'ninho-jefe.jpg', song: '/public/sounds/ninho-jefe-vvs.mp3'},
+	{cover:'niska-commando.jpg', song: '/public/sounds/niska-commando-sale.mp3'},
+	{cover:'sch-jvlivs.jpg', song: '/public/sounds/sch-jvlivs-pharmacie.mp3'},
+	{cover:'sch-jvlivs-2.jpg', song: '/public/sounds/sch-jvlivs-2-crack.mp3'},
+	{cover:'sexion-pointsvitaux.jpg', song: '/public/sounds/sexion-d-assaut-ma-direction.mp3'},
 ]
 
 const positions = [
