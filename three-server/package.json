@@ -15,3 +15,13 @@
     "start": "node index.js"
   }
 }
+
+
+const io = new Server(server, {
+	cors: {
+	  origin: 'https://sae501.netlify.app/rapguess/3dgame',
+	  methods: ['GET', 'POST'],
+	  credentials: true,
+	},
+	connectionStateRecovery: {},
+});
