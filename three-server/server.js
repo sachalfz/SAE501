@@ -6,11 +6,11 @@ import cors from 'cors';
 const app = express();
 
 
-app.use(cors({
-	origin: 'https://sae501.netlify.app/rapguess/3dgame',
-	methods: 'GET,POST',
-	credentials: true,
-}));
+// app.use(cors({
+// 	origin: 'https://sae501.netlify.app/rapguess/3dgame',
+// 	methods: 'GET,POST',
+// 	credentials: true,
+// }));
 
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "https://sae501.netlify.app");
@@ -27,6 +27,7 @@ const io = new Server(server, {
 	  origin: 'https://sae501.netlify.app',
 	  methods: ['GET', 'POST'],
 	  credentials: true,
+	  allowedHeaders: ['*'],
 	},
 	connectionStateRecovery: {},
 });
