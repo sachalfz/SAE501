@@ -5,8 +5,8 @@
         <input type="text" placeholder="Exemple: Guest" v-model="textInput" class="confirmation-dialog-content-form"/>
       </div>
       <div class="confirmation-dialog-actions">
-        <button @click="confirm" class="confirmation--btn true">Valider</button>
-        <button @click="cancel" class="confirmation--btn false">Annuler</button>
+        <button @click="confirm" class="confirmation--btn true">Rename</button>
+        <button @click="cancel" class="confirmation--btn false">Exit</button>
       </div>
     </div>
   </template>
