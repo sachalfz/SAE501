@@ -635,6 +635,9 @@ export async function createScene() {
       player.isDead = true;
       scene.remove(player.group);
       const deathTxt = createText('You fell off... spectate the rest of the game. ', 7, 12, -30, 0);
+      console.log('You fell of...');
+      const defeatEvent = new CustomEvent('defeat', { detail: { defeat: true } });  
+      window.dispatchEvent(defeatEvent);
       scene.add(deathTxt);
     }
   }
@@ -725,6 +728,8 @@ export async function createScene() {
               // socket.emit('roundIsOver', {room: player.group.room});
               if (player.isDead === false) {
                 nbRoundWon = nbRoundWon + 1;
+                const roundEvent = new CustomEvent('roundWon', { detail: { nbRounds: nbRoundWon } });
+                window.dispatchEvent(roundEvent);
                 console.log(nbRoundWon);
                 if (nbRoundWon < 3) {
                   startGame(timeOut);
