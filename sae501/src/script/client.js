@@ -23,11 +23,11 @@ export async function createScene() {
   // const stats = initStats();
   const clock = new THREE.Clock();
 
-  const glbLoader = new GLTFLoader().setPath('/public/worlds/');
-  const GLBcharacterLoader = new GLTFLoader().setPath('/public/characters/');
+  const glbLoader = new GLTFLoader().setPath('/worlds/');
+  const GLBcharacterLoader = new GLTFLoader().setPath('/characters/');
   const textLoader = new FontLoader();
   // const FBXcharacterLoader = new FBXLoader().setPath('./characters/');
-  // const fbxClientLoader = new FBXLoader().setPath('./public/characters/');
+  // const fbxClientLoader = new FBXLoader().setPath('./characters/');
 
   const keyStates = {}; // Store the state of each key
   let truePlatform, fakePlatform1, fakePlatform2, fakePlatform3, fakePlatform4, fakePlatform5, fakePlatform6, fakePlatform7, fakePlatform8; // Plateformes
@@ -53,17 +53,17 @@ export async function createScene() {
   ];
 
   const albums = [
-    {cover:'freeze-lmf.jpg', song: '/public/sounds/freeze-lmf-tarkov.mp3'},
-    {cover:'freeze-pbb.jpg', song: '/public/sounds/freeze-pbb-3planetes.mp3'},
-    {cover:'hamza-paradise.jpg', song: '/public/sounds/hamza-paradise-hs.mp3'},
-    {cover:'hamza-sincerement.jpg', song: '/public/sounds/hamza-sincerement-freeYSL.mp3'},
-    {cover:'koba-affranchi.jpg', song: '/public/sounds/koba-affranchi-rr91.mp3'},
-    {cover:'ninho-destin.jpg', song: '/public/sounds/ninho-destin-putana.mp3'},
-    {cover:'ninho-jefe.jpg', song: '/public/sounds/ninho-jefe-vvs.mp3'},
-    {cover:'niska-commando.jpg', song: '/public/sounds/niska-commando-sale.mp3'},
-    {cover:'sch-jvlivs.jpg', song: '/public/sounds/sch-jvlivs-pharmacie.mp3'},
-    {cover:'sch-jvlivs-2.jpg', song: '/public/sounds/sch-jvlivs-2-crack.mp3'},
-    {cover:'sexion-pointsvitaux.jpg', song: '/public/sounds/sexion-d-assaut-ma-direction.mp3'},
+    {cover:'freeze-lmf.jpg', song: '/sounds/freeze-lmf-tarkov.mp3'},
+    {cover:'freeze-pbb.jpg', song: '/sounds/freeze-pbb-3planetes.mp3'},
+    {cover:'hamza-paradise.jpg', song: '/sounds/hamza-paradise-hs.mp3'},
+    {cover:'hamza-sincerement.jpg', song: '/sounds/hamza-sincerement-freeYSL.mp3'},
+    {cover:'koba-affranchi.jpg', song: '/sounds/koba-affranchi-rr91.mp3'},
+    {cover:'ninho-destin.jpg', song: '/sounds/ninho-destin-putana.mp3'},
+    {cover:'ninho-jefe.jpg', song: '/sounds/ninho-jefe-vvs.mp3'},
+    {cover:'niska-commando.jpg', song: '/sounds/niska-commando-sale.mp3'},
+    {cover:'sch-jvlivs.jpg', song: '/sounds/sch-jvlivs-pharmacie.mp3'},
+    {cover:'sch-jvlivs-2.jpg', song: '/sounds/sch-jvlivs-2-crack.mp3'},
+    {cover:'sexion-pointsvitaux.jpg', song: '/sounds/sexion-d-assaut-ma-direction.mp3'},
   ]
 
   const positions = [
