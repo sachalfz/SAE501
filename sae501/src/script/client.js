@@ -62,6 +62,17 @@ export async function createScene() {
     {cover:'sexion-pointsvitaux.jpg', song: '/sounds/sexion-d-assaut-ma-direction.mp3'},
   ]
 
+  scene.background = new THREE.CubeTextureLoader()
+    .setPath("/skybox/")
+    .load([
+      "right.png",
+      "left.png",
+      "top.png",
+      "bottom.png",
+      "front.png",
+      "back.png",
+    ]);
+
   const positions = [
     {x:-9, y:-5.5, z:4},
     {x:9, y:-5.5, z:4},
