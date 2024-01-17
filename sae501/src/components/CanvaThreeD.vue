@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { createScene } from '../script/client.js';
+import { createScene } from '../script/client-online.js';
 import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { apiUserInventory } from '@/main.js';
