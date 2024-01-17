@@ -100,7 +100,7 @@ export default {
     },
     closeMenu() {
       const popupMenu = document.querySelector('.popup--menu');
-      popupMenu.style.right = '-18rem';
+      popupMenu.style.right = '-100%';
     },
     toggleDropdownAdmin() {
       this.isDropdownVisible = !this.isDropdownVisible;
