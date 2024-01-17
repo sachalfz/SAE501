@@ -39,7 +39,7 @@ export default {
       livesRemaining: 10,
       albumToGuess: null,
       win: false,
-      streamzWin: 500,
+      streamzWin: 400,
       streamzLoss: 50,
       streamzAbandon: 0,
       currentUser: null
