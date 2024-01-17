@@ -57,7 +57,7 @@
         <p class="nav--text">LOGOUT</p>
       </router-link>
 
-      <router-link v-if="!(user && user.isAuthenticated)" to="/register" class="nav--cat" @click="closeMenu">
+      <router-link v-if="!(user && user.isAuthenticated)" to="/register" class="nav--cat test" @click="closeMenu">
         <p class="nav--text">REGISTER</p>
       </router-link>
 
