@@ -4,13 +4,9 @@ import { GLTFLoader } from '../../node_modules/three/examples/jsm/loaders/GLTFLo
 import { TextGeometry } from '../../node_modules/three/examples/jsm/geometries/TextGeometry.js';
 import { Octree } from '../../node_modules/three/examples/jsm/math/Octree.js';
 import { OctreeHelper } from '../../node_modules/three/examples/jsm/helpers/OctreeHelper.js';
-import { io } from '../../node_modules/socket.io-client/dist/socket.io.esm.min.js';
 import { Player } from '../classes/playerClass.js';
 import { Platform } from '../classes/platformClass.js';
 import { remotePlayer } from '../classes/remotePlayerClass.js';
-// import { GUI } from './node_modules/three/examples/jsm/libs/lil-gui.module.min.js';
-// import  Stats  from './node_modules/three/examples/jsm/libs/stats.module.js';
-// import { FBXLoader } from './node_modules/three/examples/jsm/loaders/FBXLoader.js';
 
 export async function createScene() {
 
