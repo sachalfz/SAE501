@@ -6,7 +6,7 @@
         <div class="shop--items--self" v-for="(item, index) in todayItems" :key="index">
             <img :src="item.picture" alt="item image" class="item--img">
             <div class="item--price" v-if="isItemBought(item.id)">
-                <p class="item--already">Already Bought</p>
+                <p class="item--already">Owned</p>
             </div>
             <div class="item--price" v-if="!isItemBought(item.id)" @click="addItemBoughtToInventory(item)">
                 <p class="item--price--txt">{{ item.price }}</p>

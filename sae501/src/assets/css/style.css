@@ -994,7 +994,7 @@
     margin: 0;
     color: hsla(var(--clr-green));
     font-weight: var(--fw-bold);
-    font-size: var(--fs-18);
+    font-size: var(--fs-24);
 }
 
 .inventory--all{
@@ -1315,9 +1315,23 @@
         width: 50rem;
     }
 
+    .shop--credits{
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .shop--refresh{
+        width: 100%;
+    }
+
     .shop--items{
         width: 50rem;
         grid-template-columns: repeat(4,1fr);
+    }
+
+    .item--already{
+        text-align: center;
+        width: 100%;
     }
 
     .inventory--all{
