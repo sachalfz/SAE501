@@ -11,22 +11,22 @@
       </nav>
   </header>
 
-  <div class="popup--menu" v-show="isMenuOpen">
-      <button class="popup--close-button" @click="toggleMenu">
+  <div class="popup--menu">
+      <button class="popup--close-button" @click="closeMenu">
           <font-awesome-icon icon="times" class="nav--cat-close"/>
       </button>
 
-      <router-link :to="'/'" class="nav--cat" style="gap: 0.5rem;">
+      <router-link :to="'/'" class="nav--cat" style="gap: 0.5rem;" @click="closeMenu">
           <img src="../assets/nav/solo.svg" alt="Logo" class="nav--cat-logo">
           <p class="nav--text">SOLO</p>
       </router-link>
 
-      <router-link :to="'/3dgame'" class="nav--cat" style="gap: 0.5rem;">
+      <router-link :to="'/3dgame'" class="nav--cat" style="gap: 0.5rem;" @click="closeMenu">
           <img src="../assets/nav/3d.svg" alt="Logo" class="nav--cat-logo">
           <p class="nav--text">3D</p>
       </router-link>
 
-      <router-link :to="'/shop'" class=" nav--cat">
+      <router-link :to="'/shop'" class=" nav--cat" @click="closeMenu">
           <img src="../assets/icons/shop_yellow.svg" alt="Logo" class="nav--cat-logo">
           <p class="nav--text">SHOP</p>
       </router-link>
@@ -36,28 +36,28 @@
         <p class="nav--text">ADMIN</p>
       </div>
 
-      <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/addmusic" class="nav--cat nav--cat--subadmin">
+      <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/addmusic" class="nav--cat nav--cat--subadmin" @click="closeMenu">
         <p class="nav--text">+ ADD ALBUM</p>
       </router-link>
 
-      <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/additem" class="nav--cat nav--cat--subadmin">
+      <router-link v-show="isDropdownVisible" v-if="(user && user.isAuthenticated) && (user.roles.includes('ROLE_ADMIN') || (user.roles.includes('ROLE_USER') && user.roles.includes('ROLE_ADMIN')))" to="/admin/additem" class="nav--cat nav--cat--subadmin" @click="closeMenu">
         <p class="nav--text">+ ADD SHOP ITEM</p>
       </router-link>
 
-      <router-link v-if="user && user.isAuthenticated" :to="`/account/${user.id}`" class="nav--cat">
+      <router-link v-if="user && user.isAuthenticated" :to="`/account/${user.id}`" class="nav--cat" @click="closeMenu">
         <img :src="user.inventory.profilepicture" alt="Profile pic" height="36" class="nav--img">
         <p class="nav--text">ACCOUNT</p>
       </router-link>
       
-      <router-link v-else-if="!(user && user.isAuthenticated)" to="/login" class="nav--cat">
+      <router-link v-else-if="!(user && user.isAuthenticated)" to="/login" class="nav--cat" @click="closeMenu">
         <p class="nav--text">LOGIN</p>
       </router-link>
 
-      <router-link v-if="user && user.isAuthenticated" to="/logout" class="nav--cat">
+      <router-link v-if="user && user.isAuthenticated" to="/logout" class="nav--cat" @click="closeMenu">
         <p class="nav--text">LOGOUT</p>
       </router-link>
 
-      <router-link v-if="!(user && user.isAuthenticated)" to="/register" class="nav--cat">
+      <router-link v-if="!(user && user.isAuthenticated)" to="/register" class="nav--cat" @click="closeMenu">
         <p class="nav--text">REGISTER</p>
       </router-link>
 
@@ -95,7 +95,12 @@ export default {
   },
   methods: {
     toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
+      const popupMenu = document.querySelector('.popup--menu');
+      popupMenu.style.right = '0';
+    },
+    closeMenu() {
+      const popupMenu = document.querySelector('.popup--menu');
+      popupMenu.style.right = '-18rem';
     },
     toggleDropdownAdmin() {
       this.isDropdownVisible = !this.isDropdownVisible;
