@@ -24,6 +24,7 @@
     font-weight: var(--fw-bold);
     color: hsla(var(--clr-light));
     font-size: var(--fs-18);
+    transition: all 0.2s ease-in-out; /* Ajoute une transition fluide pour une animation agréable */
 }
 
 .nav--img{
@@ -31,6 +32,7 @@
     height: 2rem;
     width: 2rem;
     box-shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.3);
+    transition: all 0.2s ease-in-out; /* Ajoute une transition fluide pour une animation agréable */
 }
 
 .nav--list{
@@ -86,6 +88,23 @@
     height: 2rem;
     width: 2rem;
     padding: 0;
+    transition: all 0.2s ease-in-out; /* Ajoute une transition fluide pour une animation agréable */
+}
+
+.nav--cat:hover .nav--cat-logo {
+    transform: scale(1.075);
+}
+
+.nav--cat:hover .nav--img {
+    transform: scale(1.075);
+}
+
+.nav--cat:hover .nav--text{
+    transform: translateX(0.5rem);
+}
+
+.nav--cat:hover{
+    border-bottom: solid 1px hsla(var(--clr-light)/ 0.3);
 }
 
 .page{
@@ -227,7 +246,7 @@
     color: hsla(var(--clr-light));
     margin: 0;
     cursor: pointer;
-    transition: all .1s ease-in-out;
+    transition: all .2s ease-in-out;
 }
 
 .close--icon:hover{
