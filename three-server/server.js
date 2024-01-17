@@ -6,17 +6,15 @@ import cors from 'cors';
 const app = express();
 
 
-app.use(cors());
+app.use(cors({
+	origin: 'https://sae501.netlify.app/rapguess/3dgame',  // Remplacez par votre domaine
+	methods: ['GET', 'POST'],
+	credentials: true,
+	allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+  }));
 
 const server = createServer(app);
-const io = new Server(server, {
-	cors: {
-	  origin: 'https://sae501.netlify.app/rapguess/3dgame',
-	  methods: ['GET', 'POST'],
-	  credentials: true,
-	},
-	connectionStateRecovery: {},
-});
+const io = new Server(server);
 
 let port = 4000;
 const MAX_PLAYERS_PER_ROOM = 3;
