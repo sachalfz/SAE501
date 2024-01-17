@@ -50,6 +50,32 @@ const animationStates = [ // Liste des animations disponibles
   "Human Armature|Working"
 ];
 
+const albums = [
+	{cover:'freeze-lmf.jpg', song: '/public/sounds/freeze-lmf-tarkov.mp3'},
+	{cover:'freeze-pbb.jpg', song: '/public/sounds/freeze-pbb-3planetes.mp3'},
+	{cover:'hamza-paradise.jpg', song: '/public/sounds/hamza-paradise-hs.mp3'},
+	{cover:'hamza-sincerement.jpg', song: '/public/sounds/hamza-sincerement-freeYSL.mp3'},
+	{cover:'koba-affranchi.jpg', song: '/public/sounds/koba-affranchi-rr91.mp3'},
+	{cover:'ninho-destin.jpg', song: '/public/sounds/ninho-destin-putana.mp3'},
+	{cover:'ninho-jefe.jpg', song: '/public/sounds/ninho-jefe-vvs.mp3'},
+	{cover:'niska-commando.jpg', song: '/public/sounds/niska-commando-sale.mp3'},
+	{cover:'sch-jvlivs.jpg', song: '/public/sounds/sch-jvlivs-pharmacie.mp3'},
+	{cover:'sch-jvlivs-2.jpg', song: '/public/sounds/sch-jvlivs-2-crack.mp3'},
+	{cover:'sexion-pointsvitaux.jpg', song: '/public/sounds/sexion-d-assaut-ma-direction.mp3'},
+]
+
+const positions = [
+	{x:-9, y:-5.5, z:4},
+	{x:9, y:-5.5, z:4},
+	{x:0, y:-5.5, z:20},
+	{x:-19, y:-5.5, z:-5.5},
+	{x:19, y:-5.5, z:-5.5},
+	{x:-19.5, y:-3.5, z:-15},
+	{x:19.5, y:-3.5, z:-15},
+	{x:-10, y:-3.5, z:-24},
+	{x:10, y:-3.5, z:-24},
+  ];
+
 // Map of remote players
 const remotePlayers = [];
 const remotePlayersIds = new Set();  // Use a Set for efficient membership checks
@@ -58,7 +84,7 @@ const remotePlayersIds = new Set();  // Use a Set for efficient membership check
 const GRAVITY = 30;
 const STEPS_PER_FRAME = 5;
 
-const socket = io("https://rapguess-server.mmi-limoges.fr/");
+// const socket = io("https://rapguess-server.mmi-limoges.fr/");
 
 // Paramètres de camera
 const viewpointCamera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -83,7 +109,8 @@ const actions = fbxModel.actions;
 mixers.push({playerMixer: fbxModel.mixer});
 const player = new Player(playerSkin, skinName, actions); // Joueur local
 scene.add(player.group);  
-const rmPlayer = new remotePlayer(player, socket); // Joueur a distance correspondant au joueur local
+let nbRoundWon = 0;
+// const rmPlayer = new remotePlayer(player, socket); // Joueur a distance correspondant au joueur local
 
 let room = null;
 
@@ -310,7 +337,8 @@ async function controls(deltaTime) {
     if (gameIsOn === false) {
       player.isReady = true;
       waitSeconds(1);
-      socket.emit('playerReady', {room: player.group.room, id: rmPlayer.id, isReady: player.isReady});
+      // socket.emit('playerReady', {room: player.group.room, id: rmPlayer.id, isReady: player.isReady});
+      startGame(30);
       gameIsOn = true;
     }
   }
@@ -500,62 +528,62 @@ function playerCollisions() {
   }
 }   
 
-socket.on('setId', function(data){
-  rmPlayer.id = data.id;
-  console.log('user id:', rmPlayer.id);
-  // socket.emit('joinRoom', { roomId: '5QCYMH' });
-  if (room) {
-    socket.emit('joinRoom', { roomCode: room, id: rmPlayer.id });
-  } else {
-    socket.emit('joinRoom', { id: rmPlayer.id  });
-  }
-});
+// socket.on('setId', function(data){
+//   rmPlayer.id = data.id;
+//   console.log('user id:', rmPlayer.id);
+//   // socket.emit('joinRoom', { roomId: '5QCYMH' });
+//   if (room) {
+//     socket.emit('joinRoom', { roomCode: room, id: rmPlayer.id });
+//   } else {
+//     socket.emit('joinRoom', { id: rmPlayer.id  });
+//   }
+// });
 
-socket.on('roomJoined', function(data){
-  player.group.room = data.roomId;
-  room = player.group.room;
-  rmPlayer.initSocket(room);
-});
+// socket.on('roomJoined', function(data){
+//   player.group.room = data.roomId;
+//   room = player.group.room;
+//   rmPlayer.initSocket(room);
+// });
 
-socket.on('startRound', function(data) {
-  startGame(data.positions, data.covers, data.song, data.timeOut);
-});
+// socket.on('startRound', function(data) {
+//   startGame(data.positions, data.covers, data.song, data.timeOut);
+// });
 
-// Listen for 'remoteData' event
-socket.on('remoteData', function(data) {
-  for (const playerData of data) {
-    const playerId = playerData.id;
+// // Listen for 'remoteData' event
+// socket.on('remoteData', function(data) {
+//   for (const playerData of data) {
+//     const playerId = playerData.id;
 
-    if (playerId) {
-      if (playerId !== rmPlayer.id) {
-          // Check if the player ID is already known
-        if (!remotePlayersIds.has(playerId)) {
-          remotePlayersIds.add(playerId);  // Add the ID to the set
-          createRemotePlayer(playerId, data.x, data.y, data.z);
-          // createRemotePlayer(playerId);
-        } else {
-          // Update remote player position
-          updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, playerData.isReady, playerData.isDead, playerData.hasWon, playerData.action, );
-        }
-      }
-    }
-  }
-}); 
+//     if (playerId) {
+//       if (playerId !== rmPlayer.id) {
+//           // Check if the player ID is already known
+//         if (!remotePlayersIds.has(playerId)) {
+//           remotePlayersIds.add(playerId);  // Add the ID to the set
+//           createRemotePlayer(playerId, data.x, data.y, data.z);
+//           // createRemotePlayer(playerId);
+//         } else {
+//           // Update remote player position
+//           updateRemotePlayer(playerId, { x: playerData.x, y: playerData.y, z: playerData.z }, playerData.heading, playerData.isReady, playerData.isDead, playerData.hasWon, playerData.action, );
+//         }
+//       }
+//     }
+//   }
+// }); 
 
-socket.on('deletePlayer', function(data){
-  const disconnectedPlayer = remotePlayers.find(player => player.id === data.id);
+// socket.on('deletePlayer', function(data){
+//   const disconnectedPlayer = remotePlayers.find(player => player.id === data.id);
 
-  if (disconnectedPlayer) {
-    scene.remove(disconnectedPlayer.group)
-    // Remove the disconnected player from the connectedPlayers array
-    remotePlayers.filter(player => player.id !== data.id);
-    console.log('Player with id:', data.id,'removed');
-    remotePlayersIds.delete(player => player.id !== data.id);
+//   if (disconnectedPlayer) {
+//     scene.remove(disconnectedPlayer.group)
+//     // Remove the disconnected player from the connectedPlayers array
+//     remotePlayers.filter(player => player.id !== data.id);
+//     console.log('Player with id:', data.id,'removed');
+//     remotePlayersIds.delete(player => player.id !== data.id);
 
 
-    console.log('Player with id:', data.id,'removed');
-  }
-});
+//     console.log('Player with id:', data.id,'removed');
+//   }
+// });
 
 // Function to create a remote player object
 async function createRemotePlayer(id, x, y, z) {
@@ -654,12 +682,24 @@ function waitSeconds(seconds) {
   });
 }
 
-function startGame(positions, covers, song, timeOut) {
+function shuffleArray(array) {
+	const clonedArray = [...array];
+	return clonedArray.sort((a, b) => 0.5 - Math.random())
+}
+
+function startGame(timeOut) {
   if (roundIsOn === false) {
+    const shuffledAlbums = shuffleArray(albums);
+		const shuffledPositions = shuffleArray(positions);
+		const covers = [];
+		const song = shuffledAlbums[0].song;
+    for (let i = 0; i < 9; i++) {
+			covers.push(shuffledAlbums[i].cover);
+		}
     roundIsOn = true;
     writeText('Jump on the cover of the song playing before the time is up !');
     if (platformsOnScene.length < 7) {
-        generateAllPlatforms(covers, positions);
+        generateAllPlatforms(covers, shuffledPositions);
     }
 
     playSound(song, timeOut);
@@ -673,10 +713,24 @@ function startGame(positions, covers, song, timeOut) {
             // Additional code after another delay
             mainMapCollisions = true;
             roundIsOn = false;
-            socket.emit('roundIsOver', {room: player.group.room});
+            // socket.emit('roundIsOver', {room: player.group.room});
+            if (player.isDead === false) {
+              nbRoundWon = nbRoundWon + 1;
+              console.log(nbRoundWon);
+              if (nbRoundWon < 3) {
+                startGame(timeOut);
+              } else {
+                writeText('Congrats ! You won the game !')
+                console.log('Congrats ! You won the game !');
+                const victoryEvent = new CustomEvent('victory', { detail: { victory: true } });  
+                window.dispatchEvent(victoryEvent);
+              }
+            }
         }, 2000); // 5 seconds in milliseconds
 
     }, timeOut * 1000); // Convert seconds to milliseconds
+
+
   }
 }
 
@@ -758,7 +812,7 @@ function animate() {
     teleportPlayerIfOob();
 
     if (player.group.room && player) {
-      rmPlayer.updateSocket(player);
+      // rmPlayer.updateSocket(player);
     }
   };
 
@@ -791,12 +845,19 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+if (nbRoundWon === 3) {
+  writeText('Congrats ! You won the game !')
+  console.log('Congrats ! You won the game !');
+  const victoryEvent = new CustomEvent('victory', { detail: { victory: true } });  
+  window.dispatchEvent(victoryEvent);
+}
+
 await loadFont();
 
 const textGroup = new THREE.Group();
 scene.add(textGroup);
 
 
-writeText('Waiting for players to get ready ! ( press J )')
+writeText('Waiting for the player to get ready ! ( press J )')
 
 const mainMap  = await loadMap(mapPath);
