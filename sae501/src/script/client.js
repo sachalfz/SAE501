@@ -728,7 +728,7 @@ export async function createScene() {
               // socket.emit('roundIsOver', {room: player.group.room});
               if (player.isDead === false) {
                 nbRoundWon = nbRoundWon + 1;
-                const roundEvent = new CustomEvent('roundWon', { detail: { nbRounds: nbRoundWon } });
+                const roundEvent = new CustomEvent('roundWon', { detail: { roundWon: nbRoundWon } });
                 window.dispatchEvent(roundEvent);
                 console.log(nbRoundWon);
                 if (nbRoundWon < 3) {

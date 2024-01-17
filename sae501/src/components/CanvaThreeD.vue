@@ -1,5 +1,27 @@
 <template>
     <div class="threedcanvas" id="webgl"></div>
+
+    <div v-if="popupDefeatVisible" class="popup3d">
+        <div class="popup3d--header">
+            <p class="popup3d--header--title lost">YOU LOST</p>
+        </div>
+        <p class="popup3d--description">Start a New Game or go buy you a nice profile picture to dry out your tears!</p>
+        <div class="popup3d--buttons">
+          <a href="/3dgame" class="popup3d--buttons--btn">New Game</a>
+          <router-link to="/shop" class="popup3d--buttons--btn">Item Shop</router-link>
+        </div>
+    </div>
+
+    <div v-if="popupVictoryVisible" class="popup3d">
+        <div class="popup3d--header">
+            <p class="popup3d--header--title win">YOU WON!</p>
+        </div>
+        <p class="popup3d--description">Start a New Game or go buy a nice profile picture rich man! </p>
+        <div class="popup3d--buttons">
+          <a href="/3dgame" class="popup3d--buttons--btn">New Game</a>
+          <router-link to="/shop" class="popup3d--buttons--btn">Item Shop</router-link>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -19,12 +41,16 @@ export default {
   data() {
     return {
       streamzWin: 500,
-      currentUser: null
+      currentUser: null,
+      popupDefeatVisible: false,
+      popupVictoryVisible: false,
     };
   },
   mounted() {
     this.createThree();
     window.addEventListener('victory', this.handleVictory);
+    window.addEventListener('defeat', this.handleDefeat);
+    window.addEventListener('roundWon', this.handleRoundWon);
 
     this.currentUser = this.user;
   },
@@ -37,6 +63,20 @@ export default {
       if (victory) {
         console.log('Victory happened!');
         this.addToStats(this.streamzWin);
+        this.popupVictoryVisible = true;
+      }
+    },
+    handleDefeat(event) {
+      const defeat = event.detail.defeat;
+      if (defeat) {
+        console.log('You lost!');
+        this.popupDefeatVisible = true;
+      }
+    },
+    handleRoundWon(event) {
+      const roundWon = event.detail.roundWon;
+      if (roundWon) {
+        console.log('You won the round!');
       }
     },
     async addToStats(streamz) {
@@ -77,6 +117,8 @@ export default {
   beforeDestroy() {
     // N'oubliez pas de supprimer l'écouteur d'événement lors de la destruction du composant
     window.removeEventListener('victory', this.handleVictory);
+    window.removeEventListener('defeat', this.handleDefeat);
+    window.removeEventListener('roundWon', this.handleRoundWon);
   }
 };
 </script>
