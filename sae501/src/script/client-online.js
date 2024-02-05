@@ -255,6 +255,7 @@ export async function createScene() {
 
   function loadFont() {
     return new Promise((resolve, reject) => {
+      textLoader.setCrossOrigin("*");
       textLoader.load(
         'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
         (response) => {
